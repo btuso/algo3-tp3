@@ -1,7 +1,7 @@
 CFLAGS = -Wall -std=c++11 -Wextra -Wno-unused -O1
 
-OBJS = auxiliares.cc savings.cc
-TESTS = 
+OBJS = auxiliares.cc savings.cc greedy.cc
+TESTS = test/test_greedy.cc
 
 .PHONY: all build test clean dirs
 

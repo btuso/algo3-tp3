@@ -1,0 +1,5 @@
+3) b) Al menos una heurística constructiva golosa adicional.
+[√] 1. Bucket sort sobre capacidades de los vértices
+[ ] 2. Para cada bucket, ordeno por cercanía al depósito
+[ ] 3. Elijo el bucket de más capacidad compatible con el stock de mi camión
+[ ] 4. Tomo los primeros k vértices de este bucket y me quedo con el más cercano al vértice donde estoy parado actualmente

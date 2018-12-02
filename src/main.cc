@@ -10,6 +10,7 @@
 
 #include "auxiliares.h"
 #include "savings.h"
+#include "greedy.h"
 
 #define DEBUG(x) std::cout << "Debug: " << x << "\n";
 
@@ -24,6 +25,7 @@ tuple<vector<Point>, int> ReadDataset();
 int main(int argc, char** argv) { 
 	map<string, CvrpHeuristic> algorithms;
 	algorithms["savings"] = savings::solveCvrp;
+	algorithms["greedy"] = greedy::solveCvrp;
 
 	if ( argc == 1 ) {
 		cout << "Se necesita pasar el algoritmo a usar como argumento.\nOpciones: savings, golosa, sweep, otra, annealing\n"; 
