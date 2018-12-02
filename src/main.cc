@@ -16,10 +16,10 @@
 
 using namespace std; 
 
-typedef std::vector<int> (* CvrpHeuristic) (std::vector<Point> &points, int capacity);
+typedef std::vector<int> (* CvrpHeuristic) (Point& warehouse, std::vector<Point> &points, int capacity);
 
 void MeasureAlgorithm(string name, CvrpHeuristic function, string input, ofstream &output);
-tuple<vector<Point>, int> ReadDataset(); 
+tuple<Point, vector<Point>, int> ReadDataset(); 
 
 
 int main(int argc, char** argv) { 
@@ -28,7 +28,7 @@ int main(int argc, char** argv) {
 	algorithms["greedy"] = greedy::solveCvrp;
 
 	if ( argc == 1 ) {
-		cout << "Se necesita pasar el algoritmo a usar como argumento.\nOpciones: savings, golosa, sweep, otra, annealing\n"; 
+		cout << "Se necesita pasar el algoritmo a usar como argumento.\nOpciones: savings, greedy, sweep, otra, annealing\n"; 
 		return 1;
 	} else if ( argc == 2 ) {
 		cout << "Se necesita especificar el archivo de entrada, que debe estar en la carpeta 'resources'.\n";
@@ -48,16 +48,16 @@ int main(int argc, char** argv) {
 		output.close();	
 	} else {
 		if ( algorithms.count(algorithm) == 0 ) {
-			cout << "Algoritmo invalido.\nOpciones: savings, golosa, sweep, otra, annealing\n"; 
+			cout << "Algoritmo invalido.\nOpciones: savings, greedy, sweep, otra, annealing\n"; 
 			return 1;
 		}
 
-		ifstream dataset("resources/" + input);	
+		ifstream dataset(input);	
 		if( dataset.is_open() ){
 			cin.rdbuf(dataset.rdbuf());
 			auto heuristic = algorithms[algorithm];
 			auto input = ReadDataset();
-			auto solution = heuristic(get<0>(input), get<1>(input));
+			auto solution = heuristic(get<0>(input), get<1>(input), get<2>(input));
 			aux::print_vector(solution);
 		}
 		dataset.close(); 
@@ -71,11 +71,12 @@ void MeasureAlgorithm(string name, CvrpHeuristic function, string input, ofstrea
 		cin.rdbuf(dataset.rdbuf());
 		while( dataset.peek() != EOF && !dataset.eof() ) {
 			auto input = ReadDataset();
-			vector<Point> points = get<0>(input);
-			int capacity = get<1>(input);
+			Point warehouse = get<0>(input);
+			vector<Point> points = get<1>(input);
+			int capacity = get<2>(input);
 			unsigned long start, end;
 			MEDIR_TIEMPO_START(start);
-			vector<int> sol = function(points, capacity);
+			vector<int> sol = function(warehouse, points, capacity);
 			MEDIR_TIEMPO_STOP(end);
 			output << name << "," << points.size() << "," << capacity  << "," << (end-start) << "\n"; // Agregar lo que falta para los experimentos
 		}
@@ -83,7 +84,7 @@ void MeasureAlgorithm(string name, CvrpHeuristic function, string input, ofstrea
 	dataset.close(); 
 }
 
-tuple<vector<Point>, int> ReadDataset() {
+tuple<Point, vector<Point>, int> ReadDataset() {
 	string ignore;
 	int dimension, capacity;
 	getline( cin, ignore ); 	// Name
@@ -99,9 +100,14 @@ tuple<vector<Point>, int> ReadDataset() {
 	getline( cin, ignore );		// Node Coord Section
 	cin.ignore(); 			// Newline
 
+	int x, y;
+	cin >> ignore; // Id
+	cin >> x;
+	cin >> y;
+	Point warehouse(x, y, 0);
+
 	vector<Point> points;
-	for(int i = 0; i < dimension; ++i){
-		int x, y;
+	for(int i = 1; i < dimension; ++i){
 		cin >> ignore; // Id
 		cin >> x;
 		cin >> y;
@@ -109,11 +115,11 @@ tuple<vector<Point>, int> ReadDataset() {
 	}
 	cin.ignore(); 			// Newline
 	getline( cin, ignore );		// Demand Section
-	for(int i = 0; i < dimension; ++i){
+	for(int i = 1; i < dimension; ++i){
 		int demand;
 		cin >> ignore; // Id
 		cin >> demand;
 		points[i].demand = demand;
 	}
-	return std::make_tuple(points, capacity);
+	return std::make_tuple(warehouse, points, capacity);
 }

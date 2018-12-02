@@ -7,7 +7,7 @@
 
 namespace savings {
 
-	std::vector<int> solveCvrp(std::vector<Point> &points, int capacity);
+	std::vector<int> solveCvrp(Point& warehouse, std::vector<Point> &points, int capacity);
 
 }
 
