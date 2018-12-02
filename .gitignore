@@ -308,3 +308,5 @@ TSWLatexianTemp*
 *.glstex
 
 # End of https://www.gitignore.io/api/c++,latex,jupyternotebook
+src/build/main
+src/out/*
