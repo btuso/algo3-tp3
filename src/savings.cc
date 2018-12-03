@@ -8,15 +8,17 @@
 using namespace	std;
 #define ninguno -1
 namespace savings {
-
+	int n;
+	int capacidad;
 	vector<int> solveCvrp(Point& warehouse,	vector<Point> &points, int capacity){
 		/* Armo matriz de distancias entre cada par de nodos */
-		int n = points.size();
+		n = points.size();
+		capacidad = capacity;
 		float distancia_total = 0;
 		vector<vector<float> > distancias(n, vector<float>(n, 0));
 		/* Vector de distancia de todo nodo a deposito, vector con info de en que camion va cada nodo */
 		vector<float> distancia_a_deposito(n, 0);
-		vector<float> en_que_camion(n, ninguno);
+		vector<int> en_que_camion(n, ninguno);
 		/* Vector de savings de tamano Nc2 */
 		vector<Saving> savings;
 		savings.reserve(n*(n-1)/2);
@@ -34,30 +36,25 @@ namespace savings {
 		/* Recorro savings de mayor a menor*/
 		for (int i = savings.size()-1; i >= 0 && nodos_agregados < n; i--){
 			Saving &s = savings[i];
-			int punto_A = s.point_A;
-			int punto_B = s.point_B;
-			int camion_A = en_que_camion[punto_A];
-			int camion_B = en_que_camion[punto_B];
+			int camion_A = en_que_camion[s.point_A];
+			int camion_B = en_que_camion[s.point_B];
 			int demanda;
 
 			if (camion_A == ninguno){
 				if (camion_B == ninguno){
 					/* Nuevo camion que vaya a ambos nodos */
-					demanda = points[punto_A].demand + points[punto_B].demand;
-					if (capacity >= demanda){
-						trucks.push_back(Truck(capacity, n, punto_A, punto_B, demanda));
-						en_que_camion[punto_A] = trucks.size()-1;
-						en_que_camion[punto_B] = trucks.size()-1;
+					demanda = points[s.point_A].demand + points[s.point_B].demand;
+					if (capacidad >= demanda){
+						camionNuevo(trucks, en_que_camion, s.point_A, s.point_B, demanda);
 						nodos_agregados+=2;
 						saving_total += s.saving; 
 					}
 				}else{
 					/* Va al camion de B*/
-					demanda = points[punto_A].demand;
+					demanda = points[s.point_A].demand;
 					Truck &t = trucks[camion_B];
-					if (puedoAgregarlo(t, punto_B, demanda)){
-						t.visit(punto_B, punto_A, demanda);
-						en_que_camion[punto_A] = camion_B;
+					if (puedoAgregarlo(t, s.point_B, demanda)){
+						visitarCliente(t, en_que_camion, s.point_B, s.point_A, demanda);
 						nodos_agregados++;
 						saving_total += s.saving; 
 					}
@@ -65,15 +62,15 @@ namespace savings {
 			}else{
 				if (camion_B == ninguno){
 					/* Va al camion de A*/
-					demanda = points[punto_B].demand;
+					demanda = points[s.point_B].demand;
 					Truck &t = trucks[camion_A];
-					if (puedoAgregarlo(t, punto_A, points[punto_B].demand)){
-						t.visit(punto_A, punto_B, demanda);
-						en_que_camion[punto_B] = camion_A;
+					if (puedoAgregarlo(t, s.point_A, points[s.point_B].demand)){
+						visitarCliente(t, en_que_camion, s.point_A, s.point_B, demanda);
 						nodos_agregados++;
 						saving_total += s.saving; 
 					}
-		
+				}else{
+
 				}
 			}
 		}
@@ -97,6 +94,7 @@ namespace savings {
 		}
 		distancia_total*=2;
 	}
+	
 	void calcularSavings(vector<vector<float> > &distances, vector<float> &distance_to_warehouse, vector<Point> &points, vector<Saving> &savings){
 		for(unsigned int i = 0; i < points.size(); i++){
 			for (unsigned int j = i+1; j < points.size(); j++){
@@ -128,8 +126,20 @@ namespace savings {
 	}
 
 	bool puedoAgregarlo(Truck &t, int punto, int demanda){
-
-		return t.esPrimero(punto) and t.hayEspacio(punto);
+		return t.noEsInterno(punto) and t.hayEspacio(punto);
 	}
+
+	void camionNuevo(vector<Truck> &trucks, vector<int> &en_que_camion, int punto_A, int punto_B, int demanda){
+		trucks.push_back(Truck(capacidad, n, punto_A, punto_B, demanda));
+		en_que_camion[punto_A] = trucks.size()-1;
+		en_que_camion[punto_B] = trucks.size()-1;
+	}
+
+	void visitarCliente(Truck &t, vector<int> &en_que_camion, int existente, int nuevo, int demanda){
+		t.visit(existente, nuevo, demanda);
+		en_que_camion[nuevo] = en_que_camion[existente];
+	}
+
+
 
 }

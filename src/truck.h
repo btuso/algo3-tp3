@@ -39,7 +39,7 @@ struct Truck {
 		capacity_left -= vertex.demand;
 	}
 
-	bool esPrimero(int punto){
+	bool noEsInterno(int punto){
 		return predecesores[punto] == ninguno or cliente_final == punto;
 	}
 
