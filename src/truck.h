@@ -23,7 +23,7 @@ struct Truck {
 		capacity_left = total_capacity - demanda;
 	};
 
-	void agregarCliente(int existente, int nuevo, int demanda){
+	void visit(int existente, int nuevo, int demanda){
 		if (predecesores[existente] == ninguno){
 			predecesores[existente] = nuevo;
 			predecesores[nuevo] = ninguno;
@@ -37,6 +37,14 @@ struct Truck {
 	void visit(Point vertex){
 		routes.push_back(vertex);
 		capacity_left -= vertex.demand;
+	}
+
+	bool esPrimero(int punto){
+		return predecesores[punto] == ninguno or cliente_final == punto;
+	}
+
+	bool hayEspacio(int demanda){
+		return capacity_left >= demanda;
 	}
 };
 

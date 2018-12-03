@@ -12,7 +12,7 @@ namespace savings {
 	vector<int> solveCvrp(Point& warehouse,	vector<Point> &points, int capacity){
 		/* Armo matriz de distancias entre cada par de nodos */
 		int n = points.size();
-		int distancia_total = 0;
+		float distancia_total = 0;
 		vector<vector<float> > distancias(n, vector<float>(n, 0));
 		/* Vector de distancia de todo nodo a deposito, vector con info de en que camion va cada nodo */
 		vector<float> distancia_a_deposito(n, 0);
@@ -27,24 +27,23 @@ namespace savings {
 
 		/* Ordeno los savings de menor a mayor */
 		sort(savings.begin(), savings.end());
-		// cout << "Saving size " << savings.size();
-		// for (int i = 0; i < savings.size(); i++) cout << savings[i].saving << endl;
+
 		vector<Truck> trucks;
 		int nodos_agregados = 0;
-		int saving_total = 0;
+		float saving_total = 0;
 		/* Recorro savings de mayor a menor*/
 		for (int i = savings.size()-1; i >= 0 && nodos_agregados < n; i--){
 			Saving &s = savings[i];
-			int camion_A = en_que_camion[s.point_A];
-			int camion_B = en_que_camion[s.point_A];
 			int punto_A = s.point_A;
 			int punto_B = s.point_B;
-			
+			int camion_A = en_que_camion[punto_A];
+			int camion_B = en_que_camion[punto_B];
+			int demanda;
 
 			if (camion_A == ninguno){
 				if (camion_B == ninguno){
 					/* Nuevo camion que vaya a ambos nodos */
-					int demanda = points[punto_A].demand + points[punto_B].demand;
+					demanda = points[punto_A].demand + points[punto_B].demand;
 					if (capacity >= demanda){
 						trucks.push_back(Truck(capacity, n, punto_A, punto_B, demanda));
 						en_que_camion[punto_A] = trucks.size()-1;
@@ -54,9 +53,10 @@ namespace savings {
 					}
 				}else{
 					/* Va al camion de B*/
-					int demanda = points[punto_A].demand;
-					if (trucks[camion_B].capacity_left >= demanda){
-						trucks[camion_B].agregarCliente(punto_B, punto_A, demanda);
+					demanda = points[punto_A].demand;
+					Truck &t = trucks[camion_B];
+					if (puedoAgregarlo(t, punto_B, demanda)){
+						t.visit(punto_B, punto_A, demanda);
 						en_que_camion[punto_A] = camion_B;
 						nodos_agregados++;
 						saving_total += s.saving; 
@@ -65,23 +65,25 @@ namespace savings {
 			}else{
 				if (camion_B == ninguno){
 					/* Va al camion de A*/
-					int demanda = points[punto_B].demand;
-					if (trucks[camion_A].capacity_left >= demanda){
-						trucks[camion_A].agregarCliente(punto_A, punto_B, demanda);
+					demanda = points[punto_B].demand;
+					Truck &t = trucks[camion_A];
+					if (puedoAgregarlo(t, punto_A, points[punto_B].demand)){
+						t.visit(punto_A, punto_B, demanda);
 						en_que_camion[punto_B] = camion_A;
 						nodos_agregados++;
 						saving_total += s.saving; 
 					}
+		
 				}
 			}
 		}
-		cout << "Capacidad total " << capacity << endl;
-		imprimirCamiones(trucks, points, warehouse);
-		cout << "Distancia recorrida " << distancia_total-saving_total << endl;
+
+		imprimirCamiones(trucks, points, warehouse, distancias, distancia_a_deposito);
+		cout << "Y deberia ser " << (distancia_total - saving_total) << endl;
 		return	vector<int>();
 	}
 
-	void calcularDistancias(vector<vector<float> > &distances, vector<float> &distance_to_warehouse, vector<Point> &points, Point& warehouse, int &distancia_total){
+	void calcularDistancias(vector<vector<float> > &distances, vector<float> &distance_to_warehouse, vector<Point> &points, Point& warehouse, float &distancia_total){
 		for (unsigned int i = 0; i < points.size(); i++){
 			for (unsigned int j = i+1; j < points.size(); j++){
 				float point_distance = points[i].DistanceTo(points[j]);
@@ -102,21 +104,32 @@ namespace savings {
 			}
 		}
 	}
-	void imprimirCamiones(vector<Truck> &trucks, vector<Point> &points, Point& warehouse){
+
+	void imprimirCamiones(vector<Truck> &trucks, vector<Point> &points, Point& warehouse, vector<vector<float> > &distancias, vector<float> &distance_to_warehouse){
+		float dista = 0;
 		for(Truck t : trucks){
 			cout << "Quedó con " << t.capacity_left << " de capacidad" << endl;
 			vector<Point> res;
 			res.push_back(warehouse);
 			int cliente = t.cliente_final;
+			dista += distance_to_warehouse[cliente];
 			res.push_back(points[cliente]);
 			while(t.predecesores[cliente] != ninguno){
+				dista+=distancias[cliente][t.predecesores[cliente]];
 				cliente = t.predecesores[cliente];
 				res.push_back(points[cliente]);
 			}
+			dista += distance_to_warehouse[cliente];
 			res.push_back(warehouse);
 			aux::print_vector(res);
 			cout << endl << "----" << endl;
 		}
+		cout << "Distancia recorrida es " << dista << endl;
+	}
+
+	bool puedoAgregarlo(Truck &t, int punto, int demanda){
+
+		return t.esPrimero(punto) and t.hayEspacio(punto);
 	}
 
 }
