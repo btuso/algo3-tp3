@@ -5,13 +5,14 @@
 
 #include "point.h"
 #include "saving_struct.h"
+#include "truck.h"
 
 namespace savings {
 
 	std::vector<int> solveCvrp(Point& warehouse, std::vector<Point> &points, int capacity);
-	void calcularDistancias(std::vector<std::vector<float> > &distances, std::vector<float> &distance_to_warehouse, std::vector<Point> &points, Point& warehouse);
+	void calcularDistancias(std::vector<std::vector<float> > &distances, std::vector<float> &distance_to_warehouse, std::vector<Point> &points, Point& warehouse, int &distancia_total);
 	void calcularSavings(std::vector<std::vector<float> > &distances, std::vector<float> &distance_to_warehouse, std::vector<Point> &points, std::vector<Saving> &savings);
-
+	void imprimirCamiones(vector<Truck> &trucks, vector<Point> &points, Point& warehouse);
 
 };
 
