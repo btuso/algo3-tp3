@@ -23,12 +23,23 @@ namespace greedy {
 
 		/* resultado: */
 		cout << "#trucks = " << trucks.size() << endl;
-		
+		int sum = 0;
+
 		for(Truck t : trucks){
 			cout << "quedó con " << t.capacity_left << " de capacidad" << endl;
 			aux::print_vector(t.routes);
 			cout << "----";
+
+			vector<Point> routes = t.routes;
+			for(int i = 1; i < routes.size() - 1; i++){
+				Point prev_point = routes[i - 1];
+				Point point = routes[i];
+
+				sum += prev_point.DistanceTo(point);
+			}
 		}
+
+		cout << "sum = " << sum << endl;
 
 		return vector<int>();
 	}
@@ -96,7 +107,7 @@ namespace greedy {
 
 		// vector<Point> last_k_vertex = copy(bucket, bucket->begin() + starting_index, bucket->end()); // O(K)?
 		Point last_vertex = trucks.back().routes.back();
-		std::sort(bucket->begin() + starting_index, bucket->end(), DistanceToPointComparator(last_vertex));
+		sort(bucket->begin() + starting_index, bucket->end(), DistanceToPointComparator(last_vertex));
 		
 		Point next_vertex = bucket->back();
 		bucket->erase(bucket->end() - 1);

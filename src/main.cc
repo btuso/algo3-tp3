@@ -66,20 +66,18 @@ int main(int argc, char** argv) {
 } 
 
 void MeasureAlgorithm(string name, CvrpHeuristic function, string input, ofstream &output){
-	ifstream dataset("resources/" + input);	
+	ifstream dataset(input);	
 	if( dataset.is_open() ){
 		cin.rdbuf(dataset.rdbuf());
-		while( dataset.peek() != EOF && !dataset.eof() ) {
-			auto input = ReadDataset();
-			Point warehouse = get<0>(input);
-			vector<Point> points = get<1>(input);
-			int capacity = get<2>(input);
-			unsigned long start, end;
-			MEDIR_TIEMPO_START(start);
-			vector<int> sol = function(warehouse, points, capacity);
-			MEDIR_TIEMPO_STOP(end);
-			output << name << "," << points.size() << "," << capacity  << "," << (end-start) << "\n"; // Agregar lo que falta para los experimentos
-		}
+		auto input = ReadDataset();
+		Point warehouse = get<0>(input);
+		vector<Point> points = get<1>(input);
+		int capacity = get<2>(input);
+		unsigned long start, end;
+		MEDIR_TIEMPO_START(start);
+		vector<int> sol = function(warehouse, points, capacity);
+		MEDIR_TIEMPO_STOP(end);
+		output << name << "," << points.size() << "," << capacity  << "," << (end-start) << "\n"; // Agregar lo que falta para los experimentos
 	}
 	dataset.close(); 
 }
@@ -115,6 +113,8 @@ tuple<Point, vector<Point>, int> ReadDataset() {
 	}
 	cin.ignore(); 			// Newline
 	getline( cin, ignore );		// Demand Section
+	cin.ignore(); 			// warehouse
+	cin.ignore(); 			// warehouse
 	for(int i = 1; i < dimension; ++i){
 		int demand;
 		cin >> ignore; // Id
