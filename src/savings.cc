@@ -10,10 +10,12 @@ using namespace	std;
 namespace savings {
 	int n;
 	int capacidad;
+	float saving_total;
 	vector<int> solveCvrp(Point& warehouse,	vector<Point> &points, int capacity){
 		/* Armo matriz de distancias entre cada par de nodos */
 		n = points.size();
 		capacidad = capacity;
+		saving_total = 0;
 		float distancia_total = 0;
 		vector<vector<float> > distancias(n, vector<float>(n, 0));
 		/* Vector de distancia de todo nodo a deposito, vector con info de en que camion va cada nodo */
@@ -32,7 +34,6 @@ namespace savings {
 
 		vector<Truck> trucks;
 		int nodos_agregados = 0;
-		float saving_total = 0;
 		/* Recorro savings de mayor a menor*/
 		for (int i = savings.size()-1; i >= 0 && nodos_agregados < n; i--){
 			Saving &s = savings[i];
@@ -40,38 +41,45 @@ namespace savings {
 			int camion_B = en_que_camion[s.point_B];
 			int demanda;
 
-			if (camion_A == ninguno){
-				if (camion_B == ninguno){
-					/* Nuevo camion que vaya a ambos nodos */
-					demanda = points[s.point_A].demand + points[s.point_B].demand;
-					if (capacidad >= demanda){
-						camionNuevo(trucks, en_que_camion, s.point_A, s.point_B, demanda);
-						nodos_agregados+=2;
-						saving_total += s.saving; 
-					}
-				}else{
-					/* Va al camion de B*/
-					demanda = points[s.point_A].demand;
-					Truck &t = trucks[camion_B];
-					if (puedoAgregarlo(t, s.point_B, demanda)){
-						visitarCliente(t, en_que_camion, s.point_B, s.point_A, demanda);
-						nodos_agregados++;
-						saving_total += s.saving; 
-					}
+			if (camion_B == ninguno and camion_A == ninguno){
+				/* Nuevo camion que vaya a ambos nodos */
+				demanda = points[s.point_A].demand + points[s.point_B].demand;
+				if (capacidad >= demanda){
+					camionNuevo(trucks, en_que_camion, s.point_A, s.point_B, demanda);
+					nodos_agregados+=2;
+					saving_total += s.saving; 
 				}
-			}else{
-				if (camion_B == ninguno){
-					/* Va al camion de A*/
-					demanda = points[s.point_B].demand;
-					Truck &t = trucks[camion_A];
-					if (puedoAgregarlo(t, s.point_A, points[s.point_B].demand)){
-						visitarCliente(t, en_que_camion, s.point_A, s.point_B, demanda);
-						nodos_agregados++;
-						saving_total += s.saving; 
-					}
-				}else{
+			}
 
+			if (camion_A == ninguno and camion_B != ninguno){
+				/* Va al camion de B*/
+				demanda = points[s.point_A].demand;
+				Truck &t = trucks[camion_B];
+				if (puedoAgregarlo(t, s.point_B, demanda)){
+					visitarCliente(t, en_que_camion, s.point_B, s.point_A, demanda);
+					nodos_agregados++;
+					saving_total += s.saving; 
 				}
+			}
+
+			if (camion_B == ninguno and camion_A != ninguno){
+				/* Va al camion de A*/
+				demanda = points[s.point_B].demand;
+				Truck &t = trucks[camion_A];
+				if (puedoAgregarlo(t, s.point_A, points[s.point_B].demand)){
+					visitarCliente(t, en_que_camion, s.point_A, s.point_B, demanda);
+					nodos_agregados++;
+					saving_total += s.saving; 
+				}
+			}
+
+			if (camion_B != ninguno and camion_A != ninguno and camion_A != camion_B){
+				/* Puedo mergear rutas*/
+				if (puedoUnirRutas(trucks[camion_A], trucks[camion_B], s.point_A, s.point_B)){
+					unirRutas(trucks, en_que_camion, s.point_A, s.point_B);
+					saving_total += s.saving;
+				}
+				
 			}
 		}
 
@@ -94,7 +102,7 @@ namespace savings {
 		}
 		distancia_total*=2;
 	}
-	
+
 	void calcularSavings(vector<vector<float> > &distances, vector<float> &distance_to_warehouse, vector<Point> &points, vector<Saving> &savings){
 		for(unsigned int i = 0; i < points.size(); i++){
 			for (unsigned int j = i+1; j < points.size(); j++){
@@ -102,31 +110,37 @@ namespace savings {
 			}
 		}
 	}
-
-	void imprimirCamiones(vector<Truck> &trucks, vector<Point> &points, Point& warehouse, vector<vector<float> > &distancias, vector<float> &distance_to_warehouse){
-		float dista = 0;
-		for(Truck t : trucks){
+	float imprimirCamion(Truck &t, vector<Point> &points, Point& warehouse, vector<vector<float> > &distancias, vector<float> &distance_to_warehouse){
+		float distancia_recorrida = 0;
+		if (t.es_valido){
 			cout << "Quedó con " << t.capacity_left << " de capacidad" << endl;
 			vector<Point> res;
 			res.push_back(warehouse);
 			int cliente = t.cliente_final;
-			dista += distance_to_warehouse[cliente];
+			distancia_recorrida += distance_to_warehouse[cliente];
 			res.push_back(points[cliente]);
 			while(t.predecesores[cliente] != ninguno){
-				dista+=distancias[cliente][t.predecesores[cliente]];
+				distancia_recorrida += distancias[cliente][t.predecesores[cliente]];
 				cliente = t.predecesores[cliente];
 				res.push_back(points[cliente]);
 			}
-			dista += distance_to_warehouse[cliente];
+			distancia_recorrida += distance_to_warehouse[cliente];
 			res.push_back(warehouse);
 			aux::print_vector(res);
 			cout << endl << "----" << endl;
 		}
-		cout << "Distancia recorrida es " << dista << endl;
+		return distancia_recorrida;
+	}
+	void imprimirCamiones(vector<Truck> &trucks, vector<Point> &points, Point& warehouse, vector<vector<float> > &distancias, vector<float> &distance_to_warehouse){
+		float distancia_recorrida = 0;
+		for(Truck t : trucks){
+			distancia_recorrida += imprimirCamion(t, points, warehouse, distancias, distance_to_warehouse);	
+		}
+		cout << "Distancia recorrida es " << distancia_recorrida << endl;
 	}
 
 	bool puedoAgregarlo(Truck &t, int punto, int demanda){
-		return t.noEsInterno(punto) and t.hayEspacio(punto);
+		return t.noEsInterno(punto) and t.hayEspacio(demanda);
 	}
 
 	void camionNuevo(vector<Truck> &trucks, vector<int> &en_que_camion, int punto_A, int punto_B, int demanda){
@@ -140,6 +154,17 @@ namespace savings {
 		en_que_camion[nuevo] = en_que_camion[existente];
 	}
 
+	bool puedoUnirRutas(Truck &truck_A, Truck &truck_B, int punto_A, int punto_B){
+		int capacidad_necesaria = (2*capacidad) - truck_A.capacity_left - truck_B.capacity_left;
+		return truck_A.noEsInterno(punto_A) and truck_B.noEsInterno(punto_B) and capacidad_necesaria <= capacidad;
+	}
 
+	void unirRutas(vector<Truck> &trucks, vector<int> &en_que_camion, int punto_A, int punto_B){
+		Truck &truck_A = trucks[en_que_camion[punto_A]];
+		Truck &truck_B = trucks[en_que_camion[punto_B]];
+		int capacidad_necesaria = (2 * capacidad) - truck_A.capacity_left - truck_A.capacity_left;
+
+		truck_A.mergearRuta(punto_A, punto_B, truck_B, capacidad - capacidad_necesaria, en_que_camion);
+	}
 
 }
