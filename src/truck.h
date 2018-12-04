@@ -71,17 +71,7 @@ struct Truck {
 					en_que_camion[i] = en_que_camion[punto_A];
 				}
 			}else{
-				
-				for (unsigned int i = 0; i < predecesores_B.size(); i++){
-					if (predecesores_B[i] != ninguno){
-						predecesores[i] = predecesores_B[i];
-						en_que_camion[i] = en_que_camion[punto_A];
-					}
-					if (siguientes_B[i] != ninguno){
-						siguientes[i] = siguientes_B[i];
-						en_que_camion[i] = en_que_camion[punto_A];
-					}
-				}
+				copiarNodos(punto_A, predecesores_B, siguientes_B, en_que_camion);
 			}
 		}else{
 			siguientes[punto_A] = punto_B; 
@@ -98,23 +88,25 @@ struct Truck {
 				cliente_final = i;
 			}else{
 				cliente_final = truck_B.cliente_final;
-				for (unsigned int i = 0; i < predecesores_B.size(); i++){
-					if (predecesores_B[i] != ninguno){
-						predecesores[i] = predecesores_B[i];
-						en_que_camion[i] = en_que_camion[punto_A];
-					}
-					if (siguientes_B[i] != ninguno){
-						siguientes[i] = siguientes_B[i];
-						en_que_camion[i] = en_que_camion[punto_A];
-					}
-				}
+				copiarNodos(punto_A, predecesores_B, siguientes_B, en_que_camion);
 			}
 			
 		}
 		truck_B.es_valido = false;
 	}
 
-
+	void copiarNodos(int punto_A, vector<int> &predecesores_B, vector<int> &siguientes_B, vector<int> &en_que_camion){
+		for (unsigned int i = 0; i < predecesores_B.size(); i++){
+			if (predecesores_B[i] != ninguno){
+				predecesores[i] = predecesores_B[i];
+				en_que_camion[i] = en_que_camion[punto_A];
+			}
+			if (siguientes_B[i] != ninguno){
+				siguientes[i] = siguientes_B[i];
+				en_que_camion[i] = en_que_camion[punto_A];
+			}
+		}
+	}
 };
 
 #endif
