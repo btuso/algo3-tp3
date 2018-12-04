@@ -28,6 +28,8 @@ namespace greedy {
 	Bucket* FindFittestBucket(Buckets &buckets, vector<Truck> &trucks, Point warehouse, int capacity);
 
 	Point PopNextVertex(Bucket* bucket, vector<Truck> &trucks);
+
+	void PrintResults(vector<Truck> &trucks);
 }
 
 #endif

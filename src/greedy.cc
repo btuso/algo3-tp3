@@ -15,32 +15,14 @@ namespace greedy {
 
 		while(vertex_covered < points.size()){
 			Bucket* biggest_fitting_bucket = FindFittestBucket(buckets, trucks, warehouse, capacity);
+			cout << "biggest_fitting_bucket tiene size " << biggest_fitting_bucket->size() << " y demanda " << (*biggest_fitting_bucket)[0].demand << endl;
 			Point next_vertex = PopNextVertex(biggest_fitting_bucket, trucks);
 			trucks.back().visit(next_vertex);
 
 			vertex_covered ++;
 		}
 
-		/* resultado: */
-		cout << "#trucks = " << trucks.size() << endl;
-		int sum = 0;
-
-		for(Truck t : trucks){
-			cout << "quedó con " << t.capacity_left << " de capacidad" << endl;
-			aux::print_vector(t.routes);
-			cout << "----";
-
-			vector<Point> routes = t.routes;
-			for(int i = 1; i < routes.size() - 1; i++){
-				Point prev_point = routes[i - 1];
-				Point point = routes[i];
-
-				sum += prev_point.DistanceTo(point);
-			}
-		}
-
-		cout << "sum = " << sum << endl;
-
+		PrintResults(trucks);
 		return vector<int>();
 	}
 
@@ -103,7 +85,12 @@ namespace greedy {
 	}
 
 	Point PopNextVertex(Bucket* bucket, vector<Truck> &trucks){
-		int starting_index = aux::max(bucket->size() - K - 1, 0);
+		// Bucket nbucket = (*bucket);
+		// cout << "*bucket.size() = " << bucket->size() << ", bucket.size() = " << nbucket.size() << endl;
+
+		int asd = bucket->size() - K - 1;
+		int starting_index = aux::max(asd, 0);
+		cout << "el bucket tiene size " << bucket->size() << " y empiezo desde max(" << asd << ", 0). entonces starting = " << starting_index << endl;
 
 		// vector<Point> last_k_vertex = copy(bucket, bucket->begin() + starting_index, bucket->end()); // O(K)?
 		Point last_vertex = trucks.back().routes.back();
@@ -112,6 +99,27 @@ namespace greedy {
 		Point next_vertex = bucket->back();
 		bucket->erase(bucket->end() - 1);
 		return next_vertex;
+	}
+
+	void PrintResults(vector<Truck> &trucks){
+		// cout << "#trucks = " << trucks.size() << endl;
+		int sum = 0;
+
+		for(Truck t : trucks){
+			// cout << "quedó con " << t.capacity_left << " de capacidad" << endl;
+			aux::print_vector(t.routes);
+			// cout << "----";
+
+			vector<Point> routes = t.routes;
+			for(int i = 1; i < routes.size() - 1; i++){
+				Point prev_point = routes[i - 1];
+				Point point = routes[i];
+
+				sum += prev_point.DistanceTo(point);
+			}
+		}
+
+		// cout << "sum = " << sum << endl;
 	}
 }
 

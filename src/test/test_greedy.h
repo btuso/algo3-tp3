@@ -22,6 +22,7 @@ void TestBucketSort();
 void TestSortEachBucketByClosenessTo();
 void TestFindFittestBucket1();
 void TestFindFittestBucket2();
-void TestPopNextVertex();
+void TestPopNextVertex1();
+void TestPopNextVertex2();
 
 #endif

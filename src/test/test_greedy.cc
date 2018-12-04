@@ -6,7 +6,8 @@ void RunAllTestsForGreedy(){
 	TestSortEachBucketByClosenessTo();
 	TestFindFittestBucket1();
 	TestFindFittestBucket2();
-	TestPopNextVertex();
+	TestPopNextVertex1();
+	TestPopNextVertex2();
 }
 
 void TestGetDemandsRange(){
@@ -111,6 +112,7 @@ void TestFindFittestBucket1(){
 		Point some_vertex_in_bucket = (*fittestBucket)[0];
 		assert(some_vertex_in_bucket.demand == 5);
 		assert(trucks.size() == original_trucks_count + 1);
+		assert(fittestBucket->size() == 1);
 
 	END_TEST
 }
@@ -122,6 +124,8 @@ void TestFindFittestBucket2(){
 		Buckets buckets(6);
 		buckets[2].push_back(Point(3, 3, 2));
 		buckets[2].push_back(Point(4, 4, 2));
+		buckets[2].push_back(Point(5, 1, 2));
+		buckets[2].push_back(Point(3, 2, 2));
 		buckets[5].push_back(Point(2, 2, 5));
 
 		int truck_total_capacity = 20;
@@ -136,14 +140,16 @@ void TestFindFittestBucket2(){
 			WHATEVER_WAREHOUSE, truck_total_capacity);
 
 	then("I should have a bucket of maximum demands and one more truck on the trucks list")
+		Bucket expected_bucket = {Point(3, 3, 2), Point(4, 4, 2), Point(5, 1, 2), Point(3, 2, 2)};
 		Point some_vertex_in_bucket = (*fittestBucket)[0];
-		assert(some_vertex_in_bucket.demand == 2);
 		assert(trucks.size() == original_trucks_count);
-
+		assert(some_vertex_in_bucket.demand == 2);
+		assert(expected_bucket == (*fittestBucket));
+		
 	END_TEST
 }
 
-void TestPopNextVertex(){
+void TestPopNextVertex1(){
 	TEST
 
 	given("A bucket list sorted in euclidean distance to warehouse in decreasing order")
@@ -166,6 +172,18 @@ void TestPopNextVertex(){
 	then("I should expect to get the vertex (6, 1) that is the closest to my current vertex (6, 2)")
 		assert(expected_next_vertex == next_vertex);
 		assert(bucket.size() == original_bucket_size - 1);
+
+	END_TEST
+}
+
+void TestPopNextVertex2(){
+	TEST
+
+	given("A bucket list sorted in euclidean distance to warehouse in decreasing order")
+
+	when("PopNextVertex is called")
+
+	then("I should expect to get the vertex (6, 1) that is the closest to my current vertex (6, 2)")
 
 	END_TEST
 }

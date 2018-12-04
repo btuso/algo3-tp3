@@ -104,6 +104,7 @@ tuple<Point, vector<Point>, int> ReadDataset() {
 	cin >> y;
 	Point warehouse(x, y, 0);
 
+	std::cout << x << ", " << y << std::endl;
 	vector<Point> points;
 	for(int i = 1; i < dimension; ++i){
 		cin >> ignore; // Id
@@ -113,9 +114,8 @@ tuple<Point, vector<Point>, int> ReadDataset() {
 	}
 	cin.ignore(); 			// Newline
 	getline( cin, ignore );		// Demand Section
-	cin.ignore(); 			// warehouse
-	cin.ignore(); 			// warehouse
-	for(int i = 1; i < dimension; ++i){
+	getline( cin, ignore );		// warehouse
+	for(int i = 0; i < dimension; ++i){
 		int demand;
 		cin >> ignore; // Id
 		cin >> demand;
