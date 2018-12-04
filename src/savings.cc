@@ -113,7 +113,7 @@ namespace savings {
 	float imprimirCamion(Truck &t, vector<Point> &points, Point& warehouse, vector<vector<float> > &distancias, vector<float> &distance_to_warehouse){
 		float distancia_recorrida = 0;
 		if (t.es_valido){
-			cout << "Quedó con " << t.capacity_left << " de capacidad" << endl;
+			cout << "Quedó con " << t.stock_left << " de capacidad" << endl;
 			vector<Point> res;
 			res.push_back(warehouse);
 			int cliente = t.cliente_final;
@@ -155,14 +155,14 @@ namespace savings {
 	}
 
 	bool puedoUnirRutas(Truck &truck_A, Truck &truck_B, int punto_A, int punto_B){
-		int capacidad_necesaria = (2*capacidad) - truck_A.capacity_left - truck_B.capacity_left;
+		int capacidad_necesaria = (2*capacidad) - truck_A.stock_left - truck_B.stock_left;
 		return truck_A.noEsInterno(punto_A) and truck_B.noEsInterno(punto_B) and capacidad_necesaria <= capacidad;
 	}
 
 	void unirRutas(vector<Truck> &trucks, vector<int> &en_que_camion, int punto_A, int punto_B){
 		Truck &truck_A = trucks[en_que_camion[punto_A]];
 		Truck &truck_B = trucks[en_que_camion[punto_B]];
-		int capacidad_necesaria = (2 * capacidad) - truck_A.capacity_left - truck_A.capacity_left;
+		int capacidad_necesaria = (2 * capacidad) - truck_A.stock_left - truck_A.stock_left;
 
 		truck_A.mergearRuta(punto_A, punto_B, truck_B, capacidad - capacidad_necesaria, en_que_camion);
 	}

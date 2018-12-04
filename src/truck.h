@@ -8,13 +8,13 @@ using namespace std;
 
 struct Truck {
 	vector<Point> routes;
-	int capacity_left;
+	int stock_left;
 	vector<int> predecesores; 
 	vector<int> siguientes; 
 	int cliente_final;
 	bool es_valido;
 
-	Truck(Point warehouse, int total_capacity): capacity_left(total_capacity){
+	Truck(Point warehouse, int total_capacity): stock_left(total_capacity){
 		routes.push_back(warehouse);
 	};
 	Truck(int total_capacity, int cant_nodos, int i, int j, int demanda){
@@ -23,7 +23,7 @@ struct Truck {
 		predecesores[j] = i;
 		siguientes[i] = j;
 		cliente_final = j;
-		capacity_left = total_capacity - demanda;
+		stock_left = total_capacity - demanda;
 		es_valido = true;
 	};
 
@@ -36,12 +36,12 @@ struct Truck {
 			siguientes[existente] = nuevo;
 			cliente_final = nuevo;
 		}
-		capacity_left -= demanda;
+		stock_left -= demanda;
 	}
 
 	void visit(Point vertex){
 		routes.push_back(vertex);
-		capacity_left -= vertex.demand;
+		stock_left -= vertex.demand;
 	}
 
 	bool noEsInterno(int punto){
@@ -49,11 +49,11 @@ struct Truck {
 	}
 
 	bool hayEspacio(int demanda){
-		return capacity_left >= demanda;
+		return stock_left >= demanda;
 	}
 
 	void mergearRuta(int punto_A, int punto_B, Truck &truck_B, int nueva_capacidad, vector<int> &en_que_camion){
-		capacity_left = nueva_capacidad;
+		stock_left = nueva_capacidad;
 		vector<int> &predecesores_B = truck_B.predecesores;
 		vector<int> &siguientes_B = truck_B.siguientes;
 		en_que_camion[punto_B] = en_que_camion[punto_A];

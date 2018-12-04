@@ -62,10 +62,10 @@ namespace greedy {
 	}
 
 	Bucket* FindFittestBucket(Buckets &buckets, vector<Truck> &trucks, Point warehouse, int capacity){
-		int capacity_left = trucks.back().capacity_left;
+		int stock_left = trucks.back().stock_left;
 		// entre este while y el que viene se hacen buckets.size() iteraciones
-		// o sea como mucho este while va desde [0; capacity_left]
-		int i = aux::min(capacity_left, buckets.size() - 1);
+		// o sea como mucho este while va desde [0; stock_left]
+		int i = aux::min(stock_left, buckets.size() - 1);
 		while(i >= 0 and buckets[i].empty()){
 			i--;
 		}
@@ -74,7 +74,7 @@ namespace greedy {
 			trucks.back().visit(warehouse); // mando el camión lleno devuelta al warehouse
 			trucks.push_back(Truck(warehouse, capacity)); // creo un nuevo camión
 
-			// como dije antes, este while va desde (capacity_left; buckets.size() - 1] creo
+			// como dije antes, este while va desde (stock_left; buckets.size() - 1] creo
 			i = buckets.size() - 1;
 			while(buckets[i].empty()){
 				i--;
@@ -90,7 +90,6 @@ namespace greedy {
 
 		int asd = bucket->size() - K - 1;
 		int starting_index = aux::max(asd, 0);
-		cout << "el bucket tiene size " << bucket->size() << " y empiezo desde max(" << asd << ", 0). entonces starting = " << starting_index << endl;
 
 		// vector<Point> last_k_vertex = copy(bucket, bucket->begin() + starting_index, bucket->end()); // O(K)?
 		Point last_vertex = trucks.back().routes.back();
@@ -106,7 +105,7 @@ namespace greedy {
 		int sum = 0;
 
 		for(Truck t : trucks){
-			// cout << "quedó con " << t.capacity_left << " de capacidad" << endl;
+			// cout << "quedó con " << t.stock_left << " de capacidad" << endl;
 			aux::print_vector(t.routes);
 			// cout << "----";
 

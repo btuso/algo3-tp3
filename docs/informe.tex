@@ -40,6 +40,10 @@
 \usepackage{titlesec}
 \usepackage{hyperref}
 
+% esto es para que las listas de descripciones tengan indentation
+\usepackage{enumitem}
+\setlist[description]{leftmargin=\parindent,labelindent=\parindent}
+
 \titleclass{\subsubsubsection}{straight}[\subsection]
 
 \newcounter{subsubsubsection}[subsubsection]
@@ -157,6 +161,7 @@
 \newpage
 
 \input{sections/introduccion}
+\input{sections/implementaciones}
 
 \end{document}
 

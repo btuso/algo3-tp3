@@ -98,10 +98,10 @@ void TestFindFittestBucket1(){
 		buckets[5].push_back(Point(2, 2, 5));
 
 		int truck_total_capacity = 20;
-		int last_truck_capacity_left = 1;
+		int last_truck_stock_left = 1;
 
 		vector<Truck> trucks;
-		trucks.push_back(Truck(WHATEVER_WAREHOUSE, last_truck_capacity_left));
+		trucks.push_back(Truck(WHATEVER_WAREHOUSE, last_truck_stock_left));
 		int original_trucks_count = trucks.size();
 
 	when("FindFittestBucket is called")
@@ -129,10 +129,10 @@ void TestFindFittestBucket2(){
 		buckets[5].push_back(Point(2, 2, 5));
 
 		int truck_total_capacity = 20;
-		int last_truck_capacity_left = 2;
+		int last_truck_stock_left = 2;
 
 		vector<Truck> trucks;
-		trucks.push_back(Truck(WHATEVER_WAREHOUSE, last_truck_capacity_left));
+		trucks.push_back(Truck(WHATEVER_WAREHOUSE, last_truck_stock_left));
 		int original_trucks_count = trucks.size();
 
 	when("FindFittestBucket is called")
