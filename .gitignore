@@ -1,6 +1,8 @@
 # Created by https://www.gitignore.io/api/c++,latex,jupyternotebook
 # Edit at https://www.gitignore.io/?templates=c++,latex,jupyternotebook
 
+docs/informe.pdf
+
 src/build/tests
 
 ### C++ ###

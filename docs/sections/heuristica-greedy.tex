@@ -3,12 +3,12 @@ Utilizamos un enfoque \textbf{goloso} a la hora de diseñar este algoritmo, que 
 
 \begin{description}
 \item[Paso 1.] Ordenar $V$ por la demanda de cada vértice
-\item[Paso 2.] Elegir los vértices de mayor demanda compatibles con el espacio sobrante de mi último camión en $C$. De no existir ningún vértice con estas características, se despacha el camión al depósito, se invoca uno nuevo con capacidad libre máxima y se eligen los vértices más demandantes.
+\item[Paso 2.] Elegir los vértices de mayor demanda compatibles con el stock disponible de mi último camión en $C$. De no existir ningún vértice con estas características, se despacha el camión al depósito, se invoca uno nuevo con stock lleno y se eligen los vértices más demandantes.
 \item[Paso 3.] De la selección previa, se ordenan los vértices por cercanía al \textbf{depósito}
 \item[Paso 4.] De estos últimos se escogen $K$ vértices y entre ellos se obtiene el nodo más cercano al camión en cuestión. Este será el siguiente vértice a ser visitado por un camión
 \end{description}
 
-
+Este diseño fue concebido con el objetivo de minimizar las distancias recorridas por los camiones al intentar vaciarlos lo más rápidamente debido a la temprana atención de los vértices más demandantes. Además de buscar una distancia mínima, con este criterio y bajo ciertas circunstancias también es posible observar una utilización de camiones cercana a la óptima.
 % [√] 1. Bucket sort sobre capacidades de los vértices
 % [√] 2. Para cada bucket, ordeno por cercanía al depósito
 % [√] 3. Elijo el bucket de más capacidad compatible con el stock de mi camión
