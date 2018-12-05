@@ -4,7 +4,7 @@ Supongamos que somos distribuidores de un producto, tenemos varios clientes en d
 
 \vskip 8pt
 
-La problemática descrita anteriormente es conocida como "Problema de Enrutamiento de Vehículos", VRP por sus siglas en inglés. Se trata de un problema de optimización combinatoria en el que debemos cumplir ciertos requisitos:
+La problemática descrita anteriormente es conocida como ``Problema de Enrutamiento de Vehículos'', VRP por sus siglas en inglés. Se trata de un problema de optimización combinatoria en el que debemos cumplir ciertos requisitos:
 
 \begin{itemize}
 	\item Cada ruta que diseñemos para visitar un cliente, debe ser de costo mínimo
@@ -15,16 +15,16 @@ La problemática descrita anteriormente es conocida como "Problema de Enrutamien
 
 \vskip 8pt
 
-Nos encontramos con una restricción más, cada vehículo tiene una capacidad máxima, dado que somos distribuidores que cumplen la ley, no debemos sobrepasar dicha capacidad. Generamos entonces una variante del problema original, ante nosotros el problema de "Enrutamiento de Vehículos con Capacidad", también conocido como CVRP.
+Nos encontramos con una restricción más, cada vehículo tiene una capacidad máxima, dado que somos distribuidores que cumplen la ley, no debemos sobrepasar dicha capacidad. Generamos entonces una variante del problema original, ante nosotros el problema de ``Enrutamiento de Vehículos con Capacidad'', también conocido como CVRP.
 
 \vskip 8pt
 
 En términos más formales, sea G un grafo cualquiera con V su conjunto de vértices y E su conjunto de aristas, que asumiremos no dirigidas. En V encontraremos un primer nodo representante de nuestro depósito y los nodos siguientes los clientes a visitar. La distancia, o costo, entre dos vértices es representada por un valor asociado a cada arista entre un par de vértices ($i$,$j$). Cada vértice del grafo cuenta con una indicación acerca del volumen que debemos entregar a cada cliente. El costo total de una ruta es la suma de los costos de las rutas que lo componen, cada cual tiene su costo compuesto por la suma de cada una de las aristas que lo componen.
 
 \subsubsection{Del papel a la práctica}
-Dejando de lado la teoría, ¿Cómo podemos llevar el problema de "Enrutamiento de Vehículos con Capacidad" a la vida real? ¿A qué situación podemos vincular un modelo de CVRP?
+Dejando de lado la teoría, ¿Cómo podemos llevar el problema de ``Enrutamiento de Vehículos con Capacidad'' a la vida real? ¿A qué situación podemos vincular un modelo de CVRP?
 
-En primer lugar, continuando con el ejemplo presentado anteriormente, si nosotros tuvieramos que distribuir un producto para varios clientes, seguramente nos inclinaríamos por una solución que cumpla con este modelo. Según describe el paper "The Impact of a Decision-Support System for Vehicle Routeing in a Foodservice Supply Situation" de Steven R. Evans y John P. Norback, la empresa Kraft ha determinado aproximadamente un ahorro del 10,7\% en 10 casos de rutas de distribución.
+En primer lugar, continuando con el ejemplo presentado anteriormente, si nosotros tuvieramos que distribuir un producto para varios clientes, seguramente nos inclinaríamos por una solución que cumpla con este modelo. Según describe el paper ``The Impact of a Decision-Support System for Vehicle Routeing in a Foodservice Supply Situation'' de Steven R. Evans y John P. Norback, la empresa Kraft ha determinado aproximadamente un ahorro del 10,7\% en 10 casos de rutas de distribución.
 
 Más cercano al día a día podemos encontrar el caso de los camiones recolectores de basura. Los mismos no distribuyen un producto si no que recolectan. Sin embargo, también cuentan con una capacidad limitada para cargar, parten de un depósito y vuelven al mismo y deben pasar por cada punto sin dejar basura no recolectada.
 
