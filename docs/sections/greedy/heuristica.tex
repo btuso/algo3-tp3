@@ -36,7 +36,12 @@ El algoritmo superior recibe un \textit{bucket}, una lista de camiones y un ente
 \subsubsection{Conclusiones}
 Podemos entender que como $K$ es un dato heurístico constante, en general pequeño y además menor o igual a $n$ (pues al revés no tendría sentido), su efecto en la complejidad es absorbido por el crecimiento asintótico de $n$, por lo tanto la complejidad queda inafectada por $K$.
 
-$$resolverCVRP = \mathcal{O}(n+D + n*log(n) + n*D*K*log(K)) = \mathcal{O}(n+D + n*log(n) + n*D)$$
+$$resolverCVRP = \mathcal{O}(n+D + n*log(n) + n*D*K*log(K))$$
+$$= \mathcal{O}(n+D + n*log(n) + n*D)$$
+$$= \mathcal{O}(n*log(n) + n*D)$$
+$$= \mathcal{O}\Big( n*(log(n) + D)\Big)$$
+
+\subsubsection{Instancias con soluciones no óptimas}
 
 % [√] 1. Bucket sort sobre capacidades de los vértices
 % [√] 2. Para cada bucket, ordeno por cercanía al depósito
