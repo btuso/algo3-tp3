@@ -43,7 +43,7 @@ void TestBucketSort(){
 		int MAX_DEMAND = 5;
 
 	when("BucketSort is called")
-		Buckets buckets = greedy::BucketSort(points, MIN_DEMAND, MAX_DEMAND);
+		Buckets buckets = greedy::BucketSort(points, MAX_DEMAND);
 
 	then("Should be correctly sorted")
 		Buckets expected_buckets(6);
@@ -102,7 +102,7 @@ void TestFindFittestBucket1(){
 
 		vector<Truck> trucks;
 		trucks.push_back(Truck(WHATEVER_WAREHOUSE, last_truck_stock_left));
-		int original_trucks_count = trucks.size();
+		unsigned int original_trucks_count = trucks.size();
 
 	when("FindFittestBucket is called")
 		Bucket* fittestBucket = greedy::FindFittestBucket(buckets, trucks, 
@@ -133,7 +133,7 @@ void TestFindFittestBucket2(){
 
 		vector<Truck> trucks;
 		trucks.push_back(Truck(WHATEVER_WAREHOUSE, last_truck_stock_left));
-		int original_trucks_count = trucks.size();
+		unsigned int original_trucks_count = trucks.size();
 
 	when("FindFittestBucket is called")
 		Bucket* fittestBucket = greedy::FindFittestBucket(buckets, trucks, 
@@ -158,7 +158,7 @@ void TestPopNextVertex1(){
 						 expected_next_vertex,
 						 Point(5, 1, 1),
 						 Point(4, 1, 1)}; // el último punto es el más cercano al warehouse
-		int original_bucket_size = bucket.size();
+		unsigned int original_bucket_size = bucket.size();
 
 		Point current_vertex = Point(6, 2, 1);
 		vector<Truck> trucks;

@@ -22,7 +22,7 @@ namespace greedy {
 
 	pair<int, int> GetDemandsRange(vector<Point> &points);
 
-	Buckets BucketSort(vector<Point> &points, int min_demand_value, int max_demand_value);
+	Buckets BucketSort(vector<Point> &points, int max_demand_value);
 
 	void SortEachBucketByClosenessTo(Buckets& buckets, Point& point);
 

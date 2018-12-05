@@ -3,9 +3,8 @@
 namespace greedy {
 	vector<int> solveCvrp(Point& warehouse, vector<Point> &points, int capacity){
 		pair<int, int> demands_ranges = GetDemandsRange(points);
-		int min_demand_value = demands_ranges.first;
 		int max_demand_value = demands_ranges.second;
-		Buckets buckets = BucketSort(points, min_demand_value, max_demand_value);
+		Buckets buckets = BucketSort(points, max_demand_value);
 
 		SortEachBucketByClosenessTo(buckets, warehouse);
 
@@ -15,7 +14,6 @@ namespace greedy {
 
 		while(vertex_covered < points.size()){
 			Bucket* biggest_fitting_bucket = FindFittestBucket(buckets, trucks, warehouse, capacity);
-			cout << "biggest_fitting_bucket tiene size " << biggest_fitting_bucket->size() << " y demanda " << (*biggest_fitting_bucket)[0].demand << endl;
 			Point next_vertex = PopNextVertex(biggest_fitting_bucket, trucks);
 			trucks.back().visit(next_vertex);
 
@@ -43,12 +41,12 @@ namespace greedy {
 		return make_pair(min, max);
 	}
 
-	Buckets BucketSort(vector<Point> &points, int min_demand_value, int max_demand_value){
-		int buckets_size = max_demand_value + 1; //- min_demand_value + 1;
+	Buckets BucketSort(vector<Point> &points, int max_demand_value){
+		int buckets_size = max_demand_value + 1;
 		Buckets buckets(buckets_size);
 
 		for(Point p : points){
-			int index_in_bucket = p.demand; // - min_demand_value;
+			int index_in_bucket = p.demand;
 			buckets[index_in_bucket].push_back(p);
 		}
 
@@ -85,13 +83,9 @@ namespace greedy {
 	}
 
 	Point PopNextVertex(Bucket* bucket, vector<Truck> &trucks){
-		// Bucket nbucket = (*bucket);
-		// cout << "*bucket.size() = " << bucket->size() << ", bucket.size() = " << nbucket.size() << endl;
-
 		int middle_index = bucket->size() - K - 1;
 		int starting_index = aux::max(middle_index, 0);
 
-		// vector<Point> last_k_vertex = copy(bucket, bucket->begin() + starting_index, bucket->end()); // O(K)?
 		Point last_vertex = trucks.back().routes.back();
 		sort(bucket->begin() + starting_index, bucket->end(), DistanceToPointComparator(last_vertex));
 		
