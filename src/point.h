@@ -20,6 +20,10 @@ struct Point {
 		return x == p.x and y == p.y and demand == p.demand;
 	}
 
+	bool operator!=(const Point& p) const {
+		return not( this->Point::operator==(p));
+	}
+
 	bool operator<(const Point& other) const {
 		return demand < other.demand;
 	}

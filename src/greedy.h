@@ -18,7 +18,7 @@ typedef vector<Bucket> Buckets;
 
 namespace greedy {
 
-	vector<int> solveCvrp(Point& warehouse, vector<Point> &points, int capacity);
+	vector<Truck> solveCvrp(Point& warehouse, vector<Point> &points, int capacity);
 
 	pair<int, int> GetDemandsRange(vector<Point> &points);
 

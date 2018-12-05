@@ -20,6 +20,7 @@ namespace savings {
 
 	void imprimirCamiones(vector<Truck> &trucks, vector<Point> &points, Point& warehouse, vector<vector<float> > &distancias, vector<float> &distance_to_warehouse);
 	float imprimirCamion(Truck &t,  vector<Point> &points, Point& warehouse, vector<vector<float> > &distancias, vector<float> &distance_to_warehouse);
+
 };
 
 

@@ -1,5 +1,6 @@
 #include <iostream> 
 #include <fstream> 
+#include <stdexcept>
 
 #include "vector"
 #include "tuple"
@@ -12,14 +13,13 @@
 #include "savings.h"
 #include "greedy.h"
 
-#define DEBUG(x) std::cout << "Debug: " << x << "\n";
-
 using namespace std; 
 
-typedef std::vector<int> (* CvrpHeuristic) (Point& warehouse, std::vector<Point> &points, int capacity);
+typedef std::vector<Truck> (* CvrpHeuristic) (Point& warehouse, std::vector<Point> &points, int capacity);
 
 void MeasureAlgorithm(string name, CvrpHeuristic function, string input, ofstream &output);
 tuple<Point, vector<Point>, int> ReadDataset(); 
+void PrintTrucks(vector<Point> &points, Point& warehouse, vector<Truck> &trucks);
 
 
 int main(int argc, char** argv) { 
@@ -57,13 +57,39 @@ int main(int argc, char** argv) {
 			cin.rdbuf(dataset.rdbuf());
 			auto heuristic = algorithms[algorithm];
 			auto input = ReadDataset();
-			auto solution = heuristic(get<0>(input), get<1>(input), get<2>(input));
-			aux::print_vector(solution);
+			Point warehouse = get<0>(input);
+			vector<Point> points = get<1>(input);
+			auto solution = heuristic(warehouse, points, get<2>(input));
+			PrintTrucks(points, warehouse, solution);
 		}
 		dataset.close(); 
 	}
 	return 0; 
 } 
+
+int GetPointId(vector<Point> &points, Point &point){
+	unsigned int point_id = 0;
+	while(point_id < points.size()) {
+		if( points[point_id] == point )
+			return point_id + 1; // Ids start from 1, and the warehouse id is ignored
+		point_id++;
+	}
+	throw std::logic_error("GetPointId: No matching point");
+} 
+
+void PrintTrucks(vector<Point> &points, Point &warehouse, vector<Truck> &trucks){
+	unsigned int truck_qty = trucks.size();	
+	cout << truck_qty << "\n";
+
+	for(unsigned int i = 0; i < truck_qty; i++){
+		vector<int> point_ids;
+		for( Point& point : trucks[i].routes )
+			if( point != warehouse )
+				point_ids.push_back(GetPointId(points, point));
+		aux::print_vector(point_ids, cout, " ");
+		cout << endl;
+	}
+}
 
 void MeasureAlgorithm(string name, CvrpHeuristic function, string input, ofstream &output){
 	ifstream dataset(input);	
@@ -75,7 +101,7 @@ void MeasureAlgorithm(string name, CvrpHeuristic function, string input, ofstrea
 		int capacity = get<2>(input);
 		unsigned long start, end;
 		MEDIR_TIEMPO_START(start);
-		vector<int> sol = function(warehouse, points, capacity);
+		vector<Truck> sol = function(warehouse, points, capacity);
 		MEDIR_TIEMPO_STOP(end);
 		output << name << "," << points.size() << "," << capacity  << "," << (end-start) << "\n"; // Agregar lo que falta para los experimentos
 	}
@@ -104,7 +130,6 @@ tuple<Point, vector<Point>, int> ReadDataset() {
 	cin >> y;
 	Point warehouse(x, y, 0);
 
-	std::cout << x << ", " << y << std::endl;
 	vector<Point> points;
 	for(int i = 1; i < dimension; ++i){
 		cin >> ignore; // Id

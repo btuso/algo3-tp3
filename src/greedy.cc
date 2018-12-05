@@ -1,7 +1,7 @@
 #include "greedy.h"
 
 namespace greedy {
-	vector<int> solveCvrp(Point& warehouse, vector<Point> &points, int capacity){
+	vector<Truck> solveCvrp(Point& warehouse, vector<Point> &points, int capacity){
 		pair<int, int> demands_ranges = GetDemandsRange(points);
 		int max_demand_value = demands_ranges.second;
 		Buckets buckets = BucketSort(points, max_demand_value);
@@ -20,8 +20,8 @@ namespace greedy {
 			vertex_covered ++;
 		}
 
-		PrintResults(trucks);
-		return vector<int>();
+//		PrintResults(trucks);
+		return trucks;
 	}
 
 	pair<int, int> GetDemandsRange(vector<Point> &points){

@@ -80,8 +80,8 @@ namespace savings {
 			}
 		}
 
-		imprimirCamiones(trucks, points, warehouse, distancias, distancia_a_deposito);
-		cout << "Y deberia ser " << (distancia_total - saving_total) << endl;
+		//imprimirCamiones(trucks, points, warehouse, distancias, distancia_a_deposito);
+		print("Y deberia ser " << (distancia_total - saving_total))
 		return	trucks;
 	}
 
@@ -110,7 +110,7 @@ namespace savings {
 	float imprimirCamion(Truck &t, vector<Point> &points, Point& warehouse, vector<vector<float> > &distancias, vector<float> &distance_to_warehouse){
 		float distancia_recorrida = 0;
 		if (t.es_valido){
-			cout << "Quedó con " << t.stock_left << " de capacidad" << endl;
+			print("Quedó con " << t.stock_left << " de capacidad")
 			vector<Point> res;
 			res.push_back(warehouse);
 			int cliente = t.cliente_final;
@@ -124,7 +124,7 @@ namespace savings {
 			distancia_recorrida += distance_to_warehouse[cliente];
 			res.push_back(warehouse);
 			aux::print_vector(res);
-			cout << endl << "----" << endl;
+			print("----")
 		}
 		return distancia_recorrida;
 	}
@@ -133,7 +133,7 @@ namespace savings {
 		for(Truck t : trucks){
 			distancia_recorrida += imprimirCamion(t, points, warehouse, distancias, distance_to_warehouse);	
 		}
-		cout << "Distancia recorrida es " << distancia_recorrida << endl;
+		print("Distancia recorrida es " << distancia_recorrida)
 	}
 
 	bool puedoAgregarlo(Truck &t, int punto, int demanda){

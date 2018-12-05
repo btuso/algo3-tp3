@@ -1,6 +1,11 @@
 #ifndef AUXILIARES_H_ 
 #define AUXILIARES_H_
 
+#define DEBUG true
+#define PRINT true 
+#define print(x) if( PRINT ) std::cout << x << "\n";
+#define debug(x) if( DEBUG ) std::cout << x << "\n";
+
 #include <iostream> 
 #include <fstream> 
 #include <vector>
