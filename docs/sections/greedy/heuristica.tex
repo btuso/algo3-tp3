@@ -22,6 +22,15 @@ Este algoritmo toma \textbf{Buckets} como parámetro de entrada y, para cada uno
 \input{sections/greedy/heuristica-cod-findfittestbucket}
 
 Esta función se encarga de encontrar el bucket de mayor demanda (pues todos los vértices dentro de este bucket la comparten) tal que pueda ser satisfecha por un camión ya existente o si debe crearse uno nuevo. Su complejidad es $\mathcal{O}(D)$ porque en el peor de los casos, el último camión de la lista no tiene stock suficiente para ningún vértice en el grafo que no haya sido visitado. El primer bucle de la línea 4 comenzará explorando los \textit{buckets} desde el índice $stock\_restante$ hasta llegar a $0$, donde deberá detenerse y concluirá que no hay ningún vértice que cumpla que $demanda(v) \leq stock\_restante$ con $v$ algún vértice en los \textit{buckets} $[0, stock\_restante]$. Luego, se deberá crear un nuevo camión con stock máximo y se volverá a indagar la lista de \textit{buckets}. Sabemos que no hay vértices con demanda en los rangos $[0, stock\_restante]$ pues ya las iteramos en el bucle de la línea 4, pero sabemos que sí quedan vértices sin visitar en el grafo pues sino la función nunca se hubiese ejecutado. Ahora, como por enunciado sabemos que no existe un vértice con una demanda mayor al stock máximo de un camión, sabemos que hay un nodo sin visitar en el rango de índices $[stock\_restante + 1, D]$. En el peor de los casos, el vértice que buscamos está en el índice $stock\_restante + 1$, habiéndose concretado $D$ iteraciones. Finalmente, se retorna el \textit{bucket} en cuestión.
+
+\input{sections/greedy/heuristica-cod-popnextvertex}
+
+El algoritmo superior recibe un \textit{bucket}, una lista de camiones y un entero $K$. El pedazo de código comienza obteniendo el último vértice visitado por el camión cuya ruta está siendo construída. En base a la posición de este nodo, se ordenan los últimos $K$ vértices de la lista $bucket$ por distancia Euclidiana de más lejano a más cercano. Aquí debemos explicar dos cosas:
+\begin{enumerate}[a)]
+\item ¿Por qué se ordenan los últimos $K$ vértices de la lista y su completitud? La respuesta a esta pregunta es sencilla: es otra de nuestras \textbf{heurísticas}. No creemos conveniente ordenar todo el \textit{bucket} por cada vértice, por lo tanto lo hacemos con los últimos $K$ ejemplares.
+\item ¿Y por qué estos últimos $K$ vértices se ordenan de más lejano a más cercano? Porque sabemos que una vez sea elegido el nodo a visitar, este será removido. Como estamos trabajando sobre un vector, la complejidad de su remoción depende de cuántos elementos le siguen. Como es el último elemento, la complejidad de su remoción es constante.
+\end{enumerate}
+
 % [√] 1. Bucket sort sobre capacidades de los vértices
 % [√] 2. Para cada bucket, ordeno por cercanía al depósito
 % [√] 3. Elijo el bucket de más capacidad compatible con el stock de mi camión

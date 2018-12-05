@@ -1,0 +1,14 @@
+\begin{algorithm}[H]
+\caption{\Comment $\mathcal{O}(K*log(K))$}
+\begin{algorithmic}[1]
+\Function{ExtraerVérticeMásApto}{Bucket $bucket$, Lista de camiones $camiones$, Entero $K$}
+	\State \textbf{Punto} $actual \gets$ el último punto visitado por el último camión en $camiones$
+	\State Ordenar los últimos $K$ puntos de $bucket$ de más lejano a más cercano a $actual$ \Comment $\mathcal{O}(K*log(K))$
+	\Statex
+	\State \textbf{Punto} $siguiente \gets$ último elemento de $bucket$ \Comment $\mathcal{O}(1)$
+	\State $bucket \gets bucket - \{siguiente\}$ \Comment $\mathcal{O}(1)$
+	\Statex
+	\State \Return $siguiente$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}

@@ -1,7 +1,7 @@
 \begin{algorithm}[H]
-\caption{\Comment $\mathcal{O}(????)$}
+\caption{\Comment $\mathcal{O}(n+D + n*log(n) + n*D*K*log(K))$}
 \begin{algorithmic}[1]
-\Function{resolverCVRP}{Punto $deposito$, Conjunto de puntos $puntos$, Entero $capacidad$}
+\Function{resolverCVRP}{Punto $deposito$, Conjunto de puntos $puntos$, Entero $capacidad$, Entero $K$}
 	\State \textbf{Buckets} $buckets \gets $\textbf{BucketSortPorDemanda}$(puntos)$ \Comment $\mathcal{O}(n + D)$
 	\State \textbf{OrdenarCadaBucketPorCercaníaA}$(puntos, deposito)$ \Comment $\mathcal{O}(n*log(n))$
 	\Statex
@@ -9,11 +9,11 @@
 	\State \textbf{Lista de Camiones} $camiones \gets \varnothing$
 	\State Insertar en $camiones$ un camión con capacidad $capacidad$ que empieza en $deposito$
 	\Statex
-	\While{$vertices\_cubiertos < |puntos|$}
+	\While{$vertices\_cubiertos < |puntos|$} \Comment $\mathcal{O}(n)$
 		\State \textbf{Bucket} $bucket\_mas\_apto \gets$ \par
-        \Statex[3] \textbf{EncontrarBucketMasApto}$(buckets, camiones, deposito, capacidad)$
-		\State \textbf{Punto} $siguiente \gets$ \textbf{ExtraerVerticeMasApto}$(bucket\_mas\_apto, camiones)$
-		\State Tomar el último camión agregado a $camiones$ y visitar el vértice $siguiente$
+        \Statex[3] \textbf{EncontrarBucketMasApto}$(buckets, camiones, deposito, capacidad)$ \Comment $\mathcal{O}(D)$
+		\State \textbf{Punto} $siguiente \gets$ \textbf{ExtraerVerticeMasApto}$(bucket\_mas\_apto, camiones, K)$ \Comment $\mathcal{O}(K*log(K))$
+		\State Tomar el último camión agregado a $camiones$ y visitar el vértice $siguiente$ \Comment $\mathcal{O}(1)$
 		\Statex
 		\State $vertices\_cubiertos \gets vertices\_cubiertos + 1$
 	\EndWhile
@@ -29,7 +29,7 @@
 
 	\vskip 8pt
 
-	Como último, el valor $D$ mencionado en la complejidad temporal del \textbf{BucketSort} es la máxima demanda de un punto en la lista $puntos$.
+	Como último, el valor $D$ mencionado en la complejidad temporal del \textbf{BucketSort} es la máxima demanda de un punto en la lista $puntos$. En todos los data-sets $D$ está acotado por $100$ por lo tanto utilizar \textit{Bucket Sort} para ordenar por demanda nos resultó un algoritmo conveniente.
 }}
 \vspace{10 pt}
 

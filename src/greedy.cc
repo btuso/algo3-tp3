@@ -15,6 +15,7 @@ namespace greedy {
 
 		while(vertex_covered < points.size()){
 			Bucket* biggest_fitting_bucket = FindFittestBucket(buckets, trucks, warehouse, capacity);
+			cout << "biggest_fitting_bucket tiene size " << biggest_fitting_bucket->size() << " y demanda " << (*biggest_fitting_bucket)[0].demand << endl;
 			Point next_vertex = PopNextVertex(biggest_fitting_bucket, trucks);
 			trucks.back().visit(next_vertex);
 
@@ -87,8 +88,8 @@ namespace greedy {
 		// Bucket nbucket = (*bucket);
 		// cout << "*bucket.size() = " << bucket->size() << ", bucket.size() = " << nbucket.size() << endl;
 
-		int asd = bucket->size() - K - 1;
-		int starting_index = aux::max(asd, 0);
+		int middle_index = bucket->size() - K - 1;
+		int starting_index = aux::max(middle_index, 0);
 
 		// vector<Point> last_k_vertex = copy(bucket, bucket->begin() + starting_index, bucket->end()); // O(K)?
 		Point last_vertex = trucks.back().routes.back();
