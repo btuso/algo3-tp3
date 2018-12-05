@@ -42,6 +42,18 @@ $$= \mathcal{O}(n*log(n) + n*D)$$
 $$= \mathcal{O}\Big( n*(log(n) + D)\Big)$$
 
 \subsubsection{Instancias con soluciones no óptimas}
+Algunas de las instancias del problema de Enrutamiento de Vehículos con Capacidad pueden brindar una solución muy distante de la óptima utilizando este algoritmo debido a las heurísticas que se utilizan. A continuación mencionaremos algunas:
+\subsubsubsection{Camiones que ``van y vienen''}
+La primera decisión del algoritmo es ordenar los vértices por demanda y luego cada \textit{bucket} por cercanía al depósito para finalmente obtener un \textit{bucket} de vértices satisfacibles por el stock de un camión. Consideremos este \textit{bucket} $B$ (que recordamos es una lista de vértices). Es posible que los $K$ elementos de $B$ más cercanos al depósito no estén cerca del último nodo $v$ visitado por el camión actual, sino por el contrario; estén en esquinas opuestas. Luego, al ordenar estos $K$ elementos por la distancia a $v$, los camiones recorrerán distancias muy largas con total de cumplir la heurística de satisfacer primero las demandas más altas.
+
+\subsubsubsection{Demandas equivalentes}
+Otro caso inoportuno para el algoritmo podría presentarse en forma de demandas equivalentes, donde ordenar por demanda no ofrezca absolutamente ninguna ventaja pues todas son iguales. Además, los vértices se terminarían ordenando por cercanía al depósito donde pueden ocurrir problemas como el de ``van y vienen'' explicado en el punto anterior.
+
+\subsubsubsection{Demandas incongruentes con el stock de los camiones}
+Al mismo tiempo, puede suceder que las elecciones de demandas no haga un uso óptimo del stock del camión. Imaginemos que tenemos un conjunto ordenado de vértices $V=[v_{1}, v_{2}, v_{3}, v_{4}]$ con demandas $D=[55, 50, 25, 25]$ y un stock máximo de $100$. Nuestro algoritmo resolvería visitar primero $v_{1}$ con demanda $55$, luego intentaría $v_{2}$ con demanda $50$ pero fallaría y finalmente – con $100 - 55 = 45$ de stock disponible – visitaría $v_{3}$ con una demanda de $25$, dejando un sobrante de stock de $20$ unidades insatisfacibles para el resto de los vértices visitados. En cambio, si el algoritmo no hubiese decidido visitar el nodo más demandante primero y hubiese resuelto visitar $v_{2}$, $v_{3}$ y $v_{4}$ con una demanda total de $100$, no nos sobraría stock y habríamos cubierto tres vértices con un solo camión (en vez de dos como en el caso anterior). El algoritmo no explora posibles soluciones vecinales por lo tanto, en algunos casos, se arriesga a ser ineficiente en la cantidad de camiones y en consecuencia en las distancias recorridas.
+
+\subsubsubsection{Demanda máxima demasiado grande (limitación de diseño)}
+Por una decisión de diseño, se decidió utilizar un \textit{bucket sort} para ordenar las demandas de los vértices en $\mathcal{O}(n)$. Si bien podríamos haber utilizado otro algoritmo en el orden de complejidad $\mathcal{O}(n*log(n))$, \textit{bucket sort} nos proveyó un entorno más cómodo y elegante y debido a que el universo de instancias con las cuales experimentaríamos disponía de un valor de demanda máxima acotada, creímos conveniente optar por esta opción. Sin embargo, podrían existir instancias donde $D$ sea extremadamente grande. Estas afectarían gravemente el consumo de memoria de la computadora y podrían inhabilitar el funcionamiento del algoritmo. En estos data-sets no es el caso.
 
 % [√] 1. Bucket sort sobre capacidades de los vértices
 % [√] 2. Para cada bucket, ordeno por cercanía al depósito
