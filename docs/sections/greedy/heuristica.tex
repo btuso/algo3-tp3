@@ -1,4 +1,5 @@
 \subsection{Heurística Constructiva Golosa}
+\subsubsection{Diseño}
 Utilizamos un enfoque \textbf{goloso} a la hora de diseñar este algoritmo, que comienza con una lista ordenada vacía $C$ de camiones (y por ende rutas) fabricando una solución vértice por vértice, es decir, constructivamente. El algoritmo toma como datos de entrada la lista de vértices $V$ que representan los \textit{clientes} que deben ser visitados por los camiones. Su funcionamiento está dividido en cuatro etapas definidas a continuación:
 
 \begin{description}
@@ -8,7 +9,8 @@ Utilizamos un enfoque \textbf{goloso} a la hora de diseñar este algoritmo, que 
 \item[Paso 4.] De estos últimos se escogen $K$ vértices y entre ellos se obtiene el nodo más cercano al camión en cuestión. Este será el siguiente vértice a ser visitado por un camión
 \end{description}
 
-Este diseño fue concebido con el objetivo de minimizar las distancias recorridas por los camiones al intentar vaciarlos lo más rápidamente debido a la temprana atención de los vértices más demandantes. Además de buscar una distancia mínima, con este criterio y bajo ciertas circunstancias también es posible observar una utilización de camiones cercana a la óptima. Pondremos a prueba estos casos más adelante. A continuación, exhibimos el pseudo-código del algoritmo:
+\subsubsection{Pseudo-código}
+El diseño de este algoritmo fue concebido con el objetivo de minimizar las distancias recorridas por los camiones al intentar vaciarlos lo más rápidamente debido a la temprana atención de los vértices más demandantes. Además de buscar una distancia mínima, con este criterio y bajo ciertas circunstancias también es posible observar una utilización de camiones cercana a la óptima. Pondremos a prueba estos casos más adelante. A continuación, exhibimos el pseudo-código del algoritmo:
 
 \input{sections/greedy/heuristica-cod-cvrp}
 Esta función representa la globalidad de la heurística. Comienza realizando un \textit{bucket sort} sobre la demanda de los puntos recibidos por parámetro y luego ordena cada bucket por cercanía al depósito con la función \textbf{OrdenarCadaBucketPorCercaníaA} en la línea 3. La intención de esta heurística es alejarse lo menos posible del depósito, priorizando los vértices más demandantes. Luego, se crea el primer camión y se lo agrega a la respectiva lista. Este camión – como todos – comenzará en el depósito. Luego, el bucle \textit{while} que le sigue intentará encontrar un vértice de demanda máxima que pueda ser satisfecho por el camión. De no encontrarse ninguno, devolverá el camión al depósito e invocará uno nuevo con stock máximo. Esta lógica es delegada en la función \textbf{ExtraerVérticeMásApto}, que devuelve el nodo más demandante posible, invocando o no un nuevo camión si es necesario. Luego, el vértice en cuestión es visitado por el camión y la cantidad de vértices cubiertos es incrementada en uno. El algoritmo se ejecutará $n$ veces, es decir, una vez por cada vértice pues cada iteración visita siempre uno.
@@ -30,6 +32,11 @@ El algoritmo superior recibe un \textit{bucket}, una lista de camiones y un ente
 \item ¿Por qué se ordenan los últimos $K$ vértices de la lista y su completitud? La respuesta a esta pregunta es sencilla: es otra de nuestras \textbf{heurísticas}. No creemos conveniente ordenar todo el \textit{bucket} por cada vértice, por lo tanto lo hacemos con los últimos $K$ ejemplares.
 \item ¿Y por qué estos últimos $K$ vértices se ordenan de más lejano a más cercano? Porque sabemos que una vez sea elegido el nodo a visitar, este será removido. Como estamos trabajando sobre un vector, la complejidad de su remoción depende de cuántos elementos le siguen. Como es el último elemento, la complejidad de su remoción es constante.
 \end{enumerate}
+
+\subsubsection{Conclusiones}
+Podemos entender que como $K$ es un dato heurístico constante, en general pequeño y además menor o igual a $n$ (pues al revés no tendría sentido), su efecto en la complejidad es absorbido por el crecimiento asintótico de $n$, por lo tanto la complejidad queda inafectada por $K$.
+
+$$resolverCVRP = \mathcal{O}(n+D + n*log(n) + n*D*K*log(K)) = \mathcal{O}(n+D + n*log(n) + n*D)$$
 
 % [√] 1. Bucket sort sobre capacidades de los vértices
 % [√] 2. Para cada bucket, ordeno por cercanía al depósito

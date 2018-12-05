@@ -1,5 +1,5 @@
 \begin{algorithm}[H]
-\caption{\Comment $\mathcal{O}(n+D + n*log(n) + n*D*K*log(K))$}
+\caption{\Comment $\mathcal{O}(n+D + n*log(n) + n*D)$}
 \begin{algorithmic}[1]
 \Function{resolverCVRP}{Punto $deposito$, Conjunto de puntos $puntos$, Entero $capacidad$, Entero $K$}
 	\State \textbf{Buckets} $buckets \gets $\textbf{BucketSortPorDemanda}$(puntos)$ \Comment $\mathcal{O}(n + D)$
