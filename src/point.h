@@ -3,6 +3,7 @@
 
 #include <math.h>
 #include <iostream>
+#include <string>
 
 struct Point {
     float x;
@@ -26,6 +27,10 @@ struct Point {
 
 	bool operator<(const Point& other) const {
 		return demand < other.demand;
+	}
+	
+	std::string to_string(){
+		return std::to_string(x) + "," + std::to_string(y) + "," + std::to_string(demand);
 	}
 };
 
