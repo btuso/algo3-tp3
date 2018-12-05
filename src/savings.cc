@@ -33,9 +33,8 @@ namespace savings {
 		sort(savings.begin(), savings.end());
 
 		vector<Truck> trucks;
-		int nodos_agregados = 0;
 		/* Recorro savings de mayor a menor*/
-		for (int i = savings.size()-1; i >= 0 && nodos_agregados < n; i--){
+		for (int i = savings.size()-1; i >= 0; i--){
 			Saving &s = savings[i];
 			int camion_A = en_que_camion[s.point_A];
 			int camion_B = en_que_camion[s.point_B];
@@ -46,18 +45,6 @@ namespace savings {
 				demanda = points[s.point_A].demand + points[s.point_B].demand;
 				if (capacidad >= demanda){
 					camionNuevo(trucks, en_que_camion, s.point_A, s.point_B, demanda);
-					nodos_agregados+=2;
-					saving_total += s.saving; 
-				}
-			}
-
-			if (camion_A == ninguno and camion_B != ninguno){
-				/* Va al camion de B*/
-				demanda = points[s.point_A].demand;
-				Truck &t = trucks[camion_B];
-				if (puedoAgregarlo(t, s.point_B, demanda)){
-					visitarCliente(t, en_que_camion, s.point_B, s.point_A, demanda);
-					nodos_agregados++;
 					saving_total += s.saving; 
 				}
 			}
@@ -68,7 +55,16 @@ namespace savings {
 				Truck &t = trucks[camion_A];
 				if (puedoAgregarlo(t, s.point_A, points[s.point_B].demand)){
 					visitarCliente(t, en_que_camion, s.point_A, s.point_B, demanda);
-					nodos_agregados++;
+					saving_total += s.saving; 
+				}
+			}
+			
+			if (camion_A == ninguno and camion_B != ninguno){
+				/* Va al camion de B*/
+				demanda = points[s.point_A].demand;
+				Truck &t = trucks[camion_B];
+				if (puedoAgregarlo(t, s.point_B, demanda)){
+					visitarCliente(t, en_que_camion, s.point_B, s.point_A, demanda);
 					saving_total += s.saving; 
 				}
 			}
@@ -162,8 +158,7 @@ namespace savings {
 	void unirRutas(vector<Truck> &trucks, vector<int> &en_que_camion, int punto_A, int punto_B){
 		Truck &truck_A = trucks[en_que_camion[punto_A]];
 		Truck &truck_B = trucks[en_que_camion[punto_B]];
-		int capacidad_necesaria = (2 * capacidad) - truck_A.stock_left - truck_A.stock_left;
-
+		int capacidad_necesaria = (2 * capacidad) - truck_A.stock_left - truck_B.stock_left;
 		truck_A.mergearRuta(punto_A, punto_B, truck_B, capacidad - capacidad_necesaria, en_que_camion);
 	}
 
