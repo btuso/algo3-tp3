@@ -12,7 +12,7 @@ namespace savings {
 	int n;
 	int capacidad;
 	float saving_total;
-	vector<int> solveCvrp(Point& warehouse,	vector<Point> &points, int capacity){
+	vector<Truck> solveCvrp(Point& warehouse,	vector<Point> &points, int capacity){
 		/* Armo matriz de distancias entre cada par de nodos */
 		n = points.size();
 		capacidad = capacity;
@@ -82,7 +82,7 @@ namespace savings {
 
 		imprimirCamiones(trucks, points, warehouse, distancias, distancia_a_deposito);
 		cout << "Y deberia ser " << (distancia_total - saving_total) << endl;
-		return	vector<int>();
+		return	trucks;
 	}
 
 	void calcularDistancias(vector<vector<float> > &distances, vector<float> &distance_to_warehouse, vector<Point> &points, Point& warehouse, float &distancia_total){
