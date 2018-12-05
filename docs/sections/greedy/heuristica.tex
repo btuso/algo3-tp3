@@ -1,0 +1,28 @@
+\subsection{Heurística Constructiva Golosa}
+Utilizamos un enfoque \textbf{goloso} a la hora de diseñar este algoritmo, que comienza con una lista ordenada vacía $C$ de camiones (y por ende rutas) fabricando una solución vértice por vértice, es decir, constructivamente. El algoritmo toma como datos de entrada la lista de vértices $V$ que representan los \textit{clientes} que deben ser visitados por los camiones. Su funcionamiento está dividido en cuatro etapas definidas a continuación:
+
+\begin{description}
+\item[Paso 1.] Ordenar $V$ por la demanda de cada vértice
+\item[Paso 2.] Elegir los vértices de mayor demanda compatibles con el stock disponible de mi último camión en $C$. De no existir ningún vértice con estas características, se despacha el camión al depósito, se invoca uno nuevo con stock lleno y se eligen los vértices más demandantes.
+\item[Paso 3.] De la selección previa, se ordenan los vértices por cercanía al \textbf{depósito}
+\item[Paso 4.] De estos últimos se escogen $K$ vértices y entre ellos se obtiene el nodo más cercano al camión en cuestión. Este será el siguiente vértice a ser visitado por un camión
+\end{description}
+
+Este diseño fue concebido con el objetivo de minimizar las distancias recorridas por los camiones al intentar vaciarlos lo más rápidamente debido a la temprana atención de los vértices más demandantes. Además de buscar una distancia mínima, con este criterio y bajo ciertas circunstancias también es posible observar una utilización de camiones cercana a la óptima. Pondremos a prueba estos casos más adelante. A continuación, exhibimos el pseudo-código del algoritmo:
+
+\input{sections/greedy/heuristica-cod-cvrp}
+Esta función representa la globalidad de la heurística. Comienza realizando un \textit{bucket sort} sobre la demanda de los puntos recibidos por parámetro y luego ordena cada bucket por cercanía al depósito con la función \textbf{OrdenarCadaBucketPorCercaníaA} en la línea 3. La intención de esta heurística es alejarse lo menos posible del depósito, priorizando los vértices más demandantes. Luego, se crea el primer camión y se lo agrega a la respectiva lista. Este camión – como todos – comenzará en el depósito. Luego, el bucle \textit{while} que le sigue intentará encontrar un vértice de demanda máxima que pueda ser satisfecho por el camión. De no encontrarse ninguno, devolverá el camión al depósito e invocará uno nuevo con stock máximo. Esta lógica es delegada en la función \textbf{ExtraerVérticeMásApto}, que devuelve el nodo más demandante posible, invocando o no un nuevo camión si es necesario. Luego, el vértice en cuestión es visitado por el camión y la cantidad de vértices cubiertos es incrementada en uno. El algoritmo se ejecutará $n$ veces, es decir, una vez por cada vértice pues cada iteración visita siempre uno.
+
+\vskip 8pt
+
+\input{sections/greedy/heuristica-cod-sorteachbucket}
+
+Este algoritmo toma \textbf{Buckets} como parámetro de entrada y, para cada uno de ellos, ordena sus puntos por la distancia al vértice $punto$ adjuntado como dato de entrada. En el contexto general, esta función es utilizada para ordenar todos los vértices de todos los \textit{buckets} por cercanía al depósito del grafo. La complejidad de la estructura de iteración es $\mathcal{O}(D)$ porque dentro de $buckets$ hay $D$ listas de puntos, siendo $D$ la demanda más grande en la lista de puntos del grafo. Luego, la complejidad del sorting de cada bucket depende de la cantidad de elementos dentro de cada uno, es decir: $\mathcal{O}(|bucket| * log(|bucket|))$. Pero es fácil concluir que la complejidad total de esta función es $\mathcal{O}(n * log(n))$ porque a fin de cuentas se están ordenando $n$ vértices en total.
+
+\input{sections/greedy/heuristica-cod-findfittestbucket}
+
+Esta función se encarga de encontrar el bucket de mayor demanda (pues todos los vértices dentro de este bucket la comparten) tal que pueda ser satisfecha por un camión ya existente o si debe crearse uno nuevo. Su complejidad es $\mathcal{O}(D)$ porque en el peor de los casos, el último camión de la lista no tiene stock suficiente para ningún vértice en el grafo que no haya sido visitado. El primer bucle de la línea 4 comenzará explorando los \textit{buckets} desde el índice $stock\_restante$ hasta llegar a $0$, donde deberá detenerse y concluirá que no hay ningún vértice que cumpla que $demanda(v) \leq stock\_restante$ con $v$ algún vértice en los \textit{buckets} $[0, stock\_restante]$. Luego, se deberá crear un nuevo camión con stock máximo y se volverá a indagar la lista de \textit{buckets}. Sabemos que no hay vértices con demanda en los rangos $[0, stock\_restante]$ pues ya las iteramos en el bucle de la línea 4, pero sabemos que sí quedan vértices sin visitar en el grafo pues sino la función nunca se hubiese ejecutado. Ahora, como por enunciado sabemos que no existe un vértice con una demanda mayor al stock máximo de un camión, sabemos que hay un nodo sin visitar en el rango de índices $[stock\_restante + 1, D]$. En el peor de los casos, el vértice que buscamos está en el índice $stock\_restante + 1$, habiéndose concretado $D$ iteraciones. Finalmente, se retorna el \textit{bucket} en cuestión.
+% [√] 1. Bucket sort sobre capacidades de los vértices
+% [√] 2. Para cada bucket, ordeno por cercanía al depósito
+% [√] 3. Elijo el bucket de más capacidad compatible con el stock de mi camión
+% [√] 4. Tomo los primeros k vértices de este bucket y me quedo con el más cercano al vértice donde estoy parado actualmente

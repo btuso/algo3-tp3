@@ -15,7 +15,6 @@ namespace greedy {
 
 		while(vertex_covered < points.size()){
 			Bucket* biggest_fitting_bucket = FindFittestBucket(buckets, trucks, warehouse, capacity);
-			cout << "biggest_fitting_bucket tiene size " << biggest_fitting_bucket->size() << " y demanda " << (*biggest_fitting_bucket)[0].demand << endl;
 			Point next_vertex = PopNextVertex(biggest_fitting_bucket, trucks);
 			trucks.back().visit(next_vertex);
 

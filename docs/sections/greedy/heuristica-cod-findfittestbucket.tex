@@ -1,0 +1,33 @@
+\begin{algorithm}[H]
+\caption{\Comment $\mathcal{O}(D)$}
+\begin{algorithmic}[1]
+\Function{EncontrarBucketMásApto}{Buckets $buckets$, Lista de camiones $camiones$}
+	\State \textbf{Entero} $stock\_restante \gets$ stock restante del último camión en $camiones$
+	\Statex
+	\State \textbf{Entero} $i \gets $\textbf{min}$(stock\_restante, |buckets| - 1)$
+	\While{$i \geq 0 \land buckets[i] = \varnothing$}
+		\State $i \gets i - 1$
+	\EndWhile
+	\Statex
+	\If{$i < 0$}
+		\State Enviar el último camión en $camiones$ al depósito
+		\State Creo un nuevo camión en $camiones$
+		\Statex
+		\State $i \gets |buckets| - 1$
+		\While{$buckets[i] = \varnothing$}
+			\State $i \gets i - 1$
+		\EndWhile
+	\EndIf
+	\Statex
+	\State \Return $buckets[i]$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+\vspace{10 pt}
+\fbox{\parbox{0.9\textwidth}{
+	Aclaración: todos los camiones creados inician su ruta en el depósito y con stock lleno. La dimensión de este stock es definida globalmente y es equivalente entre todos los camiones.
+}}
+\vspace{10 pt}
+
+\vskip 8pt

@@ -1,0 +1,12 @@
+\begin{algorithm}[H]
+\caption{\Comment $\mathcal{O}(n * log(n))$}
+\begin{algorithmic}[1]
+\Function{OrdenarCadaBucketPorCercaníaA}{Buckets $buckets$, Punto $punto$}
+	\For{\textbf{Bucket} $bucket$ en $buckets$} \Comment $\mathcal{O}(D)$
+		\State Ordenar los puntos de $bucket$ por distancia a $punto$ \Comment $\mathcal{O}(|bucket| * log(|bucket|))$
+	\EndFor
+	\Statex
+	\State \Return $buckets$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
