@@ -1,0 +1,128 @@
+\subsection{Heuristica de Savings}
+\subsubsection{Diseño}
+Si consideramos una solución inicial al problema de CVRP como un conjunto de $n$ camiones (siendo $n$ la cantidad de clientes a visitar) y suponiendo que salen del depósito, visitan cada uno un cliente distinto y vuelven al punto de partida entonces el trayecto de un camión que visite al nodo $i$ será $2*d(D,i)$. En consecuencia, la suma de todas las distancias recorridas por estos será $\sum_{1}^{n} 2*d(D, i)$.\\
+Ahora si en vez de eso usamos un camión para visitar a dos clientes $i$ y $j$ (o que es lo mismo, dos nodos $i$ y $j$):
+$$ distancia\_recorrida = d(D, i) + d(i,j) +d(D, j)     $$
+Por lo tanto lo que ahorramos al ir a ambos en el mismo recorrido es:\\
+$$ savings(i,j) = 2*d(D, i) + 2* d(D,j) -  (d(D, i) + d(i,j) +d(D, j))     $$
+$$ savings(i,j) = d(D, i) + d(D,j) -   d(i,j)    $$
+La idea es crear recorridos para los camiones que usen los savings más altos posibles. Para ello, utilizamos el algoritmo de Clark-Wright:
+
+\begin{description}
+	\item[Paso 1.] Para todo par $(i,j)$ se calcula $savings(i,j)$. Las formas de elegir dos nodos entre $n$ es ${n}\choose{2}$$ = n(n-1)/2$.
+	\item[Paso 2.] Ordenar $savings$ de mayor a menor y recorrerlos de esta forma.
+	\item[Paso 3.] Por cada $saving$ que incluya los nodos $i$ y $j$, decidiremos si lo utilizaremos o no en nuestra solución.
+	\item[Paso 4.] Repetimos paso 3. hasta que no haya $saving$ que incluir.
+\end{description}
+Para el paso 4, tendremos los siguientes criterios de inclusión:
+\begin{itemize}
+	\item \textbf{Ninguno de los nodos fue visitado aun:} crearemos uno cuyo recorrido sea visitar ambos clientes, siempre y cuando la capacidad del camión sea mayor o igual que las demandas de ambos juntas.
+	\item \textbf{Un nodo no fue visitado aún pero el otro sí:} siempre y cuando el nodo ya visitado no sea interno (es decir, que no sea el primero o último cliente de la ruta) y la capacidad actual de su respectivo camión sea mayor o igual que la demanda del nodo no visitado.
+	\item \textbf{Ambos nodos pertenecen a rutas distintas:} si ninguno es interno y la distancia recorrida de ambas rutas es menor o igual que la capacidad de uno de los camiones, uniremos las dos rutas en una.
+\end{itemize}
+
+\subsubsection{Pseudo-código}
+En primer lugar, aclararemos ciertos aspectos de los tipos de datos utilizados para implementar la solución. Se tiene un tipo de dato \textbf{Camión} el cual almacena su stock disponible, si es válido, cual es el último cliente y dos vectores de tamaño $n$ que indican para todo $i$ el nodo que precede y el siguiente a $i$ (el siguiente del último nodo es nulo y el predecesor del primero también). Estos últimos vectores nos serviran para mergear las rutas según el paso 4 y para reconstruir los caminos. \\
+Además, tenemos el tipo \textbf{Saving} el cual almacenará los dos nodos involucrados y el respectivo saving según el paso 1.
+
+\begin{algorithm}[H]
+	\caption{\Comment $\mathcal{O}(n^{3})$}
+	\begin{algorithmic}[1]
+		\Function{resolverCVRP}{Punto $deposito$, Conjunto de puntos $puntos$, Entero $capacidad$}
+		\State $n \gets |puntos|$
+		\State \textbf{Matriz de Reales} $distancias\mathcal{}(n^{2}, 0)$
+		\State \textbf{Vector de Reales} $distancia\_a\_deposito\mathcal{}(n, 0)$
+		\State \textbf{Vector de Enteros} $en\_que\_camion\mathcal{}(n, ninguno)$
+		\State \textbf{Vector de Camiones} $camiones \gets \varnothing$
+		\State \textbf{Vector de Savings} $savings \gets \varnothing$
+		\Statex
+		\State \textbf{calcularDistancias}$(distancias, distancia\_a\_deposito, puntos, deposito)$ 
+		\State \textbf{calcularSavings}$(distancias, distancia\_a\_deposito, puntos, savings)$ 
+		\State \textbf{ordenarDecreciente}$(savings)$
+		\Statex
+		\For{cada s=(i,j) en $savings$}
+		\If{los nodos de s no son visitados por ningun camión}
+		\State \textbf{Entero } $demanda \gets  puntos[i].demand + puntos[j].demand$
+		\If{$capacidad >= demanda$}
+		\State \textbf{camionNuevo}$(camiones, en\_que\_camion, i, j, demanda)$
+		\EndIf
+		\EndIf
+		\If{el nodo i es visitado por un camion y el nodo j no}
+		\If{\textbf{puedoAgregarlo}$(camiones[i], i, puntos[j].demand)$} 
+		\State \textbf{visitarCliente}$(camiones[i], en\_que\_camion, i, j, puntos[j].demand)$
+		\EndIf
+		\EndIf
+		\If{el nodo j es visitado por un camion y el nodo i no}
+		\If{\textbf{puedoAgregarlo}$(camiones[j], j, puntos[i].demand)$}
+		\State \textbf{visitarCliente}$(camiones[j], en\_que\_camion, j, i, puntos[i].demand)$
+		\EndIf
+		\EndIf
+		\If{ambos son visitados por camiones}
+		\If {\textbf{puedoUnirRutas}$(camiones[i],camiones[j],i,j)$}
+		\State {\textbf{unirRutas}$(camiones, en\_que\_camion,i,j)$}
+		\EndIf
+		\EndIf
+		\EndFor
+		\Statex
+		\State \Return $camiones$
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+
+\paragraph{Inicialización y Savings}
+
+\begin{itemize}
+	\item Calcularemos la distancia euclidea entre cada par de puntos $(i,j)$ y la almacenaremos en $distancias[i][j]$ mediante \textbf{calcularDistancias}. En la misma función, también almacenaremos en $distancia\_a\_deposito$ la distancia de cada nodo a este según .
+	\item Para cada par de nodos $(i,j)$, a partir de las distancias calculadas calcularemos el $saving$ y lo agregaremos a $savings$.  
+	\item Ordenar de forma creciente y luego iterar al revés es lo mismo que ordenar de forma decreciente a fines funcionales. Usaremos un sort de la std.
+\end{itemize}
+
+\paragraph{Ciclo}\hspace{0pt} \\
+\\
+De nuevo, recorreremos el ciclo del mayor saving al menor. Para cada uno, habrá cuatro casos que nos percaten:
+\begin{description}
+	\item[Caso 1.] Ni $i$ ni $j$ son visitados, si la demanda entre ambos no supera $capacidad$ entonces hay que crear un camión nuevo que los visite.  \textbf{camiónNuevo} crea un camión mediante  \ref{nuevo-truck} del tipo \textbf{Camión} y actualiza $en\_que\_camion$ para $i$ y $j$ con el recién creado.
+	\item[Caso 2 y 3.] Exactamente uno de los dos nodos ya fue visitado. Se llama a la función \textbf{puedoAgregarlo} pero alterando los parámetros. Esta chequea que en el camión haya espacio para la demanda del no visitado y que el existente no sea nodo interno (no puede tener un siguiente y un predecesor al mismo tiempo). Si todo sale bien, agrega el nodo no visitado al camión del visitado segun \ref{visitar-nodo} y actualiza $en\_que\_camion[nodo\_no\_visitado]$.
+	\item[Caso 4.] Los nodos están en distintos camiones. La función \textbf{puedoUnirRutas}, al igual que \textbf{puedoAgregarlo} chequea que la suma de las distancias de las rutas de los dos camiones involucrados no supere la capacidad de un camión (que es la misma para todos) y que ninguno de los nodos sea interno. En caso de que sea posible la unión, mergea según \textbf{Unión de rutas}.
+\end{description}
+
+\begin{algorithm}[H]
+	\caption{\Comment $\mathcal{O}(n)$}
+	\begin{algorithmic}[1]\label{nuevo-truck}
+		\Function{Camión}{Entero $total\_capacity$, Entero $n$, Entero $i$, Entero $j$, Entero $demanda$}
+		\State $predecesores \gets$ Vector de Enteros(n, ninguno)
+		\State $siguientes \gets$ Vector de Enteros(n, ninguno)
+		\State $predecesores[j] \gets i$
+		\State $siguientes[i] \gets j$
+		\State $cliente\_final \gets j$	
+		\State $stock\_left \gets total\_capacity - demanda$ 
+		\State $es\_valido \gets  true$ 
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]
+	\caption{\Comment $\mathcal{O}(1)$}
+	\begin{algorithmic}[1]\label{visitar-nodo}
+		\Function{Visitar}{Entero $existente$, Entero $nuevo$, Entero $demanda$}
+		\If{predecesores[existente]=ninguno}
+		\State $predecesores[existente] \gets nuevo$
+		\State $siguientes[nuevo] \gets existente$
+		\Else 
+		\State $predecesores[nuevo] \gets existente$
+		\State $siguientes[existente] \gets nuevo$
+		\State $cliente\_final \gets nuevo$
+		\EndIf
+		\State $stock\_left \gets stock\_left-demanda$
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+\paragraph{Unión de rutas} \hspace{0pt} \\
+\\
+Para un par de nodos $(i,j)$, elegimos unir ambas rutas en $camion[i]$ (sea $predecesores\_B$ los predecesores del $camion[j]$), obteniendo cuatro casos:
+\begin{enumerate}
+	\item $predecesores[i]=ninguno$  y $predecesores\_B[j] = ninguno$ entonces conecto $i$ y $j$ (predecesor de $i$ es $j$ y siguiente de $j$ es $i$). Iremos recorriendo $siguientes\_B$ desde $j$ y consistentemente conectar esos nodos con lo $predecesores$ y $siguientes$. 
+	\item $predecesores[i]=ninguno$  y $predecesores\_B[j] \neq ninguno$ entonces conecto $i$ y $j$ (predecesor de $i$ es $j$ y siguiente de $j$ es $i$). Ahora no hay que invertir el orden, sólo copiamos desde el camión de $j$ todos los nodos en $predecesores\_B$ y $siguientes\_B$ que no sean nulls a los del camión $i$.
+	\item $predecesores[i] \neq ninguno$ y $predecesores\_B[j] = ninguno$ entonces  $i$ y $j$ (predecesor de $j$ es $i$ y siguiente de $i$ es $j$). Iremos recorriendo $predecesores\_B$ desde $j$ y consistentemente conectar esos nodos con lo $predecesores$ y $siguientes$. El nuevo cliente final será el primero del $camion[j]$.
+	\item $predecesores[i] \neq ninguno$ y $predecesores\_B[j] \neq ninguno$ entonces  $i$ y $j$ (predecesor de $j$ es $i$ y siguiente de $i$ es $j$). Ahora no hay que invertir el orden, sólo copiamos desde el camión de $j$ todos los nodos en $predecesores\_B$ y $siguientes\_B$ que no sean nulls al los del camión $i$. El nuevo cliente final será el cliente final del $camion[j]$.
+\end{enumerate}
