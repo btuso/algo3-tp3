@@ -9,7 +9,7 @@ namespace greedy {
 
 		SortEachBucketByClosenessTo(buckets, warehouse);
 
-		int vertex_covered = 0;
+		unsigned int vertex_covered = 0;
 		vector<Truck> trucks;
 		trucks.push_back(Truck(warehouse, capacity));
 
@@ -110,7 +110,7 @@ namespace greedy {
 			// cout << "----";
 
 			vector<Point> routes = t.routes;
-			for(int i = 1; i < routes.size() - 1; i++){
+			for(unsigned int i = 1; i < routes.size() - 1; i++){
 				Point prev_point = routes[i - 1];
 				Point point = routes[i];
 

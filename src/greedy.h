@@ -9,6 +9,7 @@
 #include "auxiliares.h"
 #include <utility>
 #include <assert.h>
+#include <algorithm>
 
 using namespace std;
 
