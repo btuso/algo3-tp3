@@ -22,6 +22,10 @@ namespace sweep {
 	void TransformPointsFromCartesianToPolar(Point &warehouse, vector<Point> &points);
 
 	Clusters BuildClusters(vector<Point> &points, int max_stock);
+
+	vector<Truck> BuildRoutesFromClusters(Clusters &clusters, Point &warehouse, int max_stock);
+
+	Point PopClosestVertexTo(Cluster &cluster, Point &point);
 }
 
 #endif

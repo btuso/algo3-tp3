@@ -20,5 +20,7 @@ typedef vector<Cluster> Clusters;
 void RunAllTestsForSweep();
 void TestTransformPointsFromCartesianToPolar();
 void TestBuildClusters();
+void TestBuildRoutesFromClusters();
+void TestPopClosestVertexTo();
 
 #endif

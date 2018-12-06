@@ -5,6 +5,7 @@ namespace sweep {
 		TransformPointsFromCartesianToPolar(warehouse, points);
 		sort(points.begin(), points.end(), AngleComparator());
 		Clusters clusters = BuildClusters(points, max_stock);
+		return BuildRoutesFromClusters(clusters, warehouse, max_stock);
 	}
 
 	void TransformPointsFromCartesianToPolar(Point &warehouse, vector<Point> &points){
@@ -37,4 +38,33 @@ namespace sweep {
 
 		return clusters;
 	}
+
+	vector<Truck> BuildRoutesFromClusters(Clusters &clusters, Point &warehouse, int max_stock){
+		vector<Truck> trucks = { Truck(warehouse, max_stock) };
+
+		for(Cluster &cluster : clusters){
+			while(not cluster.empty()){
+				Truck &last_truck = trucks.back();
+				Point &last_visited = last_truck.LastVisited();
+
+				last_truck.visit(PopClosestVertexTo(cluster, last_visited));
+			}
+		}
+
+		return trucks;
+	}
+
+	Point PopClosestVertexTo(Cluster &cluster, Point &point){
+		sort(cluster.begin(), cluster.end(), DistanceToPointComparator(point));
+		Point closest = cluster.back();
+		cluster.erase(cluster.end() - 1);
+
+		return closest;
+	}
 }
+
+
+
+
+
+

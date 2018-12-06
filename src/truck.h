@@ -26,6 +26,10 @@ struct Truck {
 		stock_left = total_capacity - demanda;
 	};
 
+	Point& LastVisited(){
+		return routes.back();
+	}
+
 	void visit(int existente, int nuevo, int demanda){
 		if (predecesores[existente] == ninguno){
 			predecesores[existente] = nuevo;
