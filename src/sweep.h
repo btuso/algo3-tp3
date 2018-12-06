@@ -12,8 +12,6 @@
 
 using namespace std;
 
-typedef vector<Point> Bucket;
-typedef vector<Bucket> Buckets;
 typedef vector<Point> Cluster;
 typedef vector<Cluster> Clusters;
 
@@ -22,6 +20,8 @@ namespace sweep {
 	vector<Truck> solveCvrp(Point& warehouse, vector<Point> &points, int capacity);
 
 	void TransformPointsFromCartesianToPolar(Point &warehouse, vector<Point> &points);
+
+	Clusters BuildClusters(vector<Point> &points, int max_stock);
 }
 
 #endif

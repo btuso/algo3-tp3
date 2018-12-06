@@ -2,6 +2,7 @@
 
 void RunAllTestsForSweep(){
 	TestTransformPointsFromCartesianToPolar();
+	TestBuildClusters();
 }
 
 void TestTransformPointsFromCartesianToPolar(){
@@ -27,4 +28,24 @@ void TestTransformPointsFromCartesianToPolar(){
 		assert(fabs(second_point_expected_radius - points[1].radius) < EPSILON);
 
 	END_TEST
+}
+
+void TestBuildClusters(){
+	TEST
+
+	given("A list of cartesian points and some warehouse")
+		vector<Point> points = {Point(2, 0, 4, 0, 1/4), Point(3, 0, 3, 0, 1/3), 
+								Point(4, 0, 6, 0, 3/5), Point(1, 0, 4, 0, 3/4)};
+		int max_stock = 10;
+
+	when("Calling TransformPointsFromCartesianToPolar")
+		Clusters clusters = sweep::BuildClusters(points, max_stock);
+
+	then("The points should have their polar attributes loaded")
+		Clusters expected_clusters = {{Point(2, 0, 4, 0, 1/4), Point(3, 0, 3, 0, 1/3)}, 
+									  {Point(4, 0, 6, 0, 3/5), Point(1, 0, 4, 0, 3/4)}};
+
+		assert(expected_clusters == clusters);
+
+	END_TEST	
 }

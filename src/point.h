@@ -12,7 +12,10 @@ struct Point {
     float radius;
     float angle;
     
-    Point(float x, float y, int demand): x(x), y(y), demand(demand){}
+    Point(int x, int y, int demand): x(x), y(y), demand(demand){}
+
+    Point(int x, int y, int demand, float radius, float angle): x(x), y(y), 
+    	demand(demand), radius(radius), angle(angle){}
 
 	float DistanceTo(Point p) const{
 		return sqrt(pow(p.x - x, 2) + pow(p.y - y, 2));

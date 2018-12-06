@@ -19,5 +19,6 @@ typedef vector<Cluster> Clusters;
 
 void RunAllTestsForSweep();
 void TestTransformPointsFromCartesianToPolar();
+void TestBuildClusters();
 
 #endif

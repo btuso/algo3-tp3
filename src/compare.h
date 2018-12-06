@@ -14,9 +14,9 @@ struct DistanceToPointComparator{
 	Point p;
 };
 
-struct SweepComparator{
+struct AngleComparator{
 	bool operator()(const Point& lhs, const Point& rhs) const{
-		return lhs.angle > rhs.angle;
+		return lhs.angle < rhs.angle;
 	}
 };
 #endif
