@@ -49,6 +49,7 @@ namespace sweep {
 				last_truck.visit(PopClosestVertexTo(cluster, last_visited));
 			}
 
+			trucks.back().visit(warehouse); // chequear
 			trucks.push_back(Truck(warehouse, max_stock));
 		}
 
