@@ -5,13 +5,6 @@
 #include "test_utils.h"
 #include "../greedy.h"
 
-#define X 0
-#define Y 0
-
-#define WHATEVER_DEMAND 2
-#define WHATEVER_CAPACITY 2
-#define WHATEVER_WAREHOUSE Point(0, 0, 0)
-
 typedef vector<Point> Bucket;
 typedef vector<Bucket> Buckets;
 

@@ -62,9 +62,3 @@ namespace sweep {
 		return closest;
 	}
 }
-
-
-
-
-
-
