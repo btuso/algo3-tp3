@@ -60,4 +60,30 @@ namespace aux {
 			std::cout << std::endl;
 		}
 	}
+
+	int GetPointId(vector<Point> &points, Point &point){
+		unsigned int point_id = 0;
+		while(point_id < points.size()) {
+			if( points[point_id] == point )
+				return point_id + 1; // Ids start from 1, and the warehouse id is ignored
+			point_id++;
+		}
+		throw std::logic_error("GetPointId: No matching point");
+	}
+
+	void PrintTrucks(vector<Point> &points, Point &warehouse, vector<Truck> &trucks){
+		unsigned int truck_qty = trucks.size();
+		cout << truck_qty << "\n";
+
+		for(unsigned int i = 0; i < truck_qty; i++){
+			if (trucks[i].es_valido){
+				vector<int> point_ids;
+				for( Point& point : trucks[i].routes )
+					if( point != warehouse )
+						point_ids.push_back(GetPointId(points, point));
+				aux::print_vector(point_ids, cout, " ");
+				cout << endl;
+			}
+		}
+	}
 }

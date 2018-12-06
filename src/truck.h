@@ -30,6 +30,10 @@ struct Truck {
 		return routes.back();
 	}
 
+	bool empty(){
+		return routes.empty();
+	}
+
 	void visit(int existente, int nuevo, int demanda){
 		if (predecesores[existente] == ninguno){
 			predecesores[existente] = nuevo;
