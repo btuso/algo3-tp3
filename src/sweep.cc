@@ -2,9 +2,11 @@
 
 namespace sweep {
 	vector<Truck> solveCvrp(Point& warehouse, vector<Point> &points, int max_stock){
-		TransformPointsFromCartesianToPolar(warehouse, points);
-		sort(points.begin(), points.end(), AngleComparator());
-		Clusters clusters = BuildClusters(points, max_stock);
+		vector<Point> points_copy(points);
+		
+		TransformPointsFromCartesianToPolar(warehouse, points_copy);
+		sort(points_copy.begin(), points_copy.end(), AngleComparator());
+		Clusters clusters = BuildClusters(points_copy, max_stock);
 		return BuildRoutesFromClusters(clusters, warehouse, max_stock);
 	}
 
