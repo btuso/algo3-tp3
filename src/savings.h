@@ -18,7 +18,8 @@ namespace savings {
 	bool puedoUnirRutas(Truck &t1, Truck &t2, int punto_A, int punto_B);
 	void unirRutas(vector<Truck> &trucks, vector<int> &en_que_camion, int punto_A, int punto_B);
 
-	void imprimirCamiones(vector<Truck> &trucks, vector<Point> &points, Point& warehouse, vector<vector<float> > &distancias, vector<float> &distance_to_warehouse);
+	void armarCamiones(vector<Truck> &trucks, vector<Point> &points, vector<vector<float> > &distancias, vector<float> &distance_to_warehouse);
+	float armarRuta(Truck &t, vector<Point> &points, vector<vector<float> > &distancias, vector<float> &distance_to_warehouse);
 	float imprimirCamion(Truck &t,  vector<Point> &points, Point& warehouse, vector<vector<float> > &distancias, vector<float> &distance_to_warehouse);
 
 };

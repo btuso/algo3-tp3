@@ -48,6 +48,25 @@ int main(int argc, char** argv) {
 			cout << " done\n";
 		}
 		output.close();	
+	} else if (algorithm == "dataset"){ // Format dataset for plotting
+		ofstream output("out/" + input);
+		
+		ifstream dataset("resources/" +input);	
+		if( dataset.is_open() ){
+			cin.rdbuf(dataset.rdbuf());
+			auto input = ReadDataset();
+			Point warehouse = get<0>(input);
+			vector<Point> points = get<1>(input);
+			int capacity = get<2>(input);
+			output << capacity << "\n";
+			output << warehouse.to_string() << "\n";
+debug("asdasd")
+			for(unsigned int i = 0; i < points.size() - 1; i++)
+				 output << points[i].to_string() << "\n";
+			output << points.back().to_string();
+		}
+		output.close();	
+		dataset.close();
 	} else {
 		if ( algorithms.count(algorithm) == 0 ) {
 			cout << "Algoritmo invalido.\nOpciones: savings, greedy, sweep, otra, annealing\n"; 
@@ -84,12 +103,14 @@ void PrintTrucks(vector<Point> &points, Point &warehouse, vector<Truck> &trucks)
 	cout << truck_qty << "\n";
 
 	for(unsigned int i = 0; i < truck_qty; i++){
-		vector<int> point_ids;
-		for( Point& point : trucks[i].routes )
-			if( point != warehouse )
-				point_ids.push_back(GetPointId(points, point));
-		aux::print_vector(point_ids, cout, " ");
-		cout << endl;
+		if (trucks[i].es_valido){
+			vector<int> point_ids;
+			for( Point& point : trucks[i].routes )
+				if( point != warehouse )
+					point_ids.push_back(GetPointId(points, point));
+			aux::print_vector(point_ids, cout, " ");
+			cout << endl;
+		}		
 	}
 }
 

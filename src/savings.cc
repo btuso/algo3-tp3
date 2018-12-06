@@ -79,10 +79,10 @@ namespace savings {
 				
 			}
 		}
-
-		//imprimirCamiones(trucks, points, warehouse, distancias, distancia_a_deposito);
+		armarCamiones(trucks, points, distancias, distancia_a_deposito);
 		print("Y deberia ser " << (distancia_total - saving_total))
-		return	trucks;
+
+		return trucks;
 	}
 
 	void calcularDistancias(vector<vector<float> > &distances, vector<float> &distance_to_warehouse, vector<Point> &points, Point& warehouse, float &distancia_total){
@@ -128,13 +128,31 @@ namespace savings {
 		}
 		return distancia_recorrida;
 	}
-	void imprimirCamiones(vector<Truck> &trucks, vector<Point> &points, Point& warehouse, vector<vector<float> > &distancias, vector<float> &distance_to_warehouse){
-		float distancia_recorrida = 0;
-		for(Truck t : trucks){
-			distancia_recorrida += imprimirCamion(t, points, warehouse, distancias, distance_to_warehouse);	
+
+	float armarRuta(Truck &t, vector<Point> &points, vector<vector<float> > &distancias, vector<float> &distance_to_warehouse){
+		int cliente = t.cliente_final;
+		float distancia_recorrida = distance_to_warehouse[cliente];
+		t.routes.push_back(points[cliente]);
+		while(t.predecesores[cliente] != ninguno){
+			distancia_recorrida += distancias[cliente][t.predecesores[cliente]];
+			cliente = t.predecesores[cliente];
+			t.routes.push_back(points[cliente]);
 		}
+		distancia_recorrida += distance_to_warehouse[cliente];
+		return distancia_recorrida;
+	}
+
+	void armarCamiones(vector<Truck> &trucks, vector<Point> &points, vector<vector<float> > &distancias, vector<float> &distance_to_warehouse){
+		float distancia_recorrida = 0;
+		for(Truck &t : trucks){
+			if (t.es_valido){
+				distancia_recorrida += armarRuta(t, points, distancias, distance_to_warehouse);	
+			}
+		}
+
 		print("Distancia recorrida es " << distancia_recorrida)
 	}
+
 
 	bool puedoAgregarlo(Truck &t, int punto, int demanda){
 		return t.noEsInterno(punto) and t.hayEspacio(demanda);
