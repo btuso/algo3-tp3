@@ -101,12 +101,14 @@ void PrintTrucks(vector<Point> &points, Point &warehouse, vector<Truck> &trucks)
 	cout << truck_qty << "\n";
 
 	for(unsigned int i = 0; i < truck_qty; i++){
-		vector<int> point_ids;
-		for( Point& point : trucks[i].routes )
-			if( point != warehouse )
-				point_ids.push_back(GetPointId(points, point));
-		aux::print_vector(point_ids, cout, " ");
-		cout << endl;
+		if (trucks[i].es_valido){
+			vector<int> point_ids;
+			for( Point& point : trucks[i].routes )
+				if( point != warehouse )
+					point_ids.push_back(GetPointId(points, point));
+			aux::print_vector(point_ids, cout, " ");
+			cout << endl;
+		}		
 	}
 }
 
