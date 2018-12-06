@@ -26,13 +26,12 @@ namespace sweep {
 		int current_stock = max_stock;
 		
 		for(Point &p : points){
-			if(current_stock >= p.demand){
-				current_stock -= p.demand;
-			}else{
+			if(current_stock < p.demand){
 				current_stock = max_stock;
 				clusters.push_back(Cluster());
 			}
 
+			current_stock -= p.demand;
 			clusters.back().push_back(p);
 		}
 
@@ -49,6 +48,8 @@ namespace sweep {
 
 				last_truck.visit(PopClosestVertexTo(cluster, last_visited));
 			}
+
+			trucks.push_back(Truck(warehouse, max_stock));
 		}
 
 		return trucks;
