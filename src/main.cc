@@ -12,6 +12,7 @@
 #include "auxiliares.h"
 #include "savings.h"
 #include "greedy.h"
+#include "sweep.h"
 
 using namespace std; 
 
@@ -26,6 +27,7 @@ int main(int argc, char** argv) {
 	map<string, CvrpHeuristic> algorithms;
 	algorithms["savings"] = savings::solveCvrp;
 	algorithms["greedy"] = greedy::solveCvrp;
+	algorithms["sweep"] = sweep::solveCvrp;
 
 	if ( argc == 1 ) {
 		cout << "Se necesita pasar el algoritmo a usar como argumento.\nOpciones: savings, greedy, sweep, otra, annealing\n"; 

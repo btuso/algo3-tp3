@@ -6,6 +6,7 @@
 #include "vector"
 #include "point.h"
 #include "truck.h"
+#include "compare.h"
 #include "auxiliares.h"
 #include <utility>
 #include <assert.h>
@@ -30,7 +31,6 @@ namespace greedy {
 
 	Point PopNextVertex(Bucket* bucket, vector<Truck> &trucks);
 
-	void PrintResults(vector<Truck> &trucks);
 }
 
 #endif

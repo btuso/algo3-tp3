@@ -20,7 +20,6 @@ namespace greedy {
 			vertex_covered ++;
 		}
 
-//		PrintResults(trucks);
 		return trucks;
 	}
 
@@ -55,7 +54,7 @@ namespace greedy {
 
 	void SortEachBucketByClosenessTo(Buckets &buckets, Point &point){
 		for(Bucket& bucket : buckets){
-			std::sort(bucket.begin(), bucket.end(), DistanceToPointComparator(point));
+			sort(bucket.begin(), bucket.end(), DistanceToPointComparator(point));
 		}
 	}
 
@@ -92,27 +91,6 @@ namespace greedy {
 		Point next_vertex = bucket->back();
 		bucket->erase(bucket->end() - 1);
 		return next_vertex;
-	}
-
-	void PrintResults(vector<Truck> &trucks){
-		// cout << "#trucks = " << trucks.size() << endl;
-		int sum = 0;
-
-		for(Truck t : trucks){
-			// cout << "quedó con " << t.stock_left << " de capacidad" << endl;
-			aux::print_vector(t.routes);
-			// cout << "----";
-
-			vector<Point> routes = t.routes;
-			for(unsigned int i = 1; i < routes.size() - 1; i++){
-				Point prev_point = routes[i - 1];
-				Point point = routes[i];
-
-				sum += prev_point.DistanceTo(point);
-			}
-		}
-
-		// cout << "sum = " << sum << endl;
 	}
 }
 

@@ -3,12 +3,20 @@
 
 #include <utility>
 
-class CompareDistance
-{
-public:
-    bool operator()(std::pair<int, float> p1, std::pair<int, float> p2) {
-        return p1.second > p2.second;
-    }
+struct DistanceToPointComparator{
+	DistanceToPointComparator(const Point& _p) : p(_p) {}
 
+	bool operator()(const Point& lhs, const Point& rhs) const{
+		// uso > y no < para que los mas cercanos a p queden al final del vector y poder hacerles pop()
+		return p.DistanceTo(lhs) > p.DistanceTo(rhs);
+	}
+
+	Point p;
+};
+
+struct SweepComparator{
+	bool operator()(const Point& lhs, const Point& rhs) const{
+		return lhs.angle > rhs.angle;
+	}
 };
 #endif
