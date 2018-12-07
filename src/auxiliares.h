@@ -18,6 +18,8 @@
 namespace aux {
 	std::ostream& operator<<(std::ostream &strm, const Point &p);
 
+	float mod(float a, float mod);
+
 	int min(int a, int b);
 
 	int max(int a, int b);

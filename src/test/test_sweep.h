@@ -2,7 +2,6 @@
 #define TEST_SWEEP_H_
 
 #include <utility>
-#include <math.h>
 #include "test_utils.h"
 #include "../sweep.h"
 
@@ -14,5 +13,7 @@ void TestTransformPointsFromCartesianToPolar();
 void TestBuildClusters();
 void TestBuildRoutesFromClusters();
 void TestPopClosestVertexTo();
+void TestFindSweepStartingAngle1();
+void TestFindSweepStartingAngle2();
 
 #endif

@@ -6,6 +6,7 @@
 #include <assert.h>
 #include <stdbool.h>
 #include <string.h>
+#include <math.h>
 
 #define TEST printf("%s... ", __func__);
 #define END_TEST printf("PASSED\n");
@@ -24,5 +25,7 @@
 #define WHATEVER_DEMAND 2
 #define WHATEVER_CAPACITY 2
 #define WHATEVER_WAREHOUSE Point(0, 0, 0)
+
+bool fequals(float a, float b);
 
 #endif

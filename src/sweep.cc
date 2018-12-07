@@ -6,6 +6,8 @@ namespace sweep {
 		
 		TransformPointsFromCartesianToPolar(warehouse, points_copy);
 		sort(points_copy.begin(), points_copy.end(), AngleComparator());
+		float sweep_starting_angle = FindSweepStartingAngle(points_copy);
+		sort(points_copy.begin(), points_copy.end(), AngleComparator(sweep_starting_angle));
 		Clusters clusters = BuildClusters(points_copy, max_stock);
 		return BuildRoutesFromClusters(clusters, warehouse, max_stock);
 	}
@@ -20,6 +22,32 @@ namespace sweep {
 			p.angle = atan2(relative_y, relative_x);
 			p.radius = sqrt(pow(relative_x, 2) + pow(relative_y, 2));
 		}
+	}
+
+	float FindSweepStartingAngle(vector<Point> &points){
+		Point prev = points[0];
+		float greatest_angle_gap = 0;
+		float ray_angle = 0;
+
+		for(unsigned int i = 1; i <= points.size(); i++){
+			unsigned int index = i % points.size();
+			Point current = points[index];
+
+			float gap = 0;
+			if(prev.angle < current.angle)
+				gap = fabs(prev.angle - current.angle);
+			else
+				gap = (2 - prev.angle + current.angle);
+
+			if(gap > greatest_angle_gap){
+				greatest_angle_gap = gap;
+				ray_angle = aux::mod((prev.angle + gap / 2), 2);
+			}
+
+			prev = current;
+		}
+
+		return ray_angle;
 	}
 
 	Clusters BuildClusters(vector<Point> &points, int max_stock){

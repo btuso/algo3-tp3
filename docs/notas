@@ -9,3 +9,10 @@
 [√] 2. Ordeno el vector de puntos por el atributo polar "ángulo"
 [√] 3. Construir clusters sweepeando y llenando la capacidad. Cuando se completa una capacidad o no se encuentra un vértice satisfacible, inmediatamente se retorna al depósito. 
 [ ] 4. (?) Hacer alguna heurística de swapping entre clusters vecinos
+[√] 5. Generar rutas aplicando la heurística constructiva Nearest Neighbours
+
+	Informe:
+	[ ] Mencionar pétalos
+
+	Casos negativos:
+	[ ] Vueltas alejadas por no hacer tabú search

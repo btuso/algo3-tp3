@@ -2,6 +2,7 @@
 #define COMPARE_H
 
 #include <utility>
+#include "auxiliares.h"
 
 struct DistanceToPointComparator{
 	DistanceToPointComparator(const Point& _p) : p(_p) {}
@@ -15,8 +16,14 @@ struct DistanceToPointComparator{
 };
 
 struct AngleComparator{
+	AngleComparator(float offset) : offset(offset) {}
+
+	AngleComparator(){}
+
 	bool operator()(const Point& lhs, const Point& rhs) const{
-		return lhs.angle < rhs.angle;
+		return aux::mod(lhs.angle - offset, 2) < aux::mod(rhs.angle - offset, 2);
 	}
+
+	float offset = 0.0;
 };
 #endif
