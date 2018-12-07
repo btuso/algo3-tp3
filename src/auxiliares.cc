@@ -1,5 +1,6 @@
 #include "auxiliares.h"
 
+#include <stdexcept>
 #include <iostream>
 #include <cmath>
 #include <assert.h> 
