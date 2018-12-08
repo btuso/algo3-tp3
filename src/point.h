@@ -6,15 +6,15 @@
 #include <string>
 
 struct Point {
-    int x;
-    int y;
+    float x;
+    float y;
     int demand;
     float radius;
     float angle;
+    
+    Point(float x, float y, int demand): x(x), y(y), demand(demand){}
 
-    Point(int x, int y, int demand): x(x), y(y), demand(demand){}
-
-    Point(int x, int y, int demand, float radius, float angle): x(x), y(y),
+    Point(float x, float y, int demand, float radius, float angle): x(x), y(y), 
     	demand(demand), radius(radius), angle(angle){}
 
 	float DistanceTo(Point p) const{
