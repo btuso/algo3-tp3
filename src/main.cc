@@ -203,17 +203,11 @@ void MeasureAlgorithm(string name, CvrpHeuristic function, string inputFile, ofs
 	cout << "Start input " << inputFile << "\n";
 	ifstream dataset("resources/pg/" + inputFile);	
 	if( dataset.is_open() ){
-		// cout << "Dataset open\n";
 		cin.rdbuf(dataset.rdbuf());
-		// cout << "read buffer\n";
 		tuple<Point, vector<Point>, int> input = ReadDataset();
-		cout << "read dataset \n";
 		Point warehouse = get<0>(input);
-		// cout << "got warehouse\n";
 		vector<Point> points = get<1>(input);
-		// cout << "got points\n";
 		int capacity = get<2>(input);
-		// cout << "got capacity\n";
 		for (unsigned int pasada = 1; pasada < 2; pasada++) {
 			cout << "\tStart: " << pasada << "\n";
 			unsigned long start, end;
@@ -252,7 +246,6 @@ tuple<Point, vector<Point>, int> ReadDataset() {
 	cin >> x;
 	cin >> y;
 	Point warehouse(x, y, 0);
-	cout << "got warehouse\n";
 	vector<Point> points;
 	for(int i = 1; i < dimension; ++i){
 		cin >> ignore; // Id
@@ -260,23 +253,15 @@ tuple<Point, vector<Point>, int> ReadDataset() {
 		cin >> y;
 		points.push_back(Point(x, y, 0));
 	}
-	cout << "got points\n";
 	cin.ignore(); 			// Newline
 	getline( cin, ignore );		// Demand Section
 	getline( cin, ignore );		// warehouse
-	cout << "ignore: " << ignore << "\n";
 	for(int i = 0; i < dimension - 1; ++i){
 		int demand;
 		cin >> ignore; // Id
 		cin >> demand;
 		points[i].demand = demand;
-		cout << "i: " << i << " demand: " << demand <<"\n";
 	}
-	cout << "got capacity\n";
-	cout << warehouse.x << " " << warehouse.y << "\n";
-	cout << points.size() << "\n";
-	cout << capacity << "\n";
 	tuple<Point, vector<Point>, int> res = std::make_tuple(warehouse, points, capacity);
-	cout << "got res\n";
 	return res;
 }
