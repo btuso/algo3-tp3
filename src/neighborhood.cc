@@ -13,7 +13,7 @@ Neighborhood::Neighborhood(const Point &warehouse, std::vector<Truck> &trucks) :
 }
 
 float Neighborhood::NextNeighbor(){
-	if( not NeighborsLeft() ) 
+	if( not HasNeighborsLeft() ) 
 		throw std::logic_error("No more neighbors to explore");
 	
 	if(  std::next(current_interchange, 1) == interchanges.end() ){
@@ -54,7 +54,7 @@ float Neighborhood::NextNeighbor(){
 	return cost; 
 }
 
-bool Neighborhood::NeighborsLeft() const {
+bool Neighborhood::HasNeighborsLeft() const {
 	return not (std::next(current_trucks, 1) == truckCombinations.end() and std::next(current_interchange, 1) == interchanges.end());
 }
 
