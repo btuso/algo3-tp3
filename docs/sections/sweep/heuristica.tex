@@ -1,0 +1,55 @@
+\subsection{Heurística constructiva de cluster-first, route-second, clusterizando con algoritmo de Sweeping}
+\subsubsection{El algoritmo}
+La solución al Problema de Enrutamiento de Vehículos con Capacidad mediante este algoritmo se divide en dos partes fundamentales: \textbf{1.} la clusterización y \textbf{2.} la búsqueda de un camino mínimo. La clusterización de los vértices de un grafo puede ser llevada a cabo de distintas maneras. En trabajos anteriores hemos utilizado el algoritmo de Kruskal y el algoritmo de Prim para obtener árboles generadores mínimos sobre los cuales se ejercían exploraciones vecinales y consecuentes podas hasta obtener una clusterización válida. Otros enfoques, por ejemplo, utilizan técnicas como la clusterización por $k-medians$ para agrupar nodos cercanos. Las alternativas son enormes. En este documento utilizamos el \textit{Sweep Clustering Algorithm} para producir los conjuntos de vértices euclidianamente cercanos.
+
+\vskip 8pt
+
+El concepto de \textit{sweeping} es fácil. Será conveniente distribuir los nodos en representación polar $(r, \theta)$ donde $r$ es la distancia del vértice al origen de coordenadas y $\theta$ el ángulo polar. De esta manera, – desde el nodo depósito – comenzamos proyectando un haz de luz y con él realizaremos un barrido en sentido anti-horario. Guardaremos en un conjunto todos los vértices que el haz vaya tocando hasta que la suma de todas sus demandas supere la capacidad de un camión. Cuando esto suceda, terminaremos de agregar elementos a este conjunto y crearemos otro donde seguiremos introduciendo nodos que se crucen con nuestro haz hasta volver a superar la capacidad máxima de un camión. Este procedimiento se sigue repitiendo hasta que no queden más nodos por asignar a un conjunto. Estos conjuntos \textbf{representan los clusters} y lo que estamos agrupando son \textbf{nodos angularmente cercanos entre sí} que \textbf{puedan ser satisfechos por un sólo camión}. Es decir, en nuestro esquema, satisfacer cada cluster será responsabilidad de uno y sólo un camión. Esta heurística pretende agrupar todos los clientes cercanos minimizando la distancia recorrida por los camiones. Es necesario notar que la forma final de los clusters tienden a tener un parecido natural a los pétalos de una flor. En general, las rutas con forma de pétalos son una característica geométrica muy común en las soluciones del Problema de Enrutamiento de Vehículos \textit{(Ryan et al. 1993a)}.
+
+\vskip 8pt
+
+Por último, ya sabemos qué vértices serán visitados por qué camiones, sin embargo, no sabemos en qué orden. Este problema es una instancia del \textbf{Problema del Viajante} y se decidió atacarla con \textbf{Nearest Neighbours Algorithm}, una heurística constructiva cuya solución fabrica de manera golosa que, como el nombre lo indica, consiste en visitar el vecino más cercano. A continuación procederemos a describir los pasos del algoritmo general:
+
+\begin{description}
+\item[Paso 1.] Polarización de las coordenadas cartesianas
+\item[Paso 2.] Ordenamiento creciente de las coordenadas por sus ángulos polares
+\item[Paso 3.] Averiguación del ángulo de \textit{menor densidad}
+\item[Paso 4.] Ordenamiento creciente de las coordenadas por sus ángulos polares desde el \textit{ángulo de menor densidad}
+\item[Paso 5.] Construcción de los \textit{clusters} mediante un \textit{sweeping} en sentido anti-horario
+\item[Paso 6.] Aplicación de la heurística \textit{Nearest Neighbours} sobre cada cluster para la generación de rutas
+\end{description}
+
+Hay un detalle extra en la lógica de nuestro algoritmo llamado el \textbf{ángulo de menor densidad}. Para explicar esta medida, primer debemos explicar sus causas: en nuestro esquema inicial, planteamos un barrido de nodos para el armado de los \textit{clusters}. Lo que hemos omitido hasta ahora es que este barrido debe comenzar en algún lugar, o específicamente, un ángulo. Si no seleccionásemos cuidadosamente este ángulo y decidiésemos iniciar el barrido en un ángulo $\theta$, podría suceder que la solución óptima (que intentamos aproximar heurísticamente) contenga un cluster que es partido a la mitad por el haz proyectado desde el depósito en el ángulo $\theta$, y debido al movimiento natural del sweeping – es decir, antihorario – sólo se registre una mitad del cluster y no la otra que \textbf{hubiera quedado del lado horario} de $\theta$. Esto concluiría en la concepción de otro cluster distinto al óptimo y, en consecuencia, la posterior alteración del resto de la clusterización de los nodos. Por esta razón introducimos la noción de \textbf{sweeping adaptativo} que consiste en comenzar el barrido desde el ángulo \textbf{menos favorable} para la ocurriencia de estas falencias en nuestro algoritmo, pues minimiza la posibilidad de interrumpir (o atravezar) un cluster óptimo con nuestro haz al proyectarlo en un ángulo donde se deduce heurísticamente una baja densidad poblacional de nodos. Este ángulo es el ángulo de menor densidad y se entiende como el ángulo que atraviesa a la mitad \textbf{el espacio más grande entre dos vértices consecutivos} del grafo. En otras palabras, para calcular este ángulo encontramos la distancia más grande entre dos nodos angularmente consecutivos y comenzamos nuestro sweeping ahí. Si $\theta_{1}$ y $\theta_{2}$ son dos vértices consecutivos con la mayor separación angular del grafo donde $\theta_{1}$ es encontrado primero por el barrido, definimos como $\alpha$ el ángulo de menor densidad que equivale a:
+
+\begin{center}
+\begin{displaymath}
+\alpha = \left\{
+\begin{array}{l l}
+			\alpha_{1} + \frac{|\alpha_{1} - \alpha_{2}|}{2} & \text{si }\alpha_{1} < \alpha_{2}\\
+			\alpha_{1} + \frac{|2*\pi - \alpha_{1} + \alpha_{2}|}{2} & \text{sino}\\
+\end{array}
+\right.
+\end{displaymath}
+\end{center}
+
+\subsubsection{Pseudo-código}
+A continuación presentamos nuestras implementaciones con sus respectivas complejidades:
+
+\input{sections/sweep/heuristica-cod-cvrp}
+Esta función representa la globalidad de la heurística. Como fue mencionado en la introducción, el algoritmo comienza polarizando los puntos que inicialmente están representados en coordenadas cartesianas. Esto se realiza en $\bigO(n)$ pues se deben iterar todos los nodos en el grafo y, a partir de sus coordenadas $x$ e $y$, calcular sus valores polares y radiales. Luego, como cada vértice ya está polarizado, podemos ordenar cada uno por su cercanía al ángulo $0$ en radianes.
+
+\input{sections/sweep/heuristica-cod-findsweepangle}
+Ahora que sabemos qué vértice viene después de cuál en el barrido, averiguamos en qué ángulo debemos iniciar el \textit{sweep}. Esto lo hacemos en $\Theta(n)$ porque comparamos todos los vértices con su siguiente. Es importante notar el manejo del caso borde cuando se compara el vértice último vértice de la lista con el primero, pues si bien euclidianamente pueden estar casi al lado, al examinar sus ángulos podemos ver una diferencia enorme (pues el que esté por encima del eje $x$ tendrá un ángulo cercano a $0$, pero el que esté por debajo, a $2$). Esta situación se da cuando el primer vértice en el recorrido del \textit{sweep} tiene un ángulo mayor al segundo vértice detectado. Luego del cálculo, estamos en condiciones de generar los clusters porque ya disponemos del ángulo de inicio del barrido.
+
+\input{sections/sweep/heuristica-cod-buildclusters}
+Aquí es donde se realiza el barrido cuyo costo asintótico temporal es exactamente $\Theta(n)$ porque – devuelta – se recorren todos los nodos. Aquí es donde sucede la distribución de vértices a clusters tal que todos los vértices en un cluster son: \textbf{(a)} angularmente consecutivos y \textbf{(b)} satisfacibles por un sólo camión, como ya fue explicado en la introducción al algoritmo.
+
+\input{sections/sweep/heuristica-cod-buildroutes}
+La complejidad de este algoritmo es $\bigO(n^2*log(n))$ se iteran todos los vértices contenidos en todos los clusters que da una suma total de $n$ nodos pues no hay vértices que no esten en el grafo y la totalidad de los nodos está distribuida en los clusters. Luego, como \textbf{ExtraerVérticeMásCercanoA} tiene complejidad $\bigO(n*log(n))$ y se ejecuta $n$ veces, la complejidad final es la propuesta.
+
+\input{sections/sweep/heuristica-cod-popclosestvertex}
+Finalmente, la función \textbf{ExtraerVérticeMásCercanoA} toma un cluster y un punto, ordena decrecientemente el cluster por distancia euclideana a $punto$, toma el último elemento de la lista (es decir, el más cercano a $punto$) y lo retorna sin no antes eliminarlo de la lista en $\bigO(1)$ porque es el último elemento de la lista. La complejidad de esta función queda definida por el ordenamiento $\bigO(n*log(n))$ de la lista en la línea $2$.
+
+\subsubsection{Conclusiones}
+
+\subsubsection{Instancias con soluciones no óptimas}

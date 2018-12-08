@@ -41,6 +41,8 @@
   \OldStatex\hskip\dimexpr#1\@tempdima\relax}
 \makeatother
 
+\newcommand{\bigO}{\mathcal{O}}
+
 \usepackage{color} % para snipets de codigo coloreados
 \usepackage{fancybox}  % para el sbox de los snipets de codigo
 \usepackage[shortlabels]{enumitem} % para a) b) c) ... en enums
@@ -168,9 +170,14 @@
 \tableofcontents
 \newpage
 
+Se arregla de la siguiente manera, habíamos probado que $G_{0},..., G_{n}$ son conexos tomando como vertice de partida a $w_{1}$. En este caso llamamos $v_{1}$ a $w_{n}$ pues $G_{n-1}=G-\{w_n\}$ es conexo.
+Ahora si repetimos el procedimiento pero tomando $w_{n}=w'_{1}$ como el vertice de partida, vamos a tener otro orden BFS, $w'_{1},...,w'_{n}$ y como el mismo razonamiento $G - \{w'_n\}$ es conexo. Claramente, $w_{n}=w'_{1}$ es distinto de $w'_{n}$. 
+Por lo tanto podemos tomar $v_{2}=w'_{n}$.
+
 \input{sections/introduccion}
 \input{sections/heuristicas}
 \input{sections/experimentacion}
+\input{sections/referencias}
 
 \end{document}
 

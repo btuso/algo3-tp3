@@ -2,7 +2,7 @@
 #define AUXILIARES_H_
 
 #define DEBUG true
-#define PRINT true 
+#define PRINT false
 #define print(x) if( PRINT ) std::cout << x << "\n";
 #define debug(x) if( DEBUG ) std::cout << x << "\n";
 
@@ -13,9 +13,12 @@
 
 #include "edge.h"
 #include "point.h"
+#include "truck.h"
 
 namespace aux {
 	std::ostream& operator<<(std::ostream &strm, const Point &p);
+
+	float mod(float a, float mod);
 
 	int min(int a, int b);
 
@@ -41,6 +44,10 @@ namespace aux {
 	void print_edges(const std::vector<Edge> &S);
 
 	void print_buckets(const std::vector<std::vector<Point>>& buckets);
+
+	int GetPointId(vector<Point> &points, Point &point);
+
+	void PrintTrucks(vector<Point> &points, Point &warehouse, vector<Truck> &trucks);
 }
 
 #endif

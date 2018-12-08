@@ -5,6 +5,8 @@ void RunAllTestsForSweep(){
 	TestBuildClusters();
 	TestBuildRoutesFromClusters();
 	TestPopClosestVertexTo();
+	TestFindSweepStartingAngle1();
+	TestFindSweepStartingAngle2();
 }
 
 void TestTransformPointsFromCartesianToPolar(){
@@ -24,10 +26,10 @@ void TestTransformPointsFromCartesianToPolar(){
 		float second_point_expected_angle = M_PI;
 		float second_point_expected_radius = 2;
 
-		assert(fabs(first_point_expected_angle - points[0].angle) < EPSILON);
-		assert(fabs(first_point_expected_radius - points[0].radius) < EPSILON);
-		assert(fabs(second_point_expected_angle - points[1].angle) < EPSILON);
-		assert(fabs(second_point_expected_radius - points[1].radius) < EPSILON);
+		assert(fequals(first_point_expected_angle, points[0].angle));
+		assert(fequals(first_point_expected_radius, points[0].radius));
+		assert(fequals(second_point_expected_angle, points[1].angle));
+		assert(fequals(second_point_expected_radius, points[1].radius));
 
 	END_TEST
 }
@@ -78,6 +80,40 @@ void TestPopClosestVertexTo(){
 
 	then("The points should have their polar attributes loaded")
 		assert(closest == result);
+
+	END_TEST
+}
+
+void TestFindSweepStartingAngle1(){
+	TEST
+
+	given("A list of angles")
+		vector<Point> angles = {Point(0, 0, 0, 0, 0.2), Point(1, 0, 0, 0, 0.6), Point(2, 0, 0, 0, 1.7),
+								Point(3, 0, 0, 0, 1.9)};
+
+	when("Calling FindMaxAngleSeparation")
+		float starting_angle = sweep::FindSweepStartingAngle(angles);
+
+	then("The points should have their polar attributes loaded")
+		float expected = 1.15;
+		assert(fequals(expected, starting_angle));
+
+	END_TEST
+}
+
+void TestFindSweepStartingAngle2(){
+	TEST
+
+	given("A list of angles")
+		vector<Point> angles = {Point(0, 0, 0, 0, 0.2), Point(1, 0, 0, 0, 0.6), Point(2, 0, 0, 0, 1.0),
+								Point(3, 0, 0, 0, 1.4)};
+
+	when("Calling FindMaxAngleSeparation")
+		float starting_angle = sweep::FindSweepStartingAngle(angles);
+
+	then("The points should have their polar attributes loaded")
+		float expected = 1.8;
+		assert(fequals(expected, starting_angle));
 
 	END_TEST
 }

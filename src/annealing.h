@@ -4,11 +4,11 @@
 #include "vector"
 #include "point.h"
 #include "truck.h"
-#include "auxiliares.h"
 
 namespace annealing {
 
-	vector<Truck> solveCvrp(Point& warehouse, vector<Point> &points, int capacity);
+	std::vector<Truck> solveCvrp(Point& warehouse, vector<Point> &points, int capacity);
+
 }
 
 #endif

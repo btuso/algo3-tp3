@@ -1,0 +1,32 @@
+\begin{algorithm}[H]
+\caption{\Comment $\mathcal{O}(n^2*log(n))$}
+\begin{algorithmic}[1]
+\Function{resolverCVRP}{Punto $deposito$, Conjunto de puntos $puntos$, Entero $capacidad$, Entero $K$}
+	\State \textbf{Polarizar} $puntos$
+	\Comment $\mathcal{O}(n)$
+	
+	\Statex
+
+	\State \textbf{Ordenar} $puntos$ crecientemente por ángulo polar
+	\Comment $\mathcal{O}(n*log(n))$
+
+	\State $\alpha \gets $ \textbf{CalcularÁnguloDeSweeping}$(puntos)$
+	\Comment $\mathcal{O}(n)$
+
+	\State \textbf{Ordenar} $puntos$ crecientemente por cercanía polar a $\alpha$
+	\Comment $\mathcal{O}(n*log(n))$
+
+	\Statex
+
+	\State \textbf{Lista de clusters} $clusters \gets $ \textbf{ConstruirClusters}$(puntos, capacidad)$
+	\Comment $\mathcal{O}(n)$
+
+	\State \textbf{Rutas} $rutas \gets$ \textbf{ConstruirRutasAPartirDeClusters}$(clusters, deposito, capacidad)$
+	\Comment $\mathcal{O}(n^2*log(n))$
+	
+	\Statex
+	
+	\State \Return $rutas$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}

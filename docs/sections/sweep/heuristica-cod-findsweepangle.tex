@@ -1,0 +1,23 @@
+\begin{algorithm}[H]
+\caption{\Comment $\mathcal{O}(n)$}
+\begin{algorithmic}[1]
+\Function{CalcularÁnguloDeSweeping}{Lista de puntos $puntos$}
+	\State \textbf{Punto} $previo \gets puntos[0]$
+	\State \textbf{Punto flotante} $\alpha$
+	\State
+	\For{Entero $i \gets 1 \dots |puntos|$}
+	\Comment $\mathcal{O}(n)$
+
+		\State \textbf{Entero} $index \gets i \ \% \ |puntos|$
+		\State \textbf{Punto} $actual \gets puntos[index]$
+		\Statex
+		\If{distancia angular entre $previo$ y $actual$ es la más alta hasta ahora}
+			\State $\alpha \gets $ ángulo medio entre $previo$ y $actual$
+			\Comment $\mathcal{O}(1)$
+		\EndIf
+	\EndFor
+	\Statex
+	\State \Return $\alpha$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}

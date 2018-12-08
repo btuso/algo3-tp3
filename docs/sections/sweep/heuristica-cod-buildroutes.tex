@@ -1,0 +1,27 @@
+\begin{algorithm}[H]
+\caption{\Comment $\mathcal{O}(n^2*log(n))$}
+\begin{algorithmic}[1]
+\Function{ConstruirRutasAPartirDeClusters}{Lista de Clusters $clusters$, Punto $dep\acute{o}sito$, Entero $capacidad$}
+	\State \textbf{Lista de camiones} $camiones$
+	\State Agregar a $camiones$ un camión que comienza en $dep\acute{o}sito$ con capacidad $capacidad$
+	\Statex
+	\For{$cluster$ en $clusters$}
+		\While{$clusters$ no sea vacío}
+			\State \textbf{Camión} $\acute{u}ltimo\_cami\acute{o}n \gets$ último camión agregado en $camiones$
+			\State \textbf{Punto} $\acute{u}ltimo\_punto \gets$ último nodo visitado por $acute{u}ltimo\_cami\acute{o}n$
+			\Statex
+			\State \textbf{Punto} $siguiente\_punto \gets$ 
+			\Statex[5] \textbf{ExtraerVérticeMásCercanoA}$(cluster, \acute{u}ltimo\_punto)$
+			\Comment $\mathcal{O}(n*log(n))$
+
+			\State \textbf{Visitar} $siguiente\_punto$ con $\acute{u}ltimo\_cami\acute{o}n$
+		\EndWhile
+		\Statex
+		\State \textbf{Visitar} $dep\acute{o}sito$ con $\acute{u}ltimo\_cami\acute{o}n$
+		\State Agregar a $camiones$ un camión que empieza en $dep\acute{o}sito$ con capacidad $capacidad$
+	\EndFor
+	\Statex
+	\State \Return $camiones$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}

@@ -82,6 +82,11 @@ namespace savings {
 		armarCamiones(trucks, points, distancias, distancia_a_deposito);
 		print("Y deberia ser " << (distancia_total - saving_total))
 
+		for( unsigned int i = trucks.size() - 1; i > 0; i-- ){
+			if( trucks[i].empty() )
+				trucks.erase(trucks.begin() + i);
+		}
+
 		return trucks;
 	}
 

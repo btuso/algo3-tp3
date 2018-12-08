@@ -1,6 +1,5 @@
 #include <iostream> 
 #include <fstream> 
-#include <stdexcept>
 
 #include "vector"
 #include "tuple"
@@ -13,6 +12,7 @@
 #include "savings.h"
 #include "greedy.h"
 #include "sweep.h"
+#include "annealing.h"
 
 using namespace std; 
 
@@ -20,7 +20,6 @@ typedef std::vector<Truck> (* CvrpHeuristic) (Point& warehouse, std::vector<Poin
 
 void MeasureAlgorithm(string name, CvrpHeuristic function, string input, ofstream &output);
 tuple<Point, vector<Point>, int> ReadDataset(); 
-void PrintTrucks(vector<Point> &points, Point& warehouse, vector<Truck> &trucks);
 
 
 int main(int argc, char** argv) { 
@@ -28,6 +27,7 @@ int main(int argc, char** argv) {
 	algorithms["savings"] = savings::solveCvrp;
 	algorithms["greedy"] = greedy::solveCvrp;
 	algorithms["sweep"] = sweep::solveCvrp;
+	algorithms["annealing"] = annealing::solveCvrp;
 
 	if ( argc == 1 ) {
 		cout << "Se necesita pasar el algoritmo a usar como argumento.\nOpciones: savings, greedy, sweep, otra, annealing\n"; 
@@ -60,7 +60,6 @@ int main(int argc, char** argv) {
 			int capacity = get<2>(input);
 			output << capacity << "\n";
 			output << warehouse.to_string() << "\n";
-debug("asdasd")
 			for(unsigned int i = 0; i < points.size() - 1; i++)
 				 output << points[i].to_string() << "\n";
 			output << points.back().to_string();
@@ -81,38 +80,12 @@ debug("asdasd")
 			Point warehouse = get<0>(input);
 			vector<Point> points = get<1>(input);
 			auto solution = heuristic(warehouse, points, get<2>(input));
-			PrintTrucks(points, warehouse, solution);
+			aux::PrintTrucks(points, warehouse, solution);
 		}
 		dataset.close(); 
 	}
 	return 0; 
 } 
-
-int GetPointId(vector<Point> &points, Point &point){
-	unsigned int point_id = 0;
-	while(point_id < points.size()) {
-		if( points[point_id] == point )
-			return point_id + 1; // Ids start from 1, and the warehouse id is ignored
-		point_id++;
-	}
-	throw std::logic_error("GetPointId: No matching point");
-} 
-
-void PrintTrucks(vector<Point> &points, Point &warehouse, vector<Truck> &trucks){
-	unsigned int truck_qty = trucks.size();	
-	cout << truck_qty << "\n";
-
-	for(unsigned int i = 0; i < truck_qty; i++){
-		if (trucks[i].es_valido){
-			vector<int> point_ids;
-			for( Point& point : trucks[i].routes )
-				if( point != warehouse )
-					point_ids.push_back(GetPointId(points, point));
-			aux::print_vector(point_ids, cout, " ");
-			cout << endl;
-		}		
-	}
-}
 
 void MeasureAlgorithm(string name, CvrpHeuristic function, string input, ofstream &output){
 	ifstream dataset(input);	
@@ -163,7 +136,7 @@ tuple<Point, vector<Point>, int> ReadDataset() {
 	cin.ignore(); 			// Newline
 	getline( cin, ignore );		// Demand Section
 	getline( cin, ignore );		// warehouse
-	for(int i = 0; i < dimension; ++i){
+	for(int i = 0; i < dimension - 1; ++i){
 		int demand;
 		cin >> ignore; // Id
 		cin >> demand;
