@@ -1,0 +1,24 @@
+\begin{algorithm}[H]
+\caption{\Comment $\mathcal{O}(n)$}
+\begin{algorithmic}[1]
+\Function{ConstruirClusters}{Lista de puntos $puntos$, Entero $capacidad$}
+	\State \textbf{Lista de Cluster} $clusters \gets \varnothing$
+	\State $clusters \gets \{\text{Nuevo \textbf{cluster} vacío}\}$
+	\State \textbf{Entero} $stock\_actual \gets capacidad$
+	\Statex
+	\For{Punto $p$ en $puntos$}
+	\Comment $\mathcal{O}(n)$
+	
+		\If{$stock\_actual < p.demanda$}
+			\State $stock\_actual \gets capacidad$
+			\State $clusters \gets \{\text{Nuevo \textbf{cluster} vacío}\}$
+		\EndIf
+		\Statex
+		\State $stock\_actual \gets stock\_actual - p.demanda$
+		\State Insertar $p$ en el último cluster agregado a $clusters$
+	\EndFor
+	\Statex
+	\State \Return $clusters$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}

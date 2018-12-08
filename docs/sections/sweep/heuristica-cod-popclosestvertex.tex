@@ -1,0 +1,17 @@
+\begin{algorithm}[H]
+\caption{\Comment $\mathcal{O}(n)$}
+\begin{algorithmic}[1]
+\Function{ExtraerVérticeMásCercanoA}{Cluster $cluster$, Punto $punto$}
+	\State \textbf{Ordenar} decrecientemente los nodos de $cluster$ por cercanía angular a $punto$
+	\Comment $\mathcal{O}(n*log(n))$
+
+	\State \textbf{Punto} $m\acute{a}s\_cercano \gets$ último elemento de $cluster$
+	\Comment $\mathcal{O}(1)$
+
+	\State $cluster \gets cluster - \{m\acute{a}s\_cercano\}$
+	\Comment $\mathcal{O}(1)$
+	\Statex
+	\State \Return $m\acute{a}s\_cercano$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
