@@ -50,6 +50,17 @@ La complejidad de este algoritmo es $\bigO(n^2*log(n))$ se iteran todos los vér
 \input{sections/sweep/heuristica-cod-popclosestvertex}
 Finalmente, la función \textbf{ExtraerVérticeMásCercanoA} toma un cluster y un punto, ordena decrecientemente el cluster por distancia euclideana a $punto$, toma el último elemento de la lista (es decir, el más cercano a $punto$) y lo retorna sin no antes eliminarlo de la lista en $\bigO(1)$ porque es el último elemento de la lista. La complejidad de esta función queda definida por el ordenamiento $\bigO(n*log(n))$ de la lista en la línea $2$.
 
-\subsubsection{Conclusiones}
-
 \subsubsection{Instancias con soluciones no óptimas}
+Este algoritmo posee al menos dos falencias que pueden producir soluciones de deslucida calidad. A continuación las repasamos:
+
+\subsubsubsection{El algoritmo de \textit{sweeping} no prevee el agotamiento de stock}
+A medida que un cluster se va construyendo, la capacidad del camión que atenderá los clientes de este conjunto se va agotando, es decir, la sumatoria de las demandas de todos los clientes en el cluster se va aproximando al valor de la capacidad máxima de los camiones. En estos casos, sería ideal emprender la vuelta hacia el depósito con stock suficiente para satisfacer vértices en el camino. Una manera de entender este concepto es visualizar cada ruta como un pétalo, donde la punta del antófilo indica el comienzo del emprendimiento al depósito. De esta manera, se minimiza la distancia recorrida al volver al punto de inicio pero \textbf{satisfaciendo vértices en el proceso}. Desgraciadamente, el algoritmo es inconsciente de esta situación y, en el peor de los casos, puede agotar su stock muy lejos del depósito solamente por seguir a rajatabla la heurística de viajar al nodo angularmente más cercano, pagando una distancia muy alta para volver.
+
+\vskip 8pt
+
+Esta falencia puede ser mitigada con metaheurísticas como \textbf{Tabú Search} o \textbf{Annealing} a la hora de seleccionar el siguiente vértice a visitar, teniendo en cuenta el vecindario inmediato y la cantidad de stock sobrante en el camión.
+
+\subsubsubsection{La heurística de \textit{TSP} puede ser muy golosa con las distancias}
+Debido a que el orden de los clientes en los clusters es resuelto a través de la heurística \textit{Nearest Neighbours} que consiste en visitar el nodo inmediatamente más cercano sobre el cual se está parado, se puede perder el panorama general y cometer decisiones costosas para la calidad de la solución final. El ejemplo más recurrente se ve en la presencia de rutas con bucles o \textit{firuletes}, pues se produce una ``ida y vuelta'' innecesaria con total de visitar el nodo más cercano posible. Esto podría ser evitado utilizado alguna metaheurística como Annealing o Tabú Search para decidir a qué vértice saltar o utilizar una técnica como Lambda Exchange para optimizar e intentar eliminar estas manifestaciones del problema descripto. Analizaremos este fenómeno gráficamente:
+
+\subsubsection{Conclusiones}

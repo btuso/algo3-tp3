@@ -21,4 +21,12 @@
 	[√] Mencionar pétalos
 
 	Casos negativos:
+	[ ] No emprende la vuelta anticipadamente
+		[√] Descripción
+		[√] Mencionar tabú search o annealing
+		[ ] Gráfico: peor caso
+		[ ] Gráfico: mejor caso (coincidencia)
 	[ ] Vueltas alejadas por no hacer tabú search
+		[√] Descripción
+		[√] Mencionar lamda exchange (heurística de swapping entre clusters vecinos)
+		[ ] Gráfico: peor caso
