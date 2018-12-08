@@ -35,7 +35,7 @@ namespace savings {
 
 		vector<Truck> trucks;
 		/* Recorro savings de mayor a menor*/
-		for (int i = savings.size()-1; i >= 0; i--){
+		for (int i = savings.size()-1; i >= 0 && savings[i].saving > 0; i--){
 			Saving &s = savings[i];
 			int camion_A = en_que_camion[s.point_A];
 			int camion_B = en_que_camion[s.point_B];
@@ -79,14 +79,16 @@ namespace savings {
 				
 			}
 		}
-		armarCamiones(trucks, points, distancias, distancia_a_deposito);
-		print("Y deberia ser " << (distancia_total - saving_total))
-
 		for( unsigned int i = trucks.size() - 1; i > 0; i-- ){
 			if( trucks[i].empty() )
 				trucks.erase(trucks.begin() + i);
 		}
-
+		for (unsigned int i = 0; i < en_que_camion.size(); i++){
+			if (en_que_camion[i] == ninguno){
+				trucks.push_back(Truck(capacity, n, i, points[i].demand));
+			}
+		}
+		armarCamiones(trucks, points, distancias, distancia_a_deposito);
 		return trucks;
 	}
 
@@ -155,7 +157,7 @@ namespace savings {
 			}
 		}
 
-		print("Distancia recorrida es " << distancia_recorrida)
+		//print("Distancia recorrida es " << distancia_recorrida)
 	}
 
 
