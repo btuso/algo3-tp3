@@ -4,19 +4,28 @@
 
 #include "savings.h"
 #include "neighborhood.h"
-
-//TODO delete this thing
-#define ENUM_PRINT(x, y)  switch(x) {case shift_left: y = "shift_left";break;case shift_right: y = "shift_right";break;case exchange: y = "exchange";  break;} 
+#include "auxiliares.h"
 
 namespace annealing {
 
 	std::vector<Truck> solveCvrp(Point& warehouse, vector<Point> &points, int capacity){
 		vector<Truck> trucks = savings::solveCvrp(warehouse, points, capacity);
-		Neighborhood neighborhood(trucks);
-		while(neighborhood.NeighborsLeft()) {
-			neighborhood.NextNeighbor();
-		}
-		std::cout<< "out of neighbors" << endl;
+		Neighborhood neighborhood(warehouse, trucks);
+
+		aux::PrintTrucks(points, warehouse, trucks);
+		neighborhood.NextNeighbor();
+		neighborhood.AcceptNeighbor();
+debug("-----")
+
+		aux::PrintTrucks(points, warehouse, trucks);
+		neighborhood.NextNeighbor();
+		neighborhood.AcceptNeighbor();
+debug("-----")
+
+		aux::PrintTrucks(points, warehouse, trucks);
+debug("-----")
+		neighborhood.NextNeighbor();
+		neighborhood.AcceptNeighbor();
 		return trucks;
 	}
 

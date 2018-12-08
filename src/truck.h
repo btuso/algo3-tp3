@@ -30,7 +30,7 @@ struct Truck {
 		return routes.back();
 	}
 
-	bool empty(){
+	bool empty() const {
 		return routes.empty();
 	}
 
@@ -46,6 +46,14 @@ struct Truck {
 		stock_left -= demanda;
 	}
 
+	Point getClient(int index) const {
+		return routes[index];
+	}
+
+	unsigned int size() const {
+		return routes.size();
+	}
+
 	void visit(Point vertex){
 		routes.push_back(vertex);
 		stock_left -= vertex.demand;
@@ -55,8 +63,34 @@ struct Truck {
 		return predecesores[punto] == ninguno or cliente_final == punto;
 	}
 
-	bool hayEspacio(int demanda){
+	bool isLastClient(int client) const {
+		return client == static_cast<int>(size() - 1);
+	}
+
+	bool isFirstClient(int client) const {
+		return client == 0;
+	}
+
+	int clientDemand(int client) const {
+		return routes[client].demand;
+	}
+
+	bool hayEspacio(int demanda) const {
 		return stock_left >= demanda;
+	}
+
+	// No usar, rompe lo de predecesores, siguientes y etc
+	Point removeAt(int index){
+		Point removed = routes[index];
+		stock_left += removed.demand;
+		routes.erase(routes.begin() + index);
+		return removed;
+	}
+
+	// No usar, rompe lo de predecesores, siguientes y etc
+	void insertAt(Point &client, int index){
+		stock_left -= client.demand;
+		routes.insert(routes.begin() + index, client);
 	}
 
 	void mergearRuta(int punto_A, int punto_B, Truck &truck_B, int nueva_capacidad, vector<int> &en_que_camion){
