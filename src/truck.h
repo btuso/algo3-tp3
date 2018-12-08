@@ -17,6 +17,12 @@ struct Truck {
 	Truck(Point warehouse, int total_capacity): stock_left(total_capacity){
 		routes.push_back(warehouse);
 	};
+	Truck(int total_capacity, int cant_nodos, int unico, int demanda){
+		predecesores = vector<int>(cant_nodos, ninguno);
+		siguientes = vector<int>(cant_nodos, ninguno);
+		cliente_final = unico;
+		stock_left = total_capacity - demanda;
+	};
 	Truck(int total_capacity, int cant_nodos, int i, int j, int demanda){
 		predecesores = vector<int>(cant_nodos, ninguno);
 		siguientes = vector<int>(cant_nodos, ninguno);
@@ -31,7 +37,7 @@ struct Truck {
 	}
 
 	bool empty() const {
-		return routes.empty();
+		return !es_valido;
 	}
 
 	void visit(int existente, int nuevo, int demanda){

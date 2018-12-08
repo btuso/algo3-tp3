@@ -136,7 +136,7 @@ tuple<Point, vector<Point>, int> ReadDataset() {
 	cin.ignore(); 			// Newline
 	getline( cin, ignore );		// Demand Section
 	getline( cin, ignore );		// warehouse
-	for(int i = 0; i < dimension; ++i){
+	for(int i = 0; i < dimension - 1; ++i){
 		int demand;
 		cin >> ignore; // Id
 		cin >> demand;
