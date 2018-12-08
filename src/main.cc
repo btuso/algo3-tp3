@@ -60,7 +60,6 @@ int main(int argc, char** argv) {
 			int capacity = get<2>(input);
 			output << capacity << "\n";
 			output << warehouse.to_string() << "\n";
-debug("asdasd")
 			for(unsigned int i = 0; i < points.size() - 1; i++)
 				 output << points[i].to_string() << "\n";
 			output << points.back().to_string();

@@ -6,28 +6,34 @@
 
 #include "interchange.h"
 #include "truck.h"
+#include "point.h"
 
 class Neighborhood {
 
 	private:
-		const std::vector<Truck> trucks;
+		const Point warehouse;
+		std::vector<Truck> &trucks;
 		std::vector<std::tuple<int, int>> truckCombinations;
 		std::vector<Interchange> interchanges;
-
 		std::vector<std::tuple<int, int>>::iterator current_trucks;
 		std::vector<Interchange>::iterator current_interchange;
-		
 
+
+		void InitializeCombinations();
 		std::vector<std::tuple<int, int>> GetRouteCombinations(const std::vector<Truck> &trucks);
 		std::vector<Interchange> GenerateInterchanges(const Truck &Rp, const Truck &Rq);
+		float CalculateDeletionCost(const Truck &truck, int index) const ;
+		float CalculateInsertionCost(const Truck &truck, const Point &client, int index) const ;
+		float CalculateReplacementCost(const Truck &truck, const Point &replacement, int index) const ;
+		void RemoveEmptyTrucks();
 
 	public:
-		Neighborhood(const std::vector<Truck> &trucks);
+		Neighborhood(const Point &warehouse, std::vector<Truck> &trucks);
 		
 		// Returns the cost of the next neighbor
 		float NextNeighbor();
-
-		bool NeighborsLeft();
+		bool NeighborsLeft() const;
+		void AcceptNeighbor();
 };
 
 #endif
