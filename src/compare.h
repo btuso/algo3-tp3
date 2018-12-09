@@ -15,6 +15,16 @@ struct DistanceToPointComparator{
 	Point p;
 };
 
+struct DistanceToPoint{
+	DistanceToPoint(const Point& _p) : p(_p) {}
+
+	bool operator()(const Point& lhs, const Point& rhs) const{
+		return p.DistanceTo(lhs) < p.DistanceTo(rhs);
+	}
+
+	Point p;
+};
+
 struct AngleComparator{
 	AngleComparator(float offset) : offset(offset) {}
 

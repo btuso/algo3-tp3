@@ -12,6 +12,7 @@
 #include "savings.h"
 #include "greedy.h"
 #include "sweep.h"
+#include "kmeans.h"
 #include "annealing.h"
 #include "params.h"
 
@@ -28,6 +29,7 @@ int main(int argc, char** argv) {
 	algorithms["savings"] = savings::solveCvrp;
 	algorithms["greedy"] = greedy::solveCvrp;
 	algorithms["sweep"] = sweep::solveCvrp;
+	algorithms["kmeans"] = kmeans::solveCvrp;
 	algorithms["annealing"] = annealing::solveCvrp;
 
 	if ( argc == 1 ) {
