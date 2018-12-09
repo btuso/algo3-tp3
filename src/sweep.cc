@@ -1,15 +1,18 @@
 #include "sweep.h"
 
 namespace sweep {
-	#define PI 3.14159265358979323846
-	vector<Truck> solveCvrp(Point& warehouse, vector<Point> &points, int max_stock){
-		vector<Point> points_copy(points);
+	vector<Truck> solveCvrp(Point& warehouse, vector<Point> &p, int max_stock, Params &params){
+		vector<Point> points(p);
 		
-		TransformPointsFromCartesianToPolar(warehouse, points_copy);
-		sort(points_copy.begin(), points_copy.end(), AngleComparator());
-		float sweep_starting_angle = FindSweepStartingAngle(points_copy);
-		sort(points_copy.begin(), points_copy.end(), AngleComparator(sweep_starting_angle));
-		Clusters clusters = BuildClusters(points_copy, max_stock);
+		TransformPointsFromCartesianToPolar(warehouse, points);
+		sort(points.begin(), points.end(), AngleComparator());
+
+		if(params.opt1){ // adaptative sweeping
+			float sweep_starting_angle = FindSweepStartingAngle(points);
+			sort(points.begin(), points.end(), AngleComparator(sweep_starting_angle));
+		}
+
+		Clusters clusters = BuildClusters(points, max_stock);
 		return BuildRoutesFromClusters(clusters, warehouse, max_stock);
 	}
 
@@ -24,9 +27,7 @@ namespace sweep {
 			if (relative_x > 0) p.angle = atan2(relative_y, p.radius + relative_x);
 			if (relative_x <= 0 and relative_y!=0) p.angle = atan2(p.radius - relative_x, relative_y);
 			if (relative_x < 0 and relative_y==0) p.angle = PI;
-
 			if (p.angle < 0) p.angle += 2*PI;
-
 		}
 	}
 

@@ -6,10 +6,11 @@
 #include "point.h"
 #include "saving_struct.h"
 #include "truck.h"
+#include "params.h"
 
 namespace savings {
 
-	vector<Truck> solveCvrp(Point& warehouse, vector<Point> &points, int capacity);
+	vector<Truck> solveCvrp(Point& warehouse, vector<Point> &points, int capacity, Params& params UNUSED);
 	void calcularDistancias(vector<vector<float> > &distances, vector<float> &distance_to_warehouse, vector<Point> &points, Point& warehouse, float &distancia_total);
 	void calcularSavings(vector<vector<float> > &distances, vector<float> &distance_to_warehouse, vector<Point> &points, vector<Saving> &savings);
 	bool puedoAgregarlo(Truck &t, int punto, int demanda);

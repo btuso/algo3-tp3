@@ -8,8 +8,8 @@
 
 namespace annealing {
 
-	std::vector<Truck> solveCvrp(Point& warehouse, vector<Point> &points, int capacity){
-		vector<Truck> trucks = savings::solveCvrp(warehouse, points, capacity);
+	std::vector<Truck> solveCvrp(Point& warehouse, vector<Point> &points, int capacity, Params &params){
+		vector<Truck> trucks = savings::solveCvrp(warehouse, points, capacity, params);
 		Neighborhood neighborhood(warehouse, trucks);
 
 		aux::PrintTrucks(points, warehouse, trucks);

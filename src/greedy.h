@@ -11,6 +11,7 @@
 #include <utility>
 #include <assert.h>
 #include <algorithm>
+#include "params.h"
 
 using namespace std;
 
@@ -19,7 +20,7 @@ typedef vector<Bucket> Buckets;
 
 namespace greedy {
 
-	vector<Truck> solveCvrp(Point& warehouse, vector<Point> &points, int capacity);
+	vector<Truck> solveCvrp(Point& warehouse, vector<Point> &points, int capacity, Params& params UNUSED);
 
 	pair<int, int> GetDemandsRange(vector<Point> &points);
 

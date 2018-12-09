@@ -12,7 +12,7 @@ namespace savings {
 	int n;
 	int capacidad;
 	float saving_total;
-	vector<Truck> solveCvrp(Point& warehouse,	vector<Point> &points, int capacity){
+	vector<Truck> solveCvrp(Point& warehouse,	vector<Point> &points, int capacity, Params&){
 		/* Armo matriz de distancias entre cada par de nodos */
 		n = points.size();
 		capacidad = capacity;

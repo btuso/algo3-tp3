@@ -13,10 +13,11 @@
 #include "greedy.h"
 #include "sweep.h"
 #include "annealing.h"
+#include "params.h"
 
 using namespace std; 
 
-typedef std::vector<Truck> (* CvrpHeuristic) (Point& warehouse, std::vector<Point> &points, int capacity);
+typedef std::vector<Truck> (* CvrpHeuristic) (Point& warehouse, std::vector<Point> &points, int capacity, Params &params);
 
 void MeasureAlgorithm(string name, CvrpHeuristic function, string input, ofstream &output);
 tuple<Point, vector<Point>, int> ReadDataset(); 
@@ -76,10 +77,11 @@ int main(int argc, char** argv) {
 		if( dataset.is_open() ){
 			cin.rdbuf(dataset.rdbuf());
 			auto heuristic = algorithms[algorithm];
+			Params p = Params(argc, argv);
 			auto input = ReadDataset();
 			Point warehouse = get<0>(input);
 			vector<Point> points = get<1>(input);
-			auto solution = heuristic(warehouse, points, get<2>(input));
+			auto solution = heuristic(warehouse, points, get<2>(input), p);
 			aux::PrintTrucks(points, warehouse, solution);
 		}
 		dataset.close(); 
@@ -97,7 +99,8 @@ void MeasureAlgorithm(string name, CvrpHeuristic function, string input, ofstrea
 		int capacity = get<2>(input);
 		unsigned long start, end;
 		MEDIR_TIEMPO_START(start);
-		vector<Truck> sol = function(warehouse, points, capacity);
+		Params p = Params();
+		vector<Truck> sol = function(warehouse, points, capacity, p);
 		MEDIR_TIEMPO_STOP(end);
 		output << name << "," << points.size() << "," << capacity  << "," << (end-start) << "\n"; // Agregar lo que falta para los experimentos
 	}

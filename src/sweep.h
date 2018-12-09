@@ -9,15 +9,18 @@
 #include <utility>
 #include <assert.h>
 #include <algorithm>
+#include "params.h"
 
 using namespace std;
+
+#define PI 3.14159265358979323846
 
 typedef vector<Point> Cluster;
 typedef vector<Cluster> Clusters;
 
 namespace sweep {
 
-	vector<Truck> solveCvrp(Point& warehouse, vector<Point> &points, int capacity);
+	vector<Truck> solveCvrp(Point& warehouse, vector<Point> &p, int capacity, Params &params);
 
 	void TransformPointsFromCartesianToPolar(Point &warehouse, vector<Point> &points);
 
