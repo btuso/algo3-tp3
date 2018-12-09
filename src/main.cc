@@ -33,7 +33,7 @@ int main(int argc, char** argv) {
 	algorithms["annealing"] = annealing::solveCvrp;
 
 	if ( argc == 1 ) {
-		cout << "Se necesita pasar el algoritmo a usar como argumento.\nOpciones: savings, greedy, sweep, otra, annealing\n"; 
+		cout << "Se necesita pasar el algoritmo a usar como argumento.\nOpciones: savings, greedy, sweep, kmeans, annealing\n"; 
 		return 1;
 	} else if ( argc == 2 ) {
 		cout << "Se necesita especificar el archivo de entrada, que debe estar en la carpeta 'resources'.\n";
@@ -71,7 +71,7 @@ int main(int argc, char** argv) {
 		dataset.close();
 	} else {
 		if ( algorithms.count(algorithm) == 0 ) {
-			cout << "Algoritmo invalido.\nOpciones: savings, greedy, sweep, otra, annealing\n"; 
+			cout << "Algoritmo invalido.\nOpciones: savings, greedy, sweep, kmeans, annealing\n"; 
 			return 1;
 		}
 
