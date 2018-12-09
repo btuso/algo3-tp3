@@ -206,14 +206,14 @@ void MeasureAlgorithm(string name, CvrpHeuristic function, string inputFile, ofs
 		Point warehouse = get<0>(input);
 		vector<Point> points = get<1>(input);
 		int capacity = get<2>(input);
-		for (unsigned int pasada = 1; pasada < 2; pasada++) {
+		for (unsigned int pasada = 1; pasada < 11; pasada++) {
 			cout << "\tStart: " << pasada << "\n";
 			unsigned long start, end;
 			MEDIR_TIEMPO_START(start);
 			vector<Truck> sol = function(warehouse, points, capacity);
 			MEDIR_TIEMPO_STOP(end);
 			// algorithm, inputFile, qtyPoints, capacityTruck, time
-			output << name << "," << inputFile << "," << points.size() << "," << capacity << "," << (end-start) << "\n"; // Agregar lo que falta para los experimentos
+			output << name << "," << inputFile << "," << points.size() << "," << capacity << "," << pasada << "," << (end-start) << "\n"; // Agregar lo que falta para los experimentos
 			cout << "\t\t" << name << "," << inputFile << "," << points.size() << "," << capacity << "," << (end-start) << "\n"; // Agregar lo que falta para los experimentos
 			cout << "\tFinish: " << pasada << "\n";
 		}
