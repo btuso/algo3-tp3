@@ -37,7 +37,7 @@ struct Truck {
 	}
 
 	bool empty() const {
-		return !es_valido;
+		return routes.empty() == 0;
 	}
 
 	void visit(int existente, int nuevo, int demanda){
