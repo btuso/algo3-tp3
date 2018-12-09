@@ -9,21 +9,21 @@ using namespace std;
 struct Truck {
 	vector<Point> routes;
 	int stock_left;
-	vector<int> predecesores; 
-	vector<int> siguientes; 
+	vector<int> predecesores;
+	vector<int> siguientes;
 	int cliente_final;
 	bool es_valido = true;
 
-	Truck(Point warehouse, int total_capacity): stock_left(total_capacity){
-		routes.push_back(warehouse);
-	};
-	Truck(int total_capacity, int cant_nodos, int unico, int demanda){
+	Truck(int total_capacity): stock_left(total_capacity){};
+
+	Truck(int total_capacity, int cant_nodos, int unico, int demanda) {
 		predecesores = vector<int>(cant_nodos, ninguno);
 		siguientes = vector<int>(cant_nodos, ninguno);
 		cliente_final = unico;
 		stock_left = total_capacity - demanda;
 	};
-	Truck(int total_capacity, int cant_nodos, int i, int j, int demanda){
+
+	Truck(int total_capacity, int cant_nodos, int i, int j, int demanda) {
 		predecesores = vector<int>(cant_nodos, ninguno);
 		siguientes = vector<int>(cant_nodos, ninguno);
 		predecesores[j] = i;
@@ -133,8 +133,8 @@ struct Truck {
 				copiarNodos(punto_A, predecesores_B, siguientes_B, en_que_camion);
 			}
 		}else{
-			siguientes[punto_A] = punto_B; 
-			predecesores[punto_B] = punto_A; 
+			siguientes[punto_A] = punto_B;
+			predecesores[punto_B] = punto_A;
 
 			if (siguientes_B[punto_B] == ninguno){
 				int i = punto_B;
@@ -149,7 +149,7 @@ struct Truck {
 				cliente_final = truck_B.cliente_final;
 				copiarNodos(punto_A, predecesores_B, siguientes_B, en_que_camion);
 			}
-			
+
 		}
 		truck_B.es_valido = false;
 	}

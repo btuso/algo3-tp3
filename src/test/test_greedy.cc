@@ -101,11 +101,11 @@ void TestFindFittestBucket1(){
 		int last_truck_stock_left = 1;
 
 		vector<Truck> trucks;
-		trucks.push_back(Truck(WHATEVER_WAREHOUSE, last_truck_stock_left));
+		trucks.push_back(Truck(last_truck_stock_left));
 		unsigned int original_trucks_count = trucks.size();
 
 	when("FindFittestBucket is called")
-		Bucket* fittestBucket = greedy::FindFittestBucket(buckets, trucks, 
+		Bucket* fittestBucket = greedy::FindFittestBucket(buckets, trucks,
 			WHATEVER_WAREHOUSE, truck_total_capacity);
 
 	then("I should have a bucket of maximum demands and one more truck on the trucks list")
@@ -132,11 +132,11 @@ void TestFindFittestBucket2(){
 		int last_truck_stock_left = 2;
 
 		vector<Truck> trucks;
-		trucks.push_back(Truck(WHATEVER_WAREHOUSE, last_truck_stock_left));
+		trucks.push_back(Truck(last_truck_stock_left));
 		unsigned int original_trucks_count = trucks.size();
 
 	when("FindFittestBucket is called")
-		Bucket* fittestBucket = greedy::FindFittestBucket(buckets, trucks, 
+		Bucket* fittestBucket = greedy::FindFittestBucket(buckets, trucks,
 			WHATEVER_WAREHOUSE, truck_total_capacity);
 
 	then("I should have a bucket of maximum demands and one more truck on the trucks list")
@@ -145,7 +145,7 @@ void TestFindFittestBucket2(){
 		assert(trucks.size() == original_trucks_count);
 		assert(some_vertex_in_bucket.demand == 2);
 		assert(expected_bucket == (*fittestBucket));
-		
+
 	END_TEST
 }
 
@@ -162,7 +162,7 @@ void TestPopNextVertex1(){
 
 		Point current_vertex = Point(6, 2, 1);
 		vector<Truck> trucks;
-		Truck truck(WHATEVER_WAREHOUSE, WHATEVER_CAPACITY);
+		Truck truck(WHATEVER_CAPACITY);
 		truck.visit(current_vertex);
 		trucks.push_back(truck);
 
