@@ -1,7 +1,7 @@
 #include "greedy.h"
 
 namespace greedy {
-	vector<Truck> solveCvrp(Point& warehouse, vector<Point> &points, int capacity, Params &params){
+	vector<Truck> solveCvrp(Point& warehouse, vector<Point> &points, int capacity, Params&){
 		pair<int, int> demands_ranges = GetDemandsRange(points);
 		int max_demand_value = demands_ranges.second;
 		Buckets buckets = BucketSort(points, max_demand_value);

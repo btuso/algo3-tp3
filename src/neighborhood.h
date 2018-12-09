@@ -32,7 +32,7 @@ class Neighborhood {
 		
 		// Returns the cost of the next neighbor
 		float NextNeighbor();
-		bool NeighborsLeft() const;
+		bool HasNeighborsLeft() const;
 		void AcceptNeighbor();
 };
 

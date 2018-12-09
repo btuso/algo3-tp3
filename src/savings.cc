@@ -80,7 +80,7 @@ namespace savings {
 			}
 		}
 		for( unsigned int i = trucks.size() - 1; i > 0; i-- ){
-			if( trucks[i].empty() )
+			if( !trucks[i].es_valido )
 				trucks.erase(trucks.begin() + i);
 		}
 		for (unsigned int i = 0; i < en_que_camion.size(); i++){

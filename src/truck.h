@@ -37,7 +37,7 @@ struct Truck {
 	}
 
 	bool empty() const {
-		return !es_valido;
+		return routes.empty() == 0;
 	}
 
 	void visit(int existente, int nuevo, int demanda){
@@ -97,6 +97,18 @@ struct Truck {
 	void insertAt(Point &client, int index){
 		stock_left -= client.demand;
 		routes.insert(routes.begin() + index, client);
+	}
+
+	// Assumes warehouse isn't present in the route
+	float distanceTravelled(Point warehouse) const {
+		float distance = 0;
+		Point last_client = warehouse;
+		for (const Point &client : routes) {
+			distance += last_client.DistanceTo(client);
+			last_client = client;
+		}
+		distance += last_client.DistanceTo(warehouse);
+		return distance;
 	}
 
 	void mergearRuta(int punto_A, int punto_B, Truck &truck_B, int nueva_capacidad, vector<int> &en_que_camion){
