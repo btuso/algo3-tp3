@@ -123,10 +123,4 @@ namespace sweep {
 
 		return closest;
 	}
-
-	vector<Truck> removeDeposits(vector<Truck> &trucks){
-		for(Truck &t: trucks){
-
-		}
-	}
 }
