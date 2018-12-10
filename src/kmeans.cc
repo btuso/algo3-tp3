@@ -44,8 +44,7 @@ namespace kmeans {
 				clusters.erase(clusters.begin() + i);
 		
 		vector<Truck> trucks = sweep::BuildRoutesFromClusters(clusters, warehouse, max_stock);
-		trucks.pop_back();
-
+		
 		return trucks;
 	}
 
