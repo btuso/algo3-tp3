@@ -44,7 +44,7 @@ namespace kmeans {
 				clusters.erase(clusters.begin() + i);
 		
 		vector<Truck> trucks = sweep::BuildRoutesFromClusters(clusters, warehouse, max_stock);
-		
+
 		return trucks;
 	}
 
@@ -66,12 +66,13 @@ namespace kmeans {
 
 	int findNearestCentroid(vector<Point> &k_clusters, Point &point, int cluster){
 		vector<Point> clusters_copy(k_clusters);
+		Point &old_cluster = k_clusters[cluster];
 		/* Ordena los centroids por menor distancia al punto */
 		sort(clusters_copy.begin(), clusters_copy.end(), DistanceToPoint(point));
 		unsigned int i;
 		bool termine = false;
 		for (i = 0; i < clusters_copy.size() and !termine; i++){
-			if (aux::GetPointId(k_clusters, clusters_copy[i])-1 != cluster){
+			if (clusters_copy[i] != old_cluster){
 				/* Si no es el mismo cluster al que pertenecia el punto*/
 				int capacity_left = clusters_copy[i].demand;
 				/* Si hay suficiente espacio */
