@@ -31,7 +31,7 @@ struct AngleComparator{
 	AngleComparator(){}
 
 	bool operator()(const Point& lhs, const Point& rhs) const{
-		return aux::mod(lhs.angle - offset, 2) < aux::mod(rhs.angle - offset, 2);
+		return aux::mod(lhs.angle - offset, 2  * M_PI) < aux::mod(rhs.angle - offset, 2  * M_PI);
 	}
 
 	float offset = 0.0;

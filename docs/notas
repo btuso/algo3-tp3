@@ -19,7 +19,8 @@
 
 	Informe:
 	[√] Mencionar pétalos
-
+	[ ] Actualizar los códigos pertinentes (por ejemplo polarización si es necesario)
+	
 	Casos negativos:
 	[ ] No emprende la vuelta anticipadamente
 		[√] Descripción

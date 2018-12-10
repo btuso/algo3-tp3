@@ -11,10 +11,10 @@ struct Point {
     int demand;
     float radius;
     float angle;
-    
+
     Point(int x, int y, int demand): x(x), y(y), demand(demand){}
 
-    Point(int x, int y, int demand, float radius, float angle): x(x), y(y), 
+    Point(int x, int y, int demand, float radius, float angle): x(x), y(y),
     	demand(demand), radius(radius), angle(angle){}
 
 	float DistanceTo(Point p) const{
@@ -32,7 +32,7 @@ struct Point {
 	bool operator<(const Point& other) const {
 		return demand < other.demand;
 	}
-	
+
 	std::string to_string(){
 		return std::to_string(x) + "," + std::to_string(y) + "," + std::to_string(demand);
 	}

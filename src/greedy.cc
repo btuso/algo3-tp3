@@ -10,7 +10,7 @@ namespace greedy {
 
 		unsigned int vertex_covered = 0;
 		vector<Truck> trucks;
-		trucks.push_back(Truck(warehouse, capacity));
+		trucks.push_back(Truck(capacity));
 
 		while(vertex_covered < points.size()){
 			Bucket* biggest_fitting_bucket = FindFittestBucket(buckets, trucks, warehouse, capacity);
@@ -69,7 +69,7 @@ namespace greedy {
 
 		if(i < 0){ // no quedan mas clientes con demanda ≤ lo que me queda en el camion. tengo que crear uno
 			trucks.back().visit(warehouse); // mando el camión lleno devuelta al warehouse
-			trucks.push_back(Truck(warehouse, capacity)); // creo un nuevo camión
+			trucks.push_back(Truck(capacity)); // creo un nuevo camión
 
 			// como dije antes, este while va desde (stock_left; buckets.size() - 1] creo
 			i = buckets.size() - 1;
@@ -87,7 +87,7 @@ namespace greedy {
 
 		Point last_vertex = trucks.back().routes.back();
 		sort(bucket->begin() + starting_index, bucket->end(), DistanceToPointComparator(last_vertex));
-		
+
 		Point next_vertex = bucket->back();
 		bucket->erase(bucket->end() - 1);
 		return next_vertex;
