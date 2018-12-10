@@ -1,57 +1,70 @@
 #include "annealing.h"
 
 #include <vector>
+#include <tuple>
+#include <math.h>
+#include <cmath>
+#include <random>
+#include <cstdlib>
 
-#include "greedy.h"
+#include "savings.h"
 #include "neighborhood.h"
 #include "auxiliares.h"
+
+#define PRINT_SOLUTION printSolution(iterations, current_energy, current_temp, points, warehouse, current_solution);
+#define EXCHANGES 100
+#define RESETS 3
 
 namespace annealing {
 
 	std::vector<Truck> solveCvrp(Point& warehouse, vector<Point> &points, int capacity, Params &params){
-		int iterations = 0;
+		int iterations = 1, n = points.size();
 		std::vector<Truck> current_solution, best_solution;
 		float current_energy, best_energy;
 
-		current_solution = greedy::solveCvrp(warehouse, points, capacity, params);
+		current_solution = savings::solveCvrp(warehouse, points, capacity, params);
 		current_energy = calculateSolutionEnergy(current_solution, warehouse);
 		best_solution = current_solution; // Copy
 		best_energy = current_energy; 
 
-		float starting_temp, final_temp, current_temp, best_temp;
+		float starting_temp, final_temp, current_temp, best_temp, reset_temp;
 		float alpha, gamma;
 
 		auto temperature_range = getTemperatureRange(warehouse, current_solution);
-		final_temp = get<0>(temperature_range);
-		starting_temp = get<1>(temperature_range);
+		final_temp = get<0>(temperature_range); // Min change in cost
+		starting_temp = get<1>(temperature_range); // Max change in cost
 		current_temp = starting_temp;
 		best_temp = current_temp;
-
-//		aux::PrintTrucks(points, warehouse, trucks);
+		reset_temp = current_temp;
 
 		Neighborhood neighborhood(warehouse, current_solution); // Neighborhood holds a reference to solution in order to modify it.
+		std::default_random_engine rand_generator;
 
-		while (current_temp > final_temp) {
+		int current_resets = 0;
+
+		PRINT_SOLUTION
+
+		while (current_resets < RESETS) {
 			if (neighborhood.HasNeighborsLeft()) {
 				float cost = neighborhood.NextNeighbor();
-				iterations++;
-				if (cost < 0 /* or prob */) {
+				if ( shouldAccepSolution(cost, current_temp, rand_generator) ) {
 					neighborhood.AcceptNeighbor();
 					current_energy += cost;
-					std::cout << "---" << endl;
-					std::cout << iterations << endl;
-					std::cout << current_energy << endl;
-					aux::PrintTrucks(points, warehouse, current_solution);
+					PRINT_SOLUTION
 				}
 				if (current_energy < best_energy) {
 					best_energy = current_energy;
 					best_solution = current_solution; // Copy
 					best_temp = current_temp;
+					current_resets = 0;
 				}
-//				coolDown(); // TODO
+				current_temp = coolDown(starting_temp, final_temp, current_temp, n, iterations, n * EXCHANGES);
+				iterations++;
 			} else {
-//				heatUp();  // TODO
-				break;
+			        current_temp = heatUp(reset_temp, best_temp); 
+				reset_temp = current_temp;
+				current_resets++;
+				neighborhood.CreateNeighborhood();
 			}
 		}
 
@@ -60,17 +73,17 @@ namespace annealing {
 
 	std::tuple<float, float> getTemperatureRange(const Point &warehouse, std::vector<Truck> &solution){
 		Neighborhood neighborhood(warehouse, solution);
-		float best, worst;
-		best = neighborhood.NextNeighbor();
-		worst = best;
+		float min, max;
+		min = std::abs(neighborhood.NextNeighbor());
+		max = min;
 		while (neighborhood.HasNeighborsLeft()) {
-			float cost = neighborhood.NextNeighbor();
-			if (cost < best)
-				best = cost;
-			else if (cost > worst)
-				worst = cost;
+			float cost_change = std::abs(neighborhood.NextNeighbor());
+			if (cost_change < min)
+				min = cost_change;
+			else if (cost_change > max)
+				max = cost_change;
 		}
-		return std::make_tuple(best, worst);
+		return std::make_tuple(min, max);
 	}
 
 	float calculateSolutionEnergy(const std::vector<Truck> &solution, const Point &warehouse){
@@ -78,5 +91,30 @@ namespace annealing {
 		for (const Truck &truck : solution)
 			energy += truck.distanceTravelled(warehouse);
 		return energy;
+	}
+
+	bool shouldAccepSolution(float cost, float current_temp, std::default_random_engine &rand_generator) {
+		std::uniform_real_distribution<float> distribution(0.0,1.0);
+		float accept_probability = distribution(rand_generator);
+		return cost < 0 or std::exp(-cost / current_temp) >= accept_probability;
+	}
+
+	float coolDown(float starting_temp, float final_temp, float current_temp, int n, int iterations, int alpha) {
+		float beta = (starting_temp - final_temp) / ( (alpha + n * std::sqrt(iterations) ) * starting_temp * final_temp);
+		return current_temp / (1 + beta * current_temp);
+	}
+	
+	float heatUp(float reset_temp, float best_temp) {
+		return reset_temp / 2 > best_temp ? reset_temp/2 : best_temp;
+	}
+
+	void printSolution(int iterations, float current_energy, float current_temp, std::vector<Point> &points, Point &warehouse, std::vector<Truck> &current_solution){
+		if (PRINT) { 
+			std::cout << "---" << endl;
+			std::cout << iterations << endl;
+			std::cout << current_energy << endl;
+			std::cout << current_temp << endl;
+			aux::PrintTrucks(points, warehouse, current_solution);
+		}
 	}
 }
