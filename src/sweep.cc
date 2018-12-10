@@ -7,24 +7,16 @@ namespace sweep {
 		TransformPointsFromCartesianToPolar(warehouse, points);
 		sort(points.begin(), points.end(), AngleComparator());
 
-		for(Point p : points){
-			// cout << "el punto (" << p.x << ", " << p.y << ") con angulo " << p.angle << endl;
-		}
-
 		if(params.opt1){ // adaptative sweeping
-			// cout << "CON ADAPTATIVE" << endl;
 			float sweep_starting_angle = FindSweepStartingAngle(points);
 			sort(points.begin(), points.end(), AngleComparator(sweep_starting_angle));
-
-			// cout << "## RESORTING AL ANGULO " << sweep_starting_angle << endl;
-			for(Point p : points){
-				// cout << "el punto (" << p.x << ", " << p.y << ") con angulo " << p.angle << endl;
-			}
 		}
 
 		Clusters clusters = BuildClusters(points, max_stock);
 		vector<Truck> routes = BuildRoutesFromClusters(clusters, warehouse, max_stock);
-		return routes;//removeDeposits(routes);
+
+		aux::removeDeposits(routes); // es extra-algoritmico (no lo contamos en la complejidad)
+		return routes;
 	}
 
 	void TransformPointsFromCartesianToPolar(Point &warehouse, vector<Point> &points){
@@ -59,7 +51,6 @@ namespace sweep {
 
 			if(gap > greatest_angle_gap){
 				greatest_angle_gap = gap;
-				// cout << "greatest sucede entre prev=(" << prev.x << ", " << prev.y << ", " << prev.angle << ") y current=(" << current.x << ", " << current.y << ", " << current.angle << ") con gap " << gap << endl;
 				ray_angle = aux::mod((prev.angle + gap / 2), 2*PI);
 			}
 
@@ -75,14 +66,11 @@ namespace sweep {
 		int current_stock = max_stock;
 
 		for(Point &p : points){
-			// cout << "visito a (" << p.x << ", " << p.y << ", " << p.angle << ")" << endl;
 			if(current_stock < p.demand){
-				// cout << "me quede sin stock: " << current_stock << " < " << p.demand << ". agrego nuevo c" << endl;
 				current_stock = max_stock;
 				clusters.push_back(Cluster());
 			}
 
-			// cout << "agrego el punto al cluster. current_stock sera " << current_stock << " - " << p.demand << endl;
 			current_stock -= p.demand;
 			clusters.back().push_back(p);
 		}
@@ -91,7 +79,7 @@ namespace sweep {
 	}
 
 	vector<Truck> BuildRoutesFromClusters(Clusters &clusters, Point &warehouse, int max_stock){
-		vector<Truck> trucks = { Truck(max_stock) };
+		vector<Truck> trucks = { Truck(warehouse, max_stock) };
 
 		for(unsigned int i = 0; i < clusters.size(); i++){
 			Cluster &cluster = clusters[i];
@@ -109,8 +97,11 @@ namespace sweep {
 				last_truck.visit(PopClosestVertexTo(cluster, (*last_visited)));
 			}
 
+			trucks.back().visit(warehouse);
+
 			if(i < clusters.size() - 1)
-				trucks.push_back(Truck(max_stock));
+				trucks.push_back(Truck(warehouse, max_stock));
+
 		}
 
 		return trucks;

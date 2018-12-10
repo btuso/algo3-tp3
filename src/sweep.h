@@ -31,6 +31,9 @@ namespace sweep {
 	vector<Truck> BuildRoutesFromClusters(Clusters &clusters, Point &warehouse, int max_stock);
 
 	Point PopClosestVertexTo(Cluster &cluster, Point &point);
+
+	vector<Truck> removeDeposits(vector<Truck> &trucks);
+	
 }
 
 #endif

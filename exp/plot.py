@@ -13,12 +13,11 @@ class dotdict(dict):
     __setattr__ = dict.__setitem__
     __delattr__ = dict.__delitem__
 
-def main(solution, dataset_path, should_save_to_png, should_display_each_distance, should_display_total_distances):
-    file = 'withouth-adaptative'
+def main(solution, dataset_path, should_save_to_png, should_display_each_distance, should_display_total_distances, should_be_big_graph):
     routes = load_routes(solution)
     dataset = load_dataset(dataset_path)
 
-    do_plot(dataset.points, dataset.warehouse, routes, should_display_each_distance)
+    do_plot(dataset.points, dataset.warehouse, routes, should_display_each_distance, should_be_big_graph)
     total_distance = get_total_distance(dataset.warehouse, dataset.points, routes)
 
     if(should_display_each_distance or should_display_total_distances):
@@ -32,6 +31,7 @@ def main(solution, dataset_path, should_save_to_png, should_display_each_distanc
 
 def resolve_image_name(solution):
     script_path = sys.path[0]
+    solution = solution.split('/')[-1]
     return script_path + "/images/" + solution.split('.sol')[0] + ".png"
 
 def legend(toggle_total_distance, total_distance):
@@ -93,6 +93,8 @@ def load_routes(file):
     routes = []
 
     for line in f.read().splitlines():
+        if line.strip() == '' continue
+
         route = []
         route.append(0)
         for point in line.strip().split(' '):
@@ -102,13 +104,15 @@ def load_routes(file):
     f.close();
     return routes
 
-def do_plot(points, warehouse, routes, should_display_each_distance):
-    setup(warehouse)
+def do_plot(points, warehouse, routes, should_display_each_distance, should_be_big_graph):
+    setup(warehouse, should_be_big_graph)
     plot_routes(warehouse, points, routes, should_display_each_distance)
 
-def setup(warehouse):
+def setup(warehouse, should_be_big_graph):
     plt.style.use('default')
-    # plt.rcParams["figure.figsize"] = (16, 4)
+
+    if should_be_big_graph:
+        plt.rcParams["figure.figsize"] = (16, 4)
 
     plt.plot(warehouse.x, warehouse.y, marker='*', color='black', linestyle='', markersize=10.0)
 
@@ -194,6 +198,7 @@ if(len(argv) >= 3):
     should_save_to_png = False
     should_display_each_distance = False
     should_display_total_distances = False
+    should_be_big_graph = False
 
     if(len(argv) >= 4):
         should_save_to_png = argv[3].lower() == 'true'
@@ -203,6 +208,10 @@ if(len(argv) >= 3):
 
     if(len(argv) >= 6):
         should_display_total_distances = argv[5].lower() == 'true'
-    main(solution, dataset, should_save_to_png, should_display_each_distance, should_display_total_distances)
+
+    if(len(argv) >= 7):
+        should_be_big_graph = argv[6].lower() == 'true'
+
+    main(solution, dataset, should_save_to_png, should_display_each_distance, should_display_total_distances, should_be_big_graph)
 else:
-    print("python3 plot.py {.sol} {.vrp} {should_save_to_png} {display_each_distance} {display_total_distances}")
+    print("python3 plot.py {.sol} {.vrp} {should_save_to_png?} {display_each_distance?} {display_total_distances?} {big_graph?}")

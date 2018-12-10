@@ -31,6 +31,7 @@
 \usepackage{caratula}
 \usepackage{url}
 \usepackage{multicol}
+\usepackage{lipsum}
 
 \usepackage{algpseudocode}% Provides: Pseudocode syntax for algorithms
 % para el indentation
@@ -126,7 +127,7 @@
 
 \fancyhf{}
 
-\fancyhead[LO]{Sección \rightmark} % \thesection\ 
+\fancyhead[LO]{Sección \rightmark} % \thesection\
 \fancyfoot[LO]{\small{Bernardo Tuso, Celeste Rodriguez, Facundo Linlaud, Philip Garrett}}
 \fancyfoot[RO]{\thepage}
 \renewcommand{\headrulewidth}{0.5pt}
@@ -171,7 +172,7 @@
 \newpage
 
 Se arregla de la siguiente manera, habíamos probado que $G_{0},..., G_{n}$ son conexos tomando como vertice de partida a $w_{1}$. En este caso llamamos $v_{1}$ a $w_{n}$ pues $G_{n-1}=G-\{w_n\}$ es conexo.
-Ahora si repetimos el procedimiento pero tomando $w_{n}=w'_{1}$ como el vertice de partida, vamos a tener otro orden BFS, $w'_{1},...,w'_{n}$ y como el mismo razonamiento $G - \{w'_n\}$ es conexo. Claramente, $w_{n}=w'_{1}$ es distinto de $w'_{n}$. 
+Ahora si repetimos el procedimiento pero tomando $w_{n}=w'_{1}$ como el vertice de partida, vamos a tener otro orden BFS, $w'_{1},...,w'_{n}$ y como el mismo razonamiento $G - \{w'_n\}$ es conexo. Claramente, $w_{n}=w'_{1}$ es distinto de $w'_{n}$.
 Por lo tanto podemos tomar $v_{2}=w'_{n}$.
 
 \input{sections/introduccion}
@@ -180,4 +181,3 @@ Por lo tanto podemos tomar $v_{2}=w'_{n}$.
 \input{sections/referencias}
 
 \end{document}
-

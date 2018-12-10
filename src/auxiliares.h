@@ -1,4 +1,4 @@
-#ifndef AUXILIARES_H_ 
+#ifndef AUXILIARES_H_
 #define AUXILIARES_H_
 
 #define DEBUG true
@@ -6,8 +6,8 @@
 #define print(x) if( PRINT ) std::cout << x << "\n";
 #define debug(x) if( DEBUG ) std::cout << x << "\n";
 
-#include <iostream> 
-#include <fstream> 
+#include <iostream>
+#include <fstream>
 #include <vector>
 #include "string"
 
@@ -23,7 +23,7 @@ namespace aux {
 	int min(int a, int b);
 
 	int max(int a, int b);
-	
+
 	template <typename T>
 	void print_vector(const std::vector<T> &S, std::ostream &output, std::string separator){
 		for(unsigned int i = 0; i < S.size(); i++) {
@@ -48,6 +48,8 @@ namespace aux {
 	int GetPointId(vector<Point> &points, Point &point);
 
 	void PrintTrucks(vector<Point> &points, Point &warehouse, vector<Truck> &trucks);
+
+	void removeDeposits(vector<Truck> &trucks);
 }
 
 #endif

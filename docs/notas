@@ -9,7 +9,7 @@
 [√] 2. Ordeno el vector de puntos por el atributo polar "ángulo"
 [√] 3. Consigo el ángulo de menor densidad
 [√] 4. Ordeno el vector de puntos por el atributo polar "ángulo" por cercanía al ángulo de menor densidad
-[√] 5. Construir clusters sweepeando y llenando la capacidad. Cuando se completa una capacidad o no se encuentra un vértice satisfacible, inmediatamente se retorna al depósito. 
+[√] 5. Construir clusters sweepeando y llenando la capacidad. Cuando se completa una capacidad o no se encuentra un vértice satisfacible, inmediatamente se retorna al depósito.
 [ ] 6. (?) Hacer alguna heurística de swapping entre clusters vecinos
 [√] 7. Generar rutas aplicando la heurística constructiva Nearest Neighbours
 
@@ -20,7 +20,7 @@
 	Informe:
 	[√] Mencionar pétalos
 	[ ] Actualizar los códigos pertinentes (por ejemplo polarización si es necesario)
-	
+
 	Casos negativos:
 	[ ] No emprende la vuelta anticipadamente
 		[√] Descripción
@@ -30,4 +30,4 @@
 	[ ] Vueltas alejadas por no hacer tabú search
 		[√] Descripción
 		[√] Mencionar lamda exchange (heurística de swapping entre clusters vecinos)
-		[ ] Gráfico: peor caso
+		[√] Gráfico: peor caso

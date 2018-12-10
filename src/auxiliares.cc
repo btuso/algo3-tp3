@@ -3,13 +3,13 @@
 #include <stdexcept>
 #include <iostream>
 #include <cmath>
-#include <assert.h> 
+#include <assert.h>
 
-namespace aux { 
+namespace aux {
 	std::ostream& operator<<(std::ostream &strm, const Point &p) {
 		return strm << "(x: " << p.x << ", y: " << p.y << ", demand: " << p.demand << ")";
 	}
-	
+
 	float mod(float a, float mod){
 		while(a > mod or a < 0){
 			if(a < 0)
@@ -34,7 +34,7 @@ namespace aux {
 
 		return b;
 	}
-	
+
 	void print_vector(const std::vector<float> &S){
 		std::cout << '\n' << "{ ";
 		for(unsigned int i = 0; i < S.size(); i++) {
@@ -95,6 +95,18 @@ namespace aux {
 						point_ids.push_back(GetPointId(points, point));
 				aux::print_vector(point_ids, cout, " ");
 				cout << endl;
+			}
+		}
+	}
+
+	void removeDeposits(vector<Truck> &trucks){
+		for(Truck &t : trucks){
+			print_vector(t.routes);
+			if(not t.empty()){
+				cout << "	popeando" << endl;
+				t.routes.pop_back();
+				cout << "	eraseando" << endl;
+				t.routes.erase(t.routes.begin());
 			}
 		}
 	}

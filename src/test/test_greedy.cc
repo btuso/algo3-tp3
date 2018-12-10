@@ -101,7 +101,7 @@ void TestFindFittestBucket1(){
 		int last_truck_stock_left = 1;
 
 		vector<Truck> trucks;
-		trucks.push_back(Truck(last_truck_stock_left));
+		trucks.push_back(Truck(WHATEVER_WAREHOUSE, last_truck_stock_left));
 		unsigned int original_trucks_count = trucks.size();
 
 	when("FindFittestBucket is called")
@@ -132,7 +132,7 @@ void TestFindFittestBucket2(){
 		int last_truck_stock_left = 2;
 
 		vector<Truck> trucks;
-		trucks.push_back(Truck(last_truck_stock_left));
+		trucks.push_back(Truck(WHATEVER_WAREHOUSE, last_truck_stock_left));
 		unsigned int original_trucks_count = trucks.size();
 
 	when("FindFittestBucket is called")
@@ -162,7 +162,7 @@ void TestPopNextVertex1(){
 
 		Point current_vertex = Point(6, 2, 1);
 		vector<Truck> trucks;
-		Truck truck(WHATEVER_CAPACITY);
+		Truck truck(WHATEVER_WAREHOUSE, WHATEVER_CAPACITY);
 		truck.visit(current_vertex);
 		trucks.push_back(truck);
 
