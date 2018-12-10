@@ -13,19 +13,22 @@ class dotdict(dict):
     __setattr__ = dict.__setitem__
     __delattr__ = dict.__delitem__
 
-def main(solution, dataset):
+def main(solution, dataset_path, should_save_to_png, should_display_each_distance, should_display_total_distances):
     file = 'withouth-adaptative'
     routes = load_routes(solution)
-    dataset = load_dataset(dataset)
-    do_plot(dataset.points, dataset.warehouse, routes)
+    dataset = load_dataset(dataset_path)
+
+    do_plot(dataset.points, dataset.warehouse, routes, should_display_each_distance)
     total_distance = get_total_distance(dataset.warehouse, dataset.points, routes)
 
-    legend(True, total_distance)
+    if(should_display_each_distance or should_display_total_distances):
+        legend(should_display_total_distances, total_distance)
+
+    if should_save_to_png:
+        plt.savefig(resolve_image_name(solution), dpi=320, bbox_inches='tight')
 
     plt.draw()
     plt.show()
-
-    # plt.savefig(resolve_image_name(solution), dpi=320)
 
 def resolve_image_name(solution):
     script_path = sys.path[0]
@@ -39,6 +42,32 @@ def legend(toggle_total_distance, total_distance):
     plt.legend()
 
 def load_dataset(file):
+    f = open(file)
+    dataset = dotdict()
+    lines =  f.read().splitlines()
+
+    n = int(lines[3].strip().split(' ')[-1])
+    dataset.capacity = int(lines[5].strip().split(' ')[-1])
+    dataset.warehouse = dotdict()
+    dataset.points = []
+    points = []
+    demands = []
+
+    for i in range(7, n + 7):
+        point = dotdict()
+        point.x = float(lines[i].strip().split(' ')[1])
+        point.y = float(lines[i].strip().split(' ')[2])
+        point.demand = float(lines[i + n + 1].strip().split(' ')[1])
+
+        if i == 7:
+            dataset.warehouse = point
+        else:
+            dataset.points.append(point)
+
+    f.close()
+    return dataset
+
+def load_parsed_dataset(file):
     f = open(file)
     dataset = dotdict()
 
@@ -73,9 +102,9 @@ def load_routes(file):
     f.close();
     return routes
 
-def do_plot(points, warehouse, routes):
+def do_plot(points, warehouse, routes, should_display_each_distance):
     setup(warehouse)
-    plot_routes(warehouse, points, routes)
+    plot_routes(warehouse, points, routes, should_display_each_distance)
 
 def setup(warehouse):
     plt.style.use('default')
@@ -92,7 +121,7 @@ def setup(warehouse):
     plt.grid(b=True, which='minor', color='black', linestyle='dotted', alpha=0.05)
     plt.minorticks_on()
 
-def plot_routes(warehouse, points, routes):
+def plot_routes(warehouse, points, routes, should_display_each_distance):
     colour_codes = get_cycler()
 
     for route in routes:
@@ -113,6 +142,9 @@ def plot_routes(warehouse, points, routes):
         route_distance = get_route_distance(warehouse, points, route)
         route_label = r'Distancia$\approx%.1f$' % route_distance
         route_color = next(colour_codes)
+
+        if(not should_display_each_distance):
+            route_label = None
 
         plt.plot(p_x, p_y, label=route_label, linewidth=1.0, linestyle='-', color=route_color)
         plt.scatter(p_x, p_y, marker='o', s=p_d, color=route_color, zorder=10)
@@ -148,9 +180,29 @@ def get_cycler():
     return colour_codes
 
 # pdb.set_trace()
-if(len(argv) == 3):
+def str2bool(v):
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')
+
+if(len(argv) >= 3):
     solution = argv[1]
     dataset = argv[2]
-    main(solution, dataset)
+    should_save_to_png = False
+    should_display_each_distance = False
+    should_display_total_distances = False
+
+    if(len(argv) >= 4):
+        should_save_to_png = argv[3].lower() == 'true'
+
+    if(len(argv) >= 5):
+        should_display_each_distance = argv[4].lower() == 'true'
+
+    if(len(argv) >= 6):
+        should_display_total_distances = argv[5].lower() == 'true'
+    main(solution, dataset, should_save_to_png, should_display_each_distance, should_display_total_distances)
 else:
-    print("falto solution o dataset")
+    print("python3 plot.py {.sol} {.vrp} {should_save_to_png} {display_each_distance} {display_total_distances}")

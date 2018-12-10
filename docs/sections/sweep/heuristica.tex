@@ -60,5 +60,38 @@ A medida que un cluster se va construyendo, la capacidad del camión que atender
 
 Esta falencia puede ser mitigada con metaheurísticas como \textbf{Tabú Search} o \textbf{Annealing} a la hora de seleccionar el siguiente vértice a visitar, teniendo en cuenta el vecindario inmediato y la cantidad de stock sobrante en el camión.
 
+\begin{figure}[H]
+	\centering
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=1\textwidth]{sweep-A-n32-k5}
+		% \caption{\footnotesize Sweeping no adaptativo}
+		\label{fig:sweep-A-n32-k5}
+	\end{minipage}%
+	\hspace{0.03\textwidth}
+	\begin{minipage}{0.48\textwidth}
+		Aca escribo cosas, Aca escribo cosas, Aca escribo cosas, Aca escribo cosas, Aca escribo cosas, Aca escribo cosas, Aca escribo cosas, Aca escribo cosas, Aca escribo cosas,
+	\end{minipage}%
+\end{figure}
+
 \subsubsubsection{La heurística de \textit{TSP} puede ser muy golosa con las distancias}
 Debido a que el orden de los clientes en los clusters es resuelto a través de la heurística \textit{Nearest Neighbours} que consiste en visitar el nodo inmediatamente más cercano sobre el cual se está parado, se puede perder el panorama general y cometer decisiones costosas para la calidad de la solución final. El ejemplo más recurrente se ve en la presencia de rutas con bucles o \textit{firuletes}, pues se produce una ``ida y vuelta'' innecesaria con total de visitar el nodo más cercano posible. Esto podría ser evitado utilizado alguna metaheurística como Annealing o Tabú Search para decidir a qué vértice saltar o utilizar una técnica como Lambda Exchange para optimizar e intentar eliminar estas manifestaciones del problema descripto. Analizaremos este fenómeno gráficamente:
+
+\begin{figure}[H]
+	\centering
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=1\textwidth]{sweep-without-adaptative}
+		\caption{\footnotesize Sweeping no adaptativo}
+		\label{fig:sweep-without-adaptative}
+	\end{minipage}%
+	\hspace{0.03\textwidth}
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=1\textwidth]{sweep-with-adaptative}
+		\caption{\footnotesize Sweeping adaptativo}
+		\label{fig:sweep-with-adaptative}
+	\end{minipage}%
+\end{figure}
+
+En la figura \ref{fig:sweep-with-adaptative} se puede observar una clusterización correcta de los vértices. Los nodos recorridos por el camión verde son cercanos entre sí y lo mismo sucede con los del camión rojo. En cambio, en la figura \ref{fig:sweep-without-adaptative}, se puede observar cómo los clusters se interponen entre sí debido a que se comenzó a barrer angularmente sobre ángulo $0$, interrumpiendo a la mitad la concepción de un cluster óptimo.
