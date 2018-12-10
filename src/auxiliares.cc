@@ -101,11 +101,8 @@ namespace aux {
 
 	void removeDeposits(vector<Truck> &trucks){
 		for(Truck &t : trucks){
-			print_vector(t.routes);
 			if(not t.empty()){
-				cout << "	popeando" << endl;
 				t.routes.pop_back();
-				cout << "	eraseando" << endl;
 				t.routes.erase(t.routes.begin());
 			}
 		}

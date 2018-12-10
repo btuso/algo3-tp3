@@ -93,7 +93,8 @@ def load_routes(file):
     routes = []
 
     for line in f.read().splitlines():
-        if line.strip() == '' continue
+        if line.strip() == '\n':
+            continue
 
         route = []
         route.append(0)

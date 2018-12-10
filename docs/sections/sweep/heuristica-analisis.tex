@@ -1,0 +1,54 @@
+\subsubsection{Análisis de desempeño}
+En esta sección analizaremos las destrezas y debilidades del algoritmo en discusión, que posee al menos dos falencias importantes que pueden producir soluciones de deslucida calidad. A continuación las repasamos:
+
+\subsubsubsection{El algoritmo de \textit{sweeping} no prevee el agotamiento de stock}
+A medida que un cluster se va construyendo, la capacidad del camión que atenderá los clientes de este conjunto se va agotando, es decir, la sumatoria de las demandas de todos los clientes en el cluster se va aproximando al valor de la capacidad máxima de los camiones. En estos casos, sería ideal emprender la vuelta hacia el depósito con stock suficiente para satisfacer vértices en el camino. Una manera de entender este concepto es visualizar cada ruta como un pétalo, donde la punta del antófilo indica el comienzo del emprendimiento al depósito. De esta manera, se minimiza la distancia recorrida al volver al punto de inicio pero \textbf{satisfaciendo vértices en el proceso}. Desgraciadamente, el algoritmo es inconsciente de esta situación y, en el peor de los casos, puede agotar su stock muy lejos del depósito solamente por seguir a rajatabla la heurística de viajar al nodo angularmente más cercano, pagando una distancia muy alta para volver.
+
+\vskip 8pt
+
+Esta falencia puede ser mitigada con metaheurísticas como \textbf{Tabú Search} o \textbf{Annealing} a la hora de seleccionar el siguiente vértice a visitar, teniendo en cuenta el vecindario inmediato y la cantidad de stock sobrante en el camión.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\textwidth]{A-n69-k9-emprender-vuelta}
+	\caption{\footnotesize Error de optimización en la generación del camino}
+	\label{fig:sweep-emprender-vuelta}
+\end{figure}
+
+En la figura \ref{fig:sweep-emprender-vuelta} se puede observar que en el camino marrón es posible obtener un mejor recorrido al eliminar los ejes marcados con una cruz y, en cambio, agregando la arista verde como figura en el gráfico. De esta manera quedaría un vértice $v$ sin conectar. Luego, si observamos el eje $e$ formado por el depósito y el nodo más alejado a él en esta ruta, podemos generar una subdivisión de la arista $e$ con el vértice $v$ concluyendo en un camino más óptimo. En resumen: la solución del gráfico \ref{fig:sweep-emprender-vuelta} posee una ruta que realiza un \textit{paso hacia atrás}, alejándose de los nodos que tiene que visitar después y tomando posesión de un cliente que podría haber sido visitado a la hora de \textbf{emprender la vuelta} hacia el depósito. Este ejemplo es uno de los muchos que puede suceder en esta familia de problemas.
+
+\subsubsubsection{La heurística de \textit{TSP} puede ser muy golosa con las distancias}
+Debido a que el orden de los clientes en los clusters es resuelto a través de la heurística \textit{Nearest Neighbours} que consiste en visitar el nodo inmediatamente más cercano sobre el cual se está parado, se puede perder el panorama general y cometer decisiones costosas para la calidad de la solución final. El ejemplo más recurrente se ve en la presencia de rutas con bucles o \textit{firuletes}, pues se produce una ``ida y vuelta'' innecesaria con total de visitar el nodo más cercano posible. Esto podría ser evitado utilizado alguna metaheurística como Annealing o Tabú Search para decidir a qué vértice saltar o utilizar una técnica como Lambda Exchange para optimizar e intentar eliminar estas manifestaciones del problema descripto. Analizaremos este fenómeno gráficamente:
+
+% \newpage
+\parindent0em
+\begin{multicols}{2}[\columnsep2em]
+		\includegraphics[width=0.48\textwidth]{sweep-A-n32-k5}
+\columnbreak
+	\begin{figure}[H]
+		\caption{Circuito no óptimo en camino verde} \label{fig:sweep-A-n32-k5}
+		\vskip 4pt
+		En este ejemplo se puede ver claramente la aparición de un circuito en la ruta verde. Como ya fue explicado, este se debe a que el algoritmo de resolución del TSP busca los nodos inmediatamente más cercanos sin considerar otras alternativas (a priori más ineficientes) pero que a la larga resultan más óptimas. Al seguir a rajatabla la heurística de \textit{Nearest Neighbours}, se comete un error de \textit{tunnel view} y se ignoran alternativas más eficientes a la larga.
+	\end{figure}
+\end{multicols}
+
+\subsubsubsection{Clusterización con sweeping adaptativo vs sin sweeping adaptativo}
+En la figura \ref{fig:sweep-with-adaptative} se puede observar una clusterización correcta de los vértices. Los nodos recorridos por el camión verde son cercanos entre sí y lo mismo sucede con los del camión rojo. En cambio, en la figura \ref{fig:sweep-without-adaptative}, se puede observar cómo los clusters se interponen entre sí debido a que se comenzó a barrer angularmente sobre ángulo $0$, interrumpiendo a la mitad la concepción de un cluster óptimo.
+\begin{figure}[H]
+	\centering
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=1\textwidth]{sweep-without-adaptative}
+		\caption{\footnotesize Sweeping no adaptativo}
+		\label{fig:sweep-without-adaptative}
+	\end{minipage}%
+	\hspace{0.03\textwidth}
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=1\textwidth]{sweep-with-adaptative}
+		\caption{\footnotesize Sweeping adaptativo}
+		\label{fig:sweep-with-adaptative}
+	\end{minipage}%
+\end{figure}
+
+\subsubsubsection{Análisis de casos generales}
