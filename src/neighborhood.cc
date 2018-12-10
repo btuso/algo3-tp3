@@ -9,7 +9,7 @@
 
 // ===== Public  ====
 Neighborhood::Neighborhood(const Point &warehouse, std::vector<Truck> &trucks) : warehouse(warehouse), trucks(trucks) {
-	InitializeCombinations();
+	CreateNeighborhood();
 }
 
 float Neighborhood::NextNeighbor(){
@@ -85,12 +85,10 @@ void Neighborhood::AcceptNeighbor(){
 		}
 	}
 
-	InitializeCombinations();
+	CreateNeighborhood();
 }
 
-// ===== Private ====
-
-void Neighborhood::InitializeCombinations(){
+void Neighborhood::CreateNeighborhood(){
 	RemoveEmptyTrucks();
 	truckCombinations = GetRouteCombinations(trucks);
 	current_trucks = truckCombinations.begin();
@@ -98,6 +96,8 @@ void Neighborhood::InitializeCombinations(){
 	// This will be advanced automatically when next neighbor is called
 	current_interchange = std::prev(interchanges.begin(), 1); 
 }
+
+// ===== Private ====
 
 std::vector<std::tuple<int, int>> Neighborhood::GetRouteCombinations(const std::vector<Truck> &trucks){
 	std::vector<std::tuple<int, int>> routeCombinations;

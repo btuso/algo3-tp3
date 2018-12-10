@@ -18,8 +18,6 @@ class Neighborhood {
 		std::vector<std::tuple<int, int>>::iterator current_trucks;
 		std::vector<Interchange>::iterator current_interchange;
 
-
-		void InitializeCombinations();
 		std::vector<std::tuple<int, int>> GetRouteCombinations(const std::vector<Truck> &trucks);
 		std::vector<Interchange> GenerateInterchanges(const Truck &Rp, const Truck &Rq);
 		float CalculateDeletionCost(const Truck &truck, int index) const ;
@@ -34,6 +32,7 @@ class Neighborhood {
 		float NextNeighbor();
 		bool HasNeighborsLeft() const;
 		void AcceptNeighbor();
+		void CreateNeighborhood();
 };
 
 #endif
