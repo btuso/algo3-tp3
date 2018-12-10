@@ -29,8 +29,7 @@ namespace kmeans {
 			}
 			/* Actualiza centroids */
 			for (unsigned int i = 0; i < k; i++){
-				int cluster_count;
-				Point new_centroid = calculateCentroid(in_cluster, k_clusters[i].demand, i, points, cluster_count);
+				Point new_centroid = calculateCentroid(in_cluster, k_clusters[i].demand, i, points);
 				/* Si el centro cambio... */
 				if (new_centroid != k_clusters[i]){
 					k_clusters[i] = new_centroid;
@@ -38,7 +37,7 @@ namespace kmeans {
 			}
 		}
 
-		Clusters clusters = BuildClusters(points, in_cluster, k_clusters.size());
+		Clusters clusters = BuildClusters(points, in_cluster);
 		/* Borro los que quedaron vacios */
 		for(unsigned int i = clusters.size() - 1; i > 0; i--)
 			if(clusters[i].size() == 0)
@@ -94,11 +93,11 @@ namespace kmeans {
 		return aux::GetPointId(k_clusters, clusters_copy[i-1])-1;
 	}
 
-	Point calculateCentroid(vector<int> &in_cluster, int demand, int cluster, vector<Point> &points, int &cant){
+	Point calculateCentroid(vector<int> &in_cluster, int demand, int cluster, vector<Point> &points){
 		/* Calcula el punto promedio entre los puntos del cluster, si los hay */
 		float mean_x = 0;
 		float mean_y = 0;
-		cant = 0;
+		int cant = 0;
 		for (unsigned int i = 0; i < n; i++){
 			if (in_cluster[i] == cluster){
 				mean_x += points[i].x;
@@ -114,7 +113,7 @@ namespace kmeans {
 		return Point(floor(mean_x), floor(mean_y), demand);
 	}
 
-	Clusters BuildClusters(vector<Point> &points, vector<int> &in_cluster, unsigned int k){
+	Clusters BuildClusters(vector<Point> &points, vector<int> &in_cluster){
 		/* Agrega los puntos a su cluster, todos estan en exactamente uno */
 		Clusters clusters(k, Cluster());
 		for(unsigned int i = 0; i < n; i++){

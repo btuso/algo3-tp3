@@ -25,9 +25,9 @@ namespace kmeans {
 
 	int findNearestCentroid(vector<Point> &k_clusters, Point &p, int cluster);
 
-	Point calculateCentroid(vector<int> &in_cluster, int demand, int cluster, vector<Point> &points, int &cant);
+	Point calculateCentroid(vector<int> &in_cluster, int demand, int cluster, vector<Point> &points);
 
-	Clusters BuildClusters(vector<Point> &points, vector<int> &in_cluster, unsigned int k);
+	Clusters BuildClusters(vector<Point> &points, vector<int> &in_cluster);
 }
 
 #endif
