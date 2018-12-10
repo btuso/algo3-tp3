@@ -6,19 +6,21 @@
 #include <cmath>
 #include <random>
 #include <cstdlib>
+#include <ctime>
 
 #include "savings.h"
 #include "neighborhood.h"
 #include "auxiliares.h"
 
 #define PRINT_SOLUTION printSolution(iterations, current_energy, current_temp, points, warehouse, current_solution);
-#define EXCHANGES 100
+#define EXCHANGES 10000
 #define RESETS 3
+#define EPSILON 0.001
 
 namespace annealing {
 
 	std::vector<Truck> solveCvrp(Point& warehouse, vector<Point> &points, int capacity, Params &params){
-		int iterations = 1, n = points.size();
+		int iterations = 0, n = points.size();
 		std::vector<Truck> current_solution, best_solution;
 		float current_energy, best_energy;
 
@@ -38,13 +40,16 @@ namespace annealing {
 		reset_temp = current_temp;
 
 		Neighborhood neighborhood(warehouse, current_solution); // Neighborhood holds a reference to solution in order to modify it.
+
 		std::default_random_engine rand_generator;
+		std::srand( time(NULL) );
 
 		int current_resets = 0;
 
 		PRINT_SOLUTION
 
 		while (current_resets < RESETS) {
+			iterations++;
 			if (neighborhood.HasNeighborsLeft()) {
 				float cost = neighborhood.NextNeighbor();
 				if ( shouldAccepSolution(cost, current_temp, rand_generator) ) {
@@ -59,7 +64,6 @@ namespace annealing {
 					current_resets = 0;
 				}
 				current_temp = coolDown(starting_temp, final_temp, current_temp, n, iterations, n * EXCHANGES);
-				iterations++;
 			} else {
 			        current_temp = heatUp(reset_temp, best_temp); 
 				reset_temp = current_temp;
@@ -83,7 +87,7 @@ namespace annealing {
 			else if (cost_change > max)
 				max = cost_change;
 		}
-		return std::make_tuple(min, max);
+		return std::make_tuple(min + EPSILON, max);
 	}
 
 	float calculateSolutionEnergy(const std::vector<Truck> &solution, const Point &warehouse){
@@ -96,7 +100,7 @@ namespace annealing {
 	bool shouldAccepSolution(float cost, float current_temp, std::default_random_engine &rand_generator) {
 		std::uniform_real_distribution<float> distribution(0.0,1.0);
 		float accept_probability = distribution(rand_generator);
-		return cost < 0 or std::exp(-cost / current_temp) >= accept_probability;
+		return cost < 0 or std::exp(-(cost + EPSILON) / current_temp) >= accept_probability;
 	}
 
 	float coolDown(float starting_temp, float final_temp, float current_temp, int n, int iterations, int alpha) {

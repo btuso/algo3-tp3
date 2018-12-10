@@ -1,5 +1,5 @@
 \subsection{Heuristica de Savings}
-\subsubsection{Diseño}
+\subsubsection{El algoritmo}
 Si consideramos una solución inicial al problema de CVRP como un conjunto de $n$ camiones (siendo $n$ la cantidad de clientes a visitar) y suponiendo que salen del depósito, visitan cada uno un cliente distinto y vuelven al punto de partida entonces el trayecto de un camión que visite al nodo $i$ será $2*d(D,i)$. En consecuencia, la suma de todas las distancias recorridas por estos será $\sum_{1}^{n} 2*d(D, i)$.\\
 Ahora si en vez de eso usamos un camión para visitar a dos clientes $i$ y $j$ (o que es lo mismo, dos nodos $i$ y $j$):
 $$ distancia\_recorrida = d(D, i) + d(i,j) +d(D, j)     $$
@@ -17,7 +17,7 @@ La idea es crear recorridos para los camiones que usen los savings más altos po
 Para el paso 4, tendremos los siguientes criterios de inclusión:
 \begin{itemize}
 	\item \textbf{Ninguno de los nodos fue visitado aun:} crearemos uno cuyo recorrido sea visitar ambos clientes, siempre y cuando la capacidad del camión sea mayor o igual que las demandas de ambos juntas.
-	\item \textbf{Un nodo no fue visitado aún pero el otro sí:} siempre y cuando el nodo ya visitado no sea interno (es decir, que no sea el primero o último cliente de la ruta) y la capacidad actual de su respectivo camión sea mayor o igual que la demanda del nodo no visitado.
+	\item \textbf{Un nodo no fue visitado aun pero el otro sí:} siempre y cuando el nodo ya visitado no sea interno (es decir, que no sea el primero o último cliente de la ruta) y la capacidad actual de su respectivo camión sea mayor o igual que la demanda del nodo no visitado.
 	\item \textbf{Ambos nodos pertenecen a rutas distintas:} si ninguno es interno y la distancia recorrida de ambas rutas es menor o igual que la capacidad de uno de los camiones, uniremos las dos rutas en una.
 \end{itemize}
 
@@ -40,7 +40,7 @@ Además, tenemos el tipo \textbf{Saving} el cual almacenará los dos nodos invol
 		\State \textbf{calcularSavings}$(distancias, distancia\_a\_deposito, puntos, savings)$ 
 		\State \textbf{ordenarDecreciente}$(savings)$
 		\Statex
-		\For{cada s=(i,j) en $savings$}
+		\While{s=(i,j) en $savings$ sea no negativo}
 		\If{los nodos de s no son visitados por ningun camión}
 		\State \textbf{Entero } $demanda \gets  puntos[i].demand + puntos[j].demand$
 		\If{$capacidad >= demanda$}
@@ -62,8 +62,12 @@ Además, tenemos el tipo \textbf{Saving} el cual almacenará los dos nodos invol
 		\State {\textbf{unirRutas}$(camiones, en\_que\_camion,i,j)$}
 		\EndIf
 		\EndIf
-		\EndFor
+		\EndWhile
 		\Statex
+		\If{el nodo $i$ no esta en ningun camion}
+		\State $camiones$\textbf{.agregarAtras}$(Camion(capacidad, n, i, puntos[i].demand))$
+		\EndIf
+		\State \textbf{armarCamiones}$(camiones, puntos, distancias, distancia\_a\_deposito)$
 		\State \Return $camiones$
 		\EndFunction
 	\end{algorithmic}
@@ -88,7 +92,8 @@ De nuevo, recorreremos el ciclo del mayor saving al menor. Para cada uno, habrá
 
 \begin{algorithm}[H]
 	\caption{\Comment $\mathcal{O}(n)$}
-	\begin{algorithmic}[1]\label{nuevo-truck}
+	\label{nuevo-truck}
+	\begin{algorithmic}[1]
 		\Function{Camión}{Entero $total\_capacity$, Entero $n$, Entero $i$, Entero $j$, Entero $demanda$}
 		\State $predecesores \gets$ Vector de Enteros(n, ninguno)
 		\State $siguientes \gets$ Vector de Enteros(n, ninguno)
@@ -103,7 +108,8 @@ De nuevo, recorreremos el ciclo del mayor saving al menor. Para cada uno, habrá
 
 \begin{algorithm}[H]
 	\caption{\Comment $\mathcal{O}(1)$}
-	\begin{algorithmic}[1]\label{visitar-nodo}
+	\label{visitar-nodo}
+	\begin{algorithmic}[1]
 		\Function{Visitar}{Entero $existente$, Entero $nuevo$, Entero $demanda$}
 		\If{predecesores[existente]=ninguno}
 		\State $predecesores[existente] \gets nuevo$
@@ -126,3 +132,51 @@ Para un par de nodos $(i,j)$, elegimos unir ambas rutas en $camion[i]$ (sea $pre
 	\item $predecesores[i] \neq ninguno$ y $predecesores\_B[j] = ninguno$ entonces  $i$ y $j$ (predecesor de $j$ es $i$ y siguiente de $i$ es $j$). Iremos recorriendo $predecesores\_B$ desde $j$ y consistentemente conectar esos nodos con lo $predecesores$ y $siguientes$. El nuevo cliente final será el primero del $camion[j]$.
 	\item $predecesores[i] \neq ninguno$ y $predecesores\_B[j] \neq ninguno$ entonces  $i$ y $j$ (predecesor de $j$ es $i$ y siguiente de $i$ es $j$). Ahora no hay que invertir el orden, sólo copiamos desde el camión de $j$ todos los nodos en $predecesores\_B$ y $siguientes\_B$ que no sean nulls al los del camión $i$. El nuevo cliente final será el cliente final del $camion[j]$.
 \end{enumerate}
+\paragraph{Armado de rutas} \hspace{0pt} \\
+\\
+Terminado el ciclo cuando los savings comienzan a ser negativos, debemos chequear si faltó visitar a algún cliente. Para ello, iteramos sobre $en\_que\_camion$ y cuando encontremos que alguno está en $ninguno$, creamos un $Truck$ que visite sólo a ese nodo de forma similar a \ref{nuevo-truck} mediante \ref{visitar-un-nodo-nuevo-truck}.
+\begin{algorithm}[H]
+	\caption{\Comment $\mathcal{O}(n)$}
+	\label{visitar-un-nodo-nuevo-truck}
+	\begin{algorithmic}[1]
+		\Function{Camión}{Entero $total\_capacity$, Entero $n$, Entero $i$, Entero $demanda$}
+		\State $predecesores \gets$ Vector de Enteros(n, ninguno)
+		\State $siguientes \gets$ Vector de Enteros(n, ninguno)
+		\State $cliente\_final \gets i$	
+		\State $stock\_left \gets total\_capacity - demanda$ 
+		\State $es\_valido \gets  true$ 
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+Por último,  $armarCamiones$ llamará por cada camión válido a la función auxiliar $armarRuta$. Esta navegará por el arreglo de predecesores de cada camión a partir del cliente final y mientras no llegué al primero (cuyo predecesor es null). Agregará cada punto correspondiente a la componente $routes$ de cada camión, generando el camino. 
+\begin{algorithm}[H]
+	\caption{\Comment $\mathcal{O}(n)$}
+	\label{armar-ruta}
+	\begin{algorithmic}[1]
+		\Function{armarRuta}{Camion $camion$, Vector de Puntos $puntos$, Matriz de Reales $distancias$, Vector de Reales $distancia\_a\_deposito$}
+		\State \textbf{Entero} $cliente \gets camion.cliente\_final$
+		\State $camion.routes$\textbf{.agregarAtras}$(puntos[cliente])$
+		\While{$camion.predecesores[cliente] \neq ninguno$}
+		\State $cliente \gets camion.predecesores[cliente]$
+		\State $camion.routes$\textbf{.agregarAtras}$(puntos[cliente])$
+		\EndWhile
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+\subsubsection{Análisis de complejidad}
+\paragraph{Complejidad espacial}\hspace{0pt} \\
+\\
+Contamos con varios vectores de tamaño $n$ y la matriz de $distancias$ de tamaño $n^{2}$. Además, por cada camión que se cree se tienen dos vectores de tamaño $n$, $predecesores$ y $siguientes$. Como la cantidad de camiones está acotada por $n$, la complejidad espacial pertenece a $\mathcal{O}(n^{2})$.
+\paragraph{Complejidad temporal}
+\begin{itemize}
+	\item Inicialización de matriz en $\mathcal{O}(n^{2})$ y de vectores en $\mathcal{O}(n)$.
+	\item Recorrer los $n(n-1)/2$ savings pertenece a $\mathcal{O}(n^{2})$.
+	\item Para cada uno de ellos, se efectua una de las tres opciones:
+	\subitem 1. Se crea un camión nuevo. Como se inicializan $predecesores$ y $siguientes$ de tamaño $n$, pertenece a $\mathcal{O}(n)$.
+	\subitem 2. Uno de los nodos será visitado por el camión del otro. Se efectuan simples asignaciones por lo que pertenece a $\mathcal{O}(1)$.
+	\subitem 3. Se mergean rutas. Se actualizara $en\_que\_camion$ para todos los nodos que visitaba el camión que se invalidará, mientras que se actualizarán los $predecesores$ y $siguientes$ del camión con las rutas unidas. Pertenece a $\mathcal{O}(n)$.
+	\item Los chequeos para saber si se pueden unir/mergear son simples comparaciones: $\mathcal{O}(1)$.
+	\item Se recorre $en\_que\_camion$ en $\mathcal{O}(n)$ y se crean los camiones faltantes en $\mathcal{O}(n)$.
+	\item El armado de rutas recorre los camiones válidos y agrega todos los nodos a sus respectivas rutas. Recorre en a lo sumo $\mathcal{O}(n)$ y el armado total es de $\mathcal{O}(n)$ ya que hay $n$ nodos y cada uno está en un solo camión.
+\end{itemize}
+En conclusión, sabemos que el algoritmo pertenece a $\mathcal{O}(n^{3})$.

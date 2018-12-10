@@ -13,13 +13,16 @@ Neighborhood::Neighborhood(const Point &warehouse, std::vector<Truck> &trucks) :
 }
 
 float Neighborhood::NextNeighbor(){
-	if( not HasNeighborsLeft() ) 
+
+	if (not HasNeighborsLeft()) 
 		throw std::logic_error("No more neighbors to explore");
 	
-	if(  std::next(current_interchange, 1) == interchanges.end() ){
-		std::advance(current_trucks, 1);
-		interchanges = GenerateInterchanges(trucks[get<0>(*current_trucks)], trucks[get<1>(*current_trucks)]);
-		current_interchange = interchanges.begin();
+	if (std::next(current_interchange, 1) == interchanges.end()) {
+		do {
+			std::advance(current_trucks, 1);
+			interchanges = GenerateInterchanges(trucks[get<0>(*current_trucks)], trucks[get<1>(*current_trucks)]);
+			current_interchange = interchanges.begin();
+		} while (current_interchange == interchanges.end()); // Two routes may produce no interchanges on odd occasions
 	} else {
 		std::advance(current_interchange, 1);
 	}

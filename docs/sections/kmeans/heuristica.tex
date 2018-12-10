@@ -1,0 +1,165 @@
+\subsection{Heurística constructiva de cluster-first, route-second, clusterizando con algoritmo de K-means}
+\subsubsection{El algoritmo}
+Resolver de forma heurística el problema de CVRP mediante un algoritmo cluster-first, route-second se divide en dos partes : \textbf{1.} la clusterización y \textbf{2.} la búsqueda de un camino mínimo. Como mencionamos en \ref{subsection:sweep} hay distintas maneras de separar en clusters y de luego buscar esas posibles rutas. Una fue la técnica de \textit{Sweeping}. La que desarrollaremos a continuación, clusterizará mediante el algoritmo de \textit{k-means} y resolverá los TSP restantes mediante \textit{Nearest Neighbour}.
+\textbf{K-means} consiste en asignar cada punto al cluster cuyo centro, que llamaremos $centroid$, se encuentra más cerca. Definiremos el centroid de cada cluster k como la media entre todos los puntos que pertenecen a dicha partición. Veamos los pasos en detalle:
+
+\begin{description}
+	\item[Paso 1.] Elegimos $k$ cantidad de clusters. Seleccionamos un valor aproximado al posible total de camiones que utilizará nuestro algoritmo. Por eso, decidimos elegir el promedio de los productos que llevará cada camión (es decir, el promedio de demanda solicitada por viaje). Decimos que es aproximado ya que en nuestra implementación permitimos que se agreguen clusters de ser necesario.
+	\item[Paso 2.] Seleccionamos $k$ puntos como centroids de los $k$ clusters. Como los puntos de la entrada no tienen un orden particular, elegimos los $k$ primeros. Otra opción era elegirlos random, los de mayor/menor demanda, etc.
+	\item[Paso 3.] Asignamos cada punto al centroid más cercano. Para ello ordenamos los clusters según distancia al punto en cuestión. Luego, desde el más cercano al más lejano, buscamos el primero cuya capacidad restante mas la demanda del cliente no supere la capacidad total. Si no queda espacio en ningún camión, creamos nuevo cluster con centroid en el mismo punto.
+	\item[Paso 4.] Después de recorrer los vértices, calculamos los nuevos centroids de cada cluster.
+	\item[Paso 5.] Repetimos el procedimiento hasta que los puntos dejen de cambiar de cluster: no haya más asignaciones en el paso 4.
+\end{description}
+Sean $(x_{1}, y_{1}), (x_{2}, y_{2})...(x_{m_{j}}, y_{m_{j}})$ los $m_{j}$ puntos pertenecientes al cluster $j$, definiremos su centroid como $c_{j}=(X_{j}, Y_{j})$ donde: \\
+$$ x_{j} = \sum_{i=1}^{m_{j}} x_{i}/m_{j}$$
+$$ y_{j} = \sum_{i=1}^{m_{j}} y_{i}/m_{j}$$
+$$ c_{j}=(x_{j}, y_{j}) $$
+Es decir, el promedio en cada coordenada. Cabe resaltar además que es importante que los clusters no compartan nodos entre sí, no puede haber al mismo tiempo dos camiones que vayan al mismo punto. Por lo tanto, se cumple que la cantidad total de puntos $n$ es $\sum_{i=1}^{k} m_{j}$. Además, como solo se agregan clientes a clusters donde es posible satisfacer su demanda, se verifica que para todo cluster $j$ $\sum_{i=1}^{m_{j}} demanda(cliente_{i}) <= C$.
+\\
+\par Finalmente, cuando terminamos de clusterizar procedemos al armado de rutas.
+\begin{enumerate}
+	\item Agregamos cada punto a su cluster efectivo.
+	\item Si quedaron clusters vacios, los eliminamos.
+	\item Aplicamos la heurística de \textit{Nearest Neighbour} para cada cluster.
+	\item Retornamos el conjunto de camiones con sus respectivas rutas.
+\end{enumerate}
+
+\subsubsection{Pseudo-código}
+
+\begin{algorithm}[H]
+	\caption{\Comment $\mathcal{O}(cant\_it * (n*k*\log(k) + k*n)) = \mathcal{O}(cant\_it *n*k*\log(k))$}
+	\begin{algorithmic}[1]
+		\Function{resolverCVRP}{Punto $deposito$, Conjunto de puntos $puntos$, Entero $capacidad$}
+		\State $n \gets |puntos|$
+		\State $k \gets \textbf{calcularK}(puntos, capacidad)$ \Comment $\mathcal{O}(n)$
+		\Statex
+		\State \textbf{Vector de Enteros} $en\_que\_cluster\mathcal{}(n, ninguno)$
+		\State \textbf{Vector de Puntos} $k\_clusters$
+		\State \textbf{InicializarClusters}$(puntos, k\_clusters, en\_que\_cluster, capacidad)$  \Comment $\mathcal{O}(k)$
+		\Statex
+		\While{sigue cambiando}
+		\For{$i$ desde $0$ hasta $n-1$}
+		\State $ultimo\_cluster \gets en\_que\_cluster[i]$
+		\State $cluster \gets $ \textbf{centroidMasCercano}$(k\_clusters, puntos[i], ultimo\_cluster)$ \Comment $\mathcal{O}(k*\log(k))$
+		\If{$ultimo\_cluster \neq cluster$}
+		\State $en\_que\_cluster[i] \gets cluster$
+		\State $k\_clusters[cluster].demand \gets k\_clusters[cluster].demand-puntos[i].demand$
+		\If{$ultimo\_cluster \neq ninguno$}
+		\State $k\_clusters[ultimo\_cluster].demand \gets k\_clusters[ultimo\_cluster].demand + puntos[i].demand$
+		\EndIf
+		\EndIf
+		\EndFor
+		\For{$i$ desde $0$ hasta $k-1$}
+		\State \textbf{Punto } $nuevo\_centroid \gets $ \textbf{calcularCentroid}$(en\_que\_cluster, k\_clusters[i].demand, i, puntos)$ \Comment $\mathcal{O}(n)$
+		\If{$nuevo\_centroid \neq k\_clusters[i]$}
+		\State $k\_clusters[i] \gets nuevo\_centroid$
+		\EndIf
+		\EndFor
+		\EndWhile
+		\Statex
+		\State 
+		\State \textbf{Lista de clusters} $clusters \gets $ \textbf{ConstruirClusters}$(puntos, en\_que\_cluster)$
+		\State \textbf{Rutas} $rutas \gets$ \textbf{ConstruirRutasAPartirDeClusters}$(clusters, deposito, capacidad)$
+		\Statex
+		\State \Return $rutas$
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+
+
+\begin{algorithm}[H]
+	\caption{\Comment $\mathcal{O}(n)$}
+	\label{calcular-k}
+	\begin{algorithmic}[1]
+		\Function{calcularK}{Vector de Puntos $puntos$, Entero $capacidad$}
+		\State \textbf{Real } $nuevo\_k \gets 0$
+		\For{cada $p$ en $puntos$} \Comment $\mathcal{O}(n)$
+		\State $nuevo\_k \gets nuevo\_k + p.demand$
+		\EndFor
+		\State $nuevo\_k \gets nuevo\_k/capacidad$ 
+		\State \Return \textbf{ceil}$(nuevo\_k)$
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]
+	\caption{\Comment $\mathcal{O}(k)$}
+	\label{inicializar-clusters}
+	\begin{algorithmic}[1]
+		\Function{inicializarClusters}{Vector de Puntos $puntos$, Vector de Puntos $k\_clusters$, Vector de Enteros $en\_que\_cluster$, Entero $capacidad$}
+		\For{$i$ desde $0$ hasta $k-1$} \Comment $\mathcal{O}(k)$
+		\State $k\_clusters$\textbf{.agregarAtras}$(Punto(puntos[i].x, puntos[i].y, capacidad - puntos[i].demand))$
+		\State $en\_que\_cluster[i] \gets |k\_clusters|-1$
+		\EndFor
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]
+	\caption{\Comment $\mathcal{O}(k*\log(k))$}
+	\begin{algorithmic}[1]
+		\Function{centroidMasCercano}{Vector de Puntos $k\_clusters$, Punto $punto$, Entero $ultimo\_cluster$}
+		\State \textbf{Punto } $viejo\_centroid \gets k\_clusters[ultimo\_cluster]$
+		\State \textbf{Entero } $i \gets 0$
+		\State \textbf{Bool } $termine \gets false$
+		\State \textbf{ordenarPorDistancia}$(copia\_de\_clusters(k\_clusters), punto)$ \Comment $\mathcal{O}(k*\log(k))$
+		\Statex
+		\While{$i < k$ $\land$  $\neg termine$} \Comment $\mathcal{O}(k)$
+		\If{$viejo\_centroid \neq copia\_de\_clusters[i]$}
+		\State \textbf{Entero } $capacidad\_restante \gets copia\_de\_clusters[i].demand$ 
+		\If{$capacidad\_restante >= punto.demand$}
+		\State $termine \gets true$
+		\EndIf
+		\Else
+		\State $termine \gets true$
+		\EndIf
+		\State $i \gets i+1$
+		\EndWhile
+		\Statex
+		\If{$\neg termine$}
+		\State $k\_clusters$\textbf{.agregarAtras}$(punto)$
+		\State $k \gets k+1$
+		\State \Return $k-1$
+		\EndIf
+		\State \Return \textbf{indiceEnVec}$(k\_clusters, copia\_de\_clusters[i-1])$  \Comment $\mathcal{O}(k)$
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]
+	\caption{\Comment $\mathcal{O}(n)$}
+	\label{calcular-centroid}
+	\begin{algorithmic}[1]
+		\Function{calcularCentroid}{Vector de Enteros $en\_que\_cluster$, Entero $demanda$, Entero $cluster$, Vector de Puntos $puntos$}
+		\State \textbf{Real } $mean\_x \gets 0$
+		\State \textbf{Real } $mean\_y \gets 0$
+		\State \textbf{Entero } $cant \gets 0$
+		\For{$i$ desde $0$ hasta $n-1$} \Comment $\mathcal{O}(n)$
+		\If{$en\_que\_cluster[i]=cluster$}
+		\State $mean\_x \gets mean\_x + puntos[i].x$
+		\State $mean\_y \gets mean\_y + puntos[i].y$
+		\State $cant \gets cant+1$
+		\EndIf
+		\EndFor
+		\If{$cant=0$}
+		\State \Return $Punto\_Invalido$
+		\EndIf
+		\State \Return \textbf{Punto}$(mean\_x/cant, mean\_y/cant)$
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]
+	\caption{\Comment $\mathcal{O}(n)$}
+	\begin{algorithmic}[1]
+		\Function{ConstruirClusters}{Vector de puntos $puntos$, Vector de Enteros $en\_que\_cluster$}
+		\State \textbf{Lista de Cluster} $clusters$(k, $\varnothing$)
+		\Statex
+		\For{$i$ desde $0$ hasta $n-1$}\Comment $\mathcal{O}(n)$
+		\State $clusters[en\_que\_cluster[i]]$\textbf{.agregarAtras}$(puntos[i])$
+		\EndFor
+		\Statex
+		\State \Return $clusters$
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
