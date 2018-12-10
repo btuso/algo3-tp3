@@ -1,0 +1,69 @@
+\subsection{Heurística constructiva de cluster-first, route-second, clusterizando con algoritmo de K-means}
+\subsubsection{El algoritmo}
+Resolver de forma heurística el problema de CVRP mediante un algoritmo cluster-first, route-second se divide en dos partes : \textbf{1.} la clusterización y \textbf{2.} la búsqueda de un camino mínimo. Como mencionamos en \ref{subsection:sweep} hay distintas maneras de separar en clusters y de luego buscar esas posibles rutas. Una fue la técnica de \textit{Sweeping}. La que desarrollaremos a continuación, clusterizará mediante el algoritmo de \textit{k-means} y resolverá los TSP restantes mediante \textit{Nearest Neighbour}.
+\textbf{K-means} consiste en asignar cada punto al cluster cuyo centro, que llamaremos $centroid$, se encuentra más cerca. Definiremos el centroid de cada cluster k como la media entre todos los puntos que pertenecen a dicha partición. Veamos los pasos en detalle:
+
+\begin{description}
+	\item[Paso 1.] Elegimos $k$ cantidad de clusters. Seleccionamos un valor aproximado al posible total de camiones que utilizará nuestro algoritmo. Por eso, decidimos elegir el promedio de los productos que llevará cada camión (es decir, el promedio de demanda solicitada por viaje). Decimos que es aproximado ya que en nuestra implementación permitimos que se agreguen clusters de ser necesario.
+	\item[Paso 2.] Seleccionamos $k$ puntos como centroids de los $k$ clusters. Como los puntos de la entrada no tienen un orden particular, elegimos los $k$ primeros. Otra opción era elegirlos random, los de mayor/menor demanda, etc.
+	\item[Paso 3.] Asignamos cada punto al centroid más cercano. Para ello ordenamos los clusters según distancia al punto en cuestión. Luego, desde el más cercano al más lejano, buscamos el primero cuya capacidad restante mas la demanda del cliente no supere la capacidad total. Si no queda espacio en ningún camión, creamos nuevo cluster con centroid en el mismo punto.
+	\item[Paso 4.] Después de recorrer los vértices, calculamos los nuevos centroids de cada cluster.
+	\item[Paso 5.] Repetimos el procedimiento hasta que los puntos dejen de cambiar de cluster: no haya más asignaciones en el paso 4.
+\end{description}
+Sean $(x_{1}, y_{1}), (x_{2}, y_{2})...(x_{m_{j}}, y_{m_{j}})$ los $m_{j}$ puntos pertenecientes al cluster $j$, definiremos su centroid como $c_{j}=(X_{j}, Y_{j})$ donde: \\
+$$ x_{j} = \sum_{i=1}^{m_{j}} x_{i}/m_{j}$$
+$$ y_{j} = \sum_{i=1}^{m_{j}} y_{i}/m_{j}$$
+$$ c_{j}=(x_{j}, y_{j}) $$
+Es decir, el promedio en cada coordenada. Cabe resaltar además que es importante que los clusters no compartan nodos entre sí, no puede haber al mismo tiempo dos camiones que vayan al mismo punto. Por lo tanto, se cumple que la cantidad total de puntos $n$ es $\sum_{i=1}^{k} m_{j}$. Además, como solo se agregan clientes a clusters donde es posible satisfacer su demanda, se verifica que para todo cluster $j$ $\sum_{i=1}^{m_{j}} demanda(cliente_{i}) <= C$.
+\\
+\par Finalmente, cuando terminamos de clusterizar procedemos al armado de rutas.
+\begin{enumerate}
+	\item Agregamos cada punto a su cluster efectivo.
+	\item Si quedaron clusters vacios, los eliminamos.
+	\item Aplicamos la heurística de \textit{Nearest Neighbour} para cada cluster.
+	\item Retornamos el conjunto de camiones con sus respectivas rutas.
+\end{enumerate}
+
+\subsubsection{Pseudo-código}
+En primer lugar, aclararemos ciertos aspectos de los tipos de datos utilizados para implementar la solución. Se tiene un tipo de dato \textbf{Camión} el cual almacena su stock disponible, si es válido, cual es el último cliente y dos vectores de tamaño $n$ que indican para todo $i$ el nodo que precede y el siguiente a $i$ (el siguiente del último nodo es nulo y el predecesor del primero también). Estos últimos vectores nos serviran para mergear las rutas según el paso 4 y para reconstruir los caminos. \\
+Además, tenemos el tipo \textbf{Saving} el cual almacenará los dos nodos involucrados y el respectivo saving según el paso 1.
+
+\begin{algorithm}[H]
+	\caption{\Comment $\mathcal{O}(n^{3})$}
+	\begin{algorithmic}[1]
+		\Function{resolverCVRP}{Punto $deposito$, Conjunto de puntos $puntos$, Entero $capacidad$}
+		\State $n \gets |puntos|$
+		\State $k \gets \textbf{calcularK}(puntos, capacidad)$
+		\Statex
+		\State \textbf{Vector de Enteros} $en\_que\_cluster\mathcal{}(n, ninguno)$
+		\State \textbf{Vector de Puntos} $k\_clusters$
+		\State \textbf{InicializarClusters}$(puntos, k\_clusters, en\_que\_cluster, capacidad)$ 
+		\Statex
+		\While{sigue cambiando}
+		\For{$i$ desde $0$ hasta $n-1$}
+		\State $ultimo\_cluster \gets en\_que\_cluster[i]$
+		\State $cluster \gets $ \textbf{centroidMasCercano}$(k\_clusters, puntos[i], ultimo\_cluster)$
+		\If{$ultimo\_cluster \neq cluster$}
+		\State $en\_que\_cluster[i] \gets cluster$
+		\State $k\_clusters[cluster].demand \gets k\_clusters[cluster].demand-puntos[i].demand$
+		\If{$ultimo_cluster \neq ninguno$}
+		\State $k\_clusters[ultimo\_cluster].demand \gets k\_clusters[ultimo\_cluster].demand + puntos[i].demand$
+		\EndIf
+		\EndIf
+		\EndFor
+		\For{$i$ desde $0$ hasta $k-1$}
+		\State \textbf{Punto } $nuevo\_centroid \gets $ \textbf{calcularCentroid}$(en\_que\_cluster, k\_clusters[i].demand, i, puntos)$
+		\If{$nuevo\_centroid \neq k\_clusters[i]$}
+		\State $k\_clusters[i] \gets nuevo\_centroid$
+		\EndIf
+		\EndFor
+		\EndWhile
+		\Statex
+		\State 
+		\State \textbf{Lista de clusters} $clusters \gets $ \textbf{ConstruirClusters}$(puntos, en\_que\_cluster)$
+		\State \textbf{Rutas} $rutas \gets$ \textbf{ConstruirRutasAPartirDeClusters}$(clusters, deposito, capacidad)$
+		\Statex
+		\State \Return $rutas$
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}

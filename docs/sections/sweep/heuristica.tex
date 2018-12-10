@@ -1,4 +1,4 @@
-\subsection{Heurística constructiva de cluster-first, route-second, clusterizando con algoritmo de Sweeping}
+\subsection{Heurística constructiva de cluster-first, route-second, clusterizando con algoritmo de Sweeping} \label{subsection:sweep}
 \subsubsection{El algoritmo}
 La solución al Problema de Enrutamiento de Vehículos con Capacidad mediante este algoritmo se divide en dos partes fundamentales: \textbf{1.} la clusterización y \textbf{2.} la búsqueda de un camino mínimo. La clusterización de los vértices de un grafo puede ser llevada a cabo de distintas maneras. En trabajos anteriores hemos utilizado el algoritmo de Kruskal y el algoritmo de Prim para obtener árboles generadores mínimos sobre los cuales se ejercían exploraciones vecinales y consecuentes podas hasta obtener una clusterización válida. Otros enfoques, por ejemplo, utilizan técnicas como la clusterización por $k-medians$ para agrupar nodos cercanos. Las alternativas son enormes. En este documento utilizamos el \textit{Sweep Clustering Algorithm} para producir los conjuntos de vértices euclidianamente cercanos.
 
