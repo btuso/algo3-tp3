@@ -1,5 +1,5 @@
 \subsection{Heurística constructiva de cluster-first, route-second, clusterizando con algoritmo de K-means}
-\subsubsection{El algoritmo}
+\subsubsection{El algoritmo}\label{kmeans-el-algoritmo}
 Resolver de forma heurística el problema de CVRP mediante un algoritmo cluster-first, route-second se divide en dos partes : \textbf{1.} la clusterización y \textbf{2.} la búsqueda de un camino mínimo. Como mencionamos en \ref{subsection:sweep} hay distintas maneras de separar en clusters y de luego buscar esas posibles rutas. Una fue la técnica de \textit{Sweeping}. La que desarrollaremos a continuación, clusterizará mediante el algoritmo de \textit{k-means} y resolverá los TSP restantes mediante \textit{Nearest Neighbour}.
 \textbf{K-means} consiste en asignar cada punto al cluster cuyo centro, que llamaremos $centroid$, se encuentra más cerca. Definiremos el centroid de cada cluster k como la media entre todos los puntos que pertenecen a dicha partición. Veamos los pasos en detalle:
 
@@ -58,14 +58,21 @@ Es decir, el promedio en cada coordenada. Cabe resaltar además que es important
 		\EndWhile
 		\Statex
 		\State 
-		\State \textbf{Lista de clusters} $clusters \gets $ \textbf{ConstruirClusters}$(puntos, en\_que\_cluster)$
-		\State \textbf{Rutas} $rutas \gets$ \textbf{ConstruirRutasAPartirDeClusters}$(clusters, deposito, capacidad)$
+		\State \textbf{Lista de clusters} $clusters \gets $ \textbf{ConstruirClusters}$(puntos, en\_que\_cluster)$ \Comment $\mathcal{O}(n)$
+		\State \textbf{Rutas} $rutas \gets$ \textbf{ConstruirRutasAPartirDeClusters}$(clusters, deposito, capacidad)$ \Comment $\mathcal{O}(n^2*log(n))$
 		\Statex
 		\State \Return $rutas$
 		\EndFunction
 	\end{algorithmic}
 \end{algorithm}
 
+\paragraph{Inicialización}
+
+\begin{itemize}
+	\item Inicializamos $en\_que\_cluster$ con el define $ninguno$: para cada punto $i$, $en\_que\_cluster[i]$ representará el cluster al que pertenece $i$. 
+	\item Calculamos la cantidad de clusters según \ref{calcular-k}. Como mencionamos anteriormente, dependerá de la capacidad de los camiones y de la demanda de los clientes.
+	\item Elegimos los primeros $k$ puntos que funcionarán como nuestros primeros centroids según \ref{inicializar-clusters}. Cada centroid tendrá la misma estructura que los puntos: tendrá su componente y, su componente x y un entero que almacenará la capacidad que le queda al camión que visitará todos los puntos pertenecientes a dicho cluster.
+\end{itemize}
 
 \begin{algorithm}[H]
 	\caption{\Comment $\mathcal{O}(n)$}
@@ -95,17 +102,39 @@ Es decir, el promedio en cada coordenada. Cabe resaltar además que es important
 	\end{algorithmic}
 \end{algorithm}
 
+
+\paragraph{Ciclo}\hspace{0pt} \\
+\\
+\indent El ciclo iterará hasta que los puntos dejen de cambiar de cluster o hasta que se llegue a una cantidad constante elegida de iteraciones (lo explicaremos en la siguiente sección).\hspace{0pt} \\
+\indent \textbf{Actualización de puntos:} por cada punto calcularemos el centroid más cercano. Si no pertenece al mismo cluster al que pertenecía antes, actualizamos $en\_que\_camion$ con el nuevo cluster. Además, hay que restarle a la capacidad restante del nuevo la demanda del cliente (es suficiente porque se chequeó en $centroidMasCercano$) y al viejo, devolverle la capacidad que ya no se usa. Cabe resaltar que en la primera iteración del ciclo habrá puntos que no pertenezcan a ningún cluster y por ende, esa demanda no deberá ser devuelta a ningún camión.\hspace{0pt} \\
+\indent \textbf{Actualización de centroids:} Por cada cluster $i$ entre los $k$, como se actualizó la pertenencia de los puntos en los clusters, se debe actualizar el centro que lo representa.  $calcularCentroid$ devolverá el nuevo punto promedio del cluster o en caso de que no haya puntos, un punto inválido. La idea es que $Punto\_Invalido$ tenga capacidad negativa para que no se le pueda volver a asignar a ese cluster ningún punto en el primer for.
+
+\paragraph{Auxiliar: centroid más cercano}\hspace{0pt} \\
+\\
+El algoritmo \ref{centroid-mas-cercano} buscará el cluster cuyo centroid se encuentre más cerca al punto pasado por parámetro. Para esto, ordenamos una copia del vector de clusters por distancia a este de forma creciente. Como hay $k$ centroids, esto pertenece a $\mathcal{O}(k*\log(k))$.  Al iterar tendremos tres casos:
+\begin{enumerate}
+	\item El punto no estaba en ningún cluster: el primer cluster que encuentre que tenga capacidad suficiente para la demanda del cliente, será el resultado.
+	\item El punto no cambia de cluster: todos los que encontré antes de $k\_clusters[ultimo\_cluster]$ no tienen capacidad suficiente. Como el cliente ya era visitado por ese camión, la capacidad no debe ser chequeada.
+	\item El punto cambia de cluster: o bien encontré uno con capacidad suficiente o tengo que agregar uno nuevo.
+\end{enumerate} 
+Como el ciclo termina con $i$ = $indice\_del\_cluster$+1, si no creé uno nuevo, devuelvo la posición en el vector sin ordenar del centroid $i-1$. Como eso significa recorrer $k\_clusters$, es $\mathcal{O}(k)$. Por último, en el caso en que se cree uno nuevo, se agrega un cluster con centroid en el $punto$ y se devuelve su posición.
+\\
+
 \begin{algorithm}[H]
 	\caption{\Comment $\mathcal{O}(k*\log(k))$}
+	\label{centroid-mas-cercano}
 	\begin{algorithmic}[1]
 		\Function{centroidMasCercano}{Vector de Puntos $k\_clusters$, Punto $punto$, Entero $ultimo\_cluster$}
-		\State \textbf{Punto } $viejo\_centroid \gets k\_clusters[ultimo\_cluster]$
+		\State \textbf{Punto } $viejo\_centroid \gets k\_clusters[0]$
+		\If{$ultimo\_cluster \neq ninguno$}
+		\State $viejo\_centroid \gets k\_clusters[ultimo\_cluster]$
+		\EndIf 
 		\State \textbf{Entero } $i \gets 0$
 		\State \textbf{Bool } $termine \gets false$
 		\State \textbf{ordenarPorDistancia}$(copia\_de\_clusters(k\_clusters), punto)$ \Comment $\mathcal{O}(k*\log(k))$
 		\Statex
 		\While{$i < k$ $\land$  $\neg termine$} \Comment $\mathcal{O}(k)$
-		\If{$viejo\_centroid \neq copia\_de\_clusters[i]$}
+		\If{$ultimo\_cluster = ninguno \vee viejo\_centroid \neq copia\_de\_clusters[i]$}
 		\State \textbf{Entero } $capacidad\_restante \gets copia\_de\_clusters[i].demand$ 
 		\If{$capacidad\_restante >= punto.demand$}
 		\State $termine \gets true$
@@ -126,6 +155,12 @@ Es decir, el promedio en cada coordenada. Cabe resaltar además que es important
 	\end{algorithmic}
 \end{algorithm}
 
+\paragraph{Calcular centroid} \hspace{0pt} \\
+\\
+El algoritmo \ref{calcular-centroid} calcula el promedio en cada componente de todos los puntos del cluster pasado por parámetro. Si está vacio, devuelve $Punto\_invalido$. Como recorre todos los puntos y chequea si pertenecen a dicho cluster, pertenece a $\mathcal{O}(n)$.
+\paragraph{Armado de rutas}\hspace{0pt} \\
+\\
+Al igual que para la otra heurística cluster-first, route-second crearemos los clusters efectivos y resolveremos los TSP restantes mediante \textit{Nearest Neighbour}.  Para construirlos, utilizamos \ref{construir-clusters} que recorre $en\_que\_cluster$ y agregara los respectivos puntos a cada Cluster (renombre de vector de puntos). Un agregado de la implementación fue antes de armar las rutas eliminar los clusters vacios, lo cual no agrega complejidad ya que recorrer y borrar pertenece a $\mathcal{O}(k)$. Por último, resolvemos los TSP mediante \ref{sweep-build-routes}, de complejidad $\mathcal{O}(n^2*log(n))$.
 \begin{algorithm}[H]
 	\caption{\Comment $\mathcal{O}(n)$}
 	\label{calcular-centroid}
@@ -151,6 +186,7 @@ Es decir, el promedio en cada coordenada. Cabe resaltar además que es important
 
 \begin{algorithm}[H]
 	\caption{\Comment $\mathcal{O}(n)$}
+	\label{construir-clusters}
 	\begin{algorithmic}[1]
 		\Function{ConstruirClusters}{Vector de puntos $puntos$, Vector de Enteros $en\_que\_cluster$}
 		\State \textbf{Lista de Cluster} $clusters$(k, $\varnothing$)
@@ -163,3 +199,5 @@ Es decir, el promedio en cada coordenada. Cabe resaltar además que es important
 		\EndFunction
 	\end{algorithmic}
 \end{algorithm}
+
+\subsubsection{Análisis de complejidad}
