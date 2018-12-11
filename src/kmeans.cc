@@ -13,7 +13,8 @@ namespace kmeans {
 
 		initializeClusters(points, k_clusters, in_cluster, max_stock);
 		bool sigueCambiando = true;
-		while (sigueCambiando){
+		int it = 0;
+		while (sigueCambiando and it < 100){
 			sigueCambiando = false;
 			/* Actualiza asignaciones de cada punto a cada cluster */
 			for(unsigned int i = 0; i < n; i++){
@@ -28,13 +29,14 @@ namespace kmeans {
 				}			
 			}
 			/* Actualiza centroids */
-			for (unsigned int i = 0; i < k; i++){
+			for (unsigned int i = 0; i < k and sigueCambiando; i++){
 				Point new_centroid = calculateCentroid(in_cluster, k_clusters[i].demand, i, points);
 				/* Si el centro cambio... */
 				if (new_centroid != k_clusters[i]){
 					k_clusters[i] = new_centroid;
 				}
 			}
+			it++;
 		}
 
 		Clusters clusters = BuildClusters(points, in_cluster);
@@ -66,13 +68,14 @@ namespace kmeans {
 
 	int findNearestCentroid(vector<Point> &k_clusters, Point &point, int cluster){
 		vector<Point> clusters_copy(k_clusters);
-		Point &old_cluster = k_clusters[cluster];
+		Point old_cluster = k_clusters[0];
+		if (cluster != ninguno) old_cluster = k_clusters[cluster];
 		/* Ordena los centroids por menor distancia al punto */
 		sort(clusters_copy.begin(), clusters_copy.end(), DistanceToPoint(point));
 		unsigned int i;
 		bool termine = false;
 		for (i = 0; i < clusters_copy.size() and !termine; i++){
-			if (clusters_copy[i] != old_cluster){
+			if (cluster == ninguno or clusters_copy[i] != old_cluster){
 				/* Si no es el mismo cluster al que pertenecia el punto*/
 				int capacity_left = clusters_copy[i].demand;
 				/* Si hay suficiente espacio */
