@@ -8,12 +8,12 @@
 #include <cstdlib>
 #include <ctime>
 
-#include "savings.h"
+#include "greedy.h"
 #include "neighborhood.h"
 #include "auxiliares.h"
 
 #define PRINT_SOLUTION printSolution(iterations, current_energy, current_temp, points, warehouse, current_solution);
-#define EXCHANGES 10000
+#define EXCHANGES 5000
 #define RESETS 3
 #define EPSILON 0.001
 
@@ -24,11 +24,10 @@ namespace annealing {
 		std::vector<Truck> current_solution, best_solution;
 		float current_energy, best_energy;
 
-		current_solution = savings::solveCvrp(warehouse, points, capacity, params);
+		current_solution = greedy::solveCvrp(warehouse, points, capacity, params);
 		current_energy = calculateSolutionEnergy(current_solution, warehouse);
 		best_solution = current_solution; // Copy
 		best_energy = current_energy; 
-
 		float starting_temp, final_temp, current_temp, best_temp, reset_temp;
 		float alpha, gamma;
 
