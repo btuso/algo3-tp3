@@ -2,7 +2,7 @@
 #define AUXILIARES_H_
 
 #define DEBUG true
-#define PRINT true
+#define PRINT false
 #define print(x) if( PRINT ) std::cout << x << "\n";
 #define debug(x) if( DEBUG ) std::cout << x << "\n";
 

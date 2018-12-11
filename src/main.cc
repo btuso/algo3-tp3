@@ -20,27 +20,27 @@ using namespace std;
 
 typedef std::vector<Truck> (* CvrpHeuristic) (Point& warehouse, std::vector<Point> &points, int capacity, Params &params);
 
-void MeasureAlgorithm(string name, CvrpHeuristic function, string input, ofstream &output);
+void MeasureAlgorithm(string name, CvrpHeuristic function, string input, ofstream &output, Params &params);
 tuple<Point, vector<Point>, int> ReadDataset();
 
 vector<string> getFiles();
 
 vector<string> getFiles() {
 	vector<string> files;
-	files.push_back("A-n32-k5.vrp");
-	files.push_back("A-n33-k5.vrp");
-	files.push_back("A-n33-k6.vrp");
-	files.push_back("A-n34-k5.vrp");
-	files.push_back("A-n36-k5.vrp");
-	files.push_back("A-n37-k5.vrp");
-	files.push_back("A-n37-k6.vrp");
-	files.push_back("A-n38-k5.vrp");
-	files.push_back("A-n39-k5.vrp");
-	files.push_back("A-n39-k6.vrp");
-	files.push_back("A-n44-k6.vrp");
+	//files.push_back("A-n32-k5.vrp");
+	//files.push_back("A-n33-k5.vrp");
+	//files.push_back("A-n33-k6.vrp");
+	//files.push_back("A-n34-k5.vrp");
+	//files.push_back("A-n36-k5.vrp");
+	//files.push_back("A-n37-k5.vrp");
+	//files.push_back("A-n37-k6.vrp");
+	//files.push_back("A-n38-k5.vrp");
+	//files.push_back("A-n39-k5.vrp");
+	//files.push_back("A-n39-k6.vrp");
+	//files.push_back("A-n44-k6.vrp");
 	files.push_back("A-n45-k6.vrp");
 	files.push_back("A-n45-k7.vrp");
-	files.push_back("A-n46-k7.vrp");
+	/*files.push_back("A-n46-k7.vrp");
 	files.push_back("A-n48-k7.vrp");
 	files.push_back("A-n53-k7.vrp");
 	files.push_back("A-n54-k7.vrp");
@@ -61,10 +61,10 @@ vector<string> getFiles() {
 	files.push_back("B-n39-k5.vrp");
 	files.push_back("B-n41-k6.vrp");
 	files.push_back("B-n43-k6.vrp");
-	files.push_back("B-n44-k7.vrp");
+	files.push_back("B-n44-k7.vrp");*/
 	files.push_back("B-n45-k5.vrp");
 	files.push_back("B-n45-k6.vrp");
-	files.push_back("B-n50-k7.vrp");
+	/*files.push_back("B-n50-k7.vrp");
 	files.push_back("B-n50-k8.vrp");
 	files.push_back("B-n51-k7.vrp");
 	files.push_back("B-n52-k7.vrp");
@@ -87,9 +87,9 @@ vector<string> getFiles() {
 	files.push_back("E-n76-k10.vrp");
 	files.push_back("E-n76-k14.vrp");
 	files.push_back("E-n101-k8.vrp");
-	files.push_back("E-n101-k14.vrp");
+	files.push_back("E-n101-k14.vrp");*/
 	files.push_back("F-n45-k4.vrp");
-	files.push_back("F-n72-k4.vrp");
+	/*files.push_back("F-n72-k4.vrp");
 	files.push_back("F-n135-k7.vrp");
 	files.push_back("M-n101-k10.vrp");
 	files.push_back("M-n121-k7.vrp");
@@ -103,9 +103,9 @@ vector<string> getFiles() {
 	files.push_back("P-n22-k2.vrp");
 	files.push_back("P-n22-k8.vrp");
 	files.push_back("P-n23-k8.vrp");
-	files.push_back("P-n40-k5.vrp");
+	files.push_back("P-n40-k5.vrp");*/
 	files.push_back("P-n45-k5.vrp");
-	files.push_back("P-n50-k7.vrp");
+	/*files.push_back("P-n50-k7.vrp");
 	files.push_back("P-n50-k8.vrp");
 	files.push_back("P-n50-k10.vrp");
 	files.push_back("P-n51-k10.vrp");
@@ -119,7 +119,7 @@ vector<string> getFiles() {
 	files.push_back("P-n70-k10.vrp");
 	files.push_back("P-n76-k4.vrp");
 	files.push_back("P-n76-k5.vrp");
-	files.push_back("P-n101-k4.vrp");
+	files.push_back("P-n101-k4.vrp");*/
 	return files;
 }
 
@@ -148,8 +148,9 @@ int main(int argc, char** argv) {
 		for(auto it = algorithms.begin(); it != algorithms.end(); ++it) {
 			ofstream output("out/" + it->first);
 			cout << "Running for: " << it->first << "...\n";
+			Params p = Params(argc, argv);
 			for (unsigned int r = 0; r < inputs.size(); r++) {
-				MeasureAlgorithm(it->first, it->second, inputs[r], output);
+				MeasureAlgorithm(it->first, it->second, inputs[r], output, p);
 			}
 			cout << " done\n";
 			output.close();	
@@ -196,9 +197,9 @@ int main(int argc, char** argv) {
 	return 0;
 }
 
-void MeasureAlgorithm(string name, CvrpHeuristic function, string inputFile, ofstream &output){
+void MeasureAlgorithm(string name, CvrpHeuristic function, string inputFile, ofstream &output, Params &params){
 	cout << "Start input " << inputFile << "\n";
-	ifstream dataset("resources/pg/" + inputFile);	
+	ifstream dataset("resources/correctedDatasets/" + inputFile);	
 	if( dataset.is_open() ){
 		cin.rdbuf(dataset.rdbuf());
 		tuple<Point, vector<Point>, int> input = ReadDataset();
@@ -206,15 +207,15 @@ void MeasureAlgorithm(string name, CvrpHeuristic function, string inputFile, ofs
 		vector<Point> points = get<1>(input);
 		int capacity = get<2>(input);
 		for (unsigned int pasada = 1; pasada < 11; pasada++) {
-			cout << "\tStart: " << pasada << "\n";
+			//cout << "\tStart: " << pasada << "\n";
 			unsigned long start, end;
 			MEDIR_TIEMPO_START(start);
-			vector<Truck> sol = function(warehouse, points, capacity);
+			vector<Truck> sol = function(warehouse, points, capacity, params);
 			MEDIR_TIEMPO_STOP(end);
 			// algorithm, inputFile, qtyPoints, capacityTruck, time
 			output << name << "," << inputFile << "," << points.size() << "," << capacity << "," << pasada << "," << (end-start) << "\n"; // Agregar lo que falta para los experimentos
 			cout << "\t\t" << name << "," << inputFile << "," << points.size() << "," << capacity << "," << (end-start) << "\n"; // Agregar lo que falta para los experimentos
-			cout << "\tFinish: " << pasada << "\n";
+			//cout << "\tFinish: " << pasada << "\n";
 		}
 		dataset.close(); 
 	}
