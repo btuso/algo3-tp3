@@ -25,7 +25,6 @@ tuple<Point, vector<Point>, int> ReadDataset();
 
 vector<string> getFiles();
 
-
 vector<string> getFiles() {
 	vector<string> files;
 	files.push_back("A-n32-k5.vrp");
@@ -124,7 +123,6 @@ vector<string> getFiles() {
 	return files;
 }
 
-
 int main(int argc, char** argv) {
 	map<string, CvrpHeuristic> algorithms;
 	algorithms["savings"] = savings::solveCvrp;
@@ -135,6 +133,7 @@ int main(int argc, char** argv) {
 
 	if ( argc == 1 ) {
 		cout << "Se necesita pasar el algoritmo a usar como argumento.\nOpciones: savings, greedy, sweep, kmeans, annealing\n";
+
 		return 1;
 	// } else if ( argc == 2 ) {
 	// 	cout << "Se necesita especificar el archivo de entrada, que debe estar en la carpeta 'resources'.\n";
