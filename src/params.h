@@ -1,5 +1,6 @@
 #ifndef PARAMS_H_
 #define PARAMS_H_
+#define DEFAULT_K 4
 
 #define UNUSED __attribute__((unused))
 #include <string>
@@ -13,6 +14,10 @@ class Params {
 			if(argc == 4){
 				opt1 = argv[3];
 			}
+		}
+
+		bool has_opt1(){
+			return opt1.compare("");
 		}
 
 		bool opt1_as_bool(){
