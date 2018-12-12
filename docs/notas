@@ -20,6 +20,7 @@
 	Informe:
 	[√] Mencionar pétalos
 	[ ] Actualizar los códigos pertinentes (por ejemplo polarización si es necesario)
+	[ ] Arreglar complejidad de BuildClusters
 
 	Casos negativos:
 	[ ] No emprende la vuelta anticipadamente
