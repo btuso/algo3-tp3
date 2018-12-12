@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <tuple>
 #include <iterator>
+#include <limits>
 
 #include "auxiliares.h"
 
@@ -20,6 +21,8 @@ float Neighborhood::NextNeighbor(){
 	if (std::next(current_interchange, 1) == interchanges.end()) {
 		do {
 			std::advance(current_trucks, 1);
+			if( current_trucks == truckCombinations.end() ) 
+				return std::numeric_limits<float>::max(); // We're all out of trucks, the neighborhood reached a stalemate
 			interchanges = GenerateInterchanges(trucks[get<0>(*current_trucks)], trucks[get<1>(*current_trucks)]);
 			current_interchange = interchanges.begin();
 		} while (current_interchange == interchanges.end()); // Two routes may produce no interchanges on odd occasions
@@ -58,7 +61,8 @@ float Neighborhood::NextNeighbor(){
 }
 
 bool Neighborhood::HasNeighborsLeft() const {
-	return not (std::next(current_trucks, 1) == truckCombinations.end() and std::next(current_interchange, 1) == interchanges.end());
+	return not ((std::next(current_trucks, 1) == truckCombinations.end() and std::next(current_interchange, 1) == interchanges.end())
+		or (current_trucks == truckCombinations.end()));
 }
 
 void Neighborhood::AcceptNeighbor(){
