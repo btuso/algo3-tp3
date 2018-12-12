@@ -1,4 +1,0 @@
-# $1 es el nombre del .sol y .vrp
-# el resto son los parametros del plotter
-./../src/build/main sweep ../src/resources/correctedDatasets/$1.vrp true > sol/$1.sol
- python3 plot.py sol/$1.sol ../src/resources/correctedDatasets/$1.vrp $2 $3 $4 $5
