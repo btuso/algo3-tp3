@@ -180,3 +180,29 @@ Dadas dos rutas Rp y Rq, definimos:
 \end{description}
 
 Esto nos permite generar un vecindario iterable de soluciones, el cual utilizamos para minimizar la energía.
+
+
+\subsubsection{Peores Casos}
+
+La metaheurística de annealing se ve afectada por 3 factores que determinan qué tan probable es encontrar una solución óptima. Estos son la solución inicial, la forma del plano de la distancia total de las soluciones y el azar.
+
+Annealing parte de una solución inicial ya calculada y de esta deriva la temperatura inicial y final por lo que cuando solución inicial es similar en energía a la solución óptima, puede resultar difícil hallar el camino entre las dos, dado que la temperatura no va a ser suficiente para escapar de los puntos silla.
+
+\begin{figure}[H]
+\includegraphics[scale=2]{annealing/mala-sol-inicial}
+\centering
+\end{figure}
+
+Otro caso se basa en el mecanismo de exploración de vecindario, específicamente en las operaciones de intercambio. Cada camión tiene una capacidad máxima, por lo que no todas las operaciones se pueden aplicar para un conjunto de rutas y puntos.
+Por ejemplo, si suponemos un camión sin capacidad disponible, entonces no va a ser posible realizar operaciones de shift que sumen puntos a su recorrido.
+Un escenario complejo de este caso se da cuando no se puede realizar ninguna operación entre ningun camion, dado que cualquier punto intercambiado entre dos camiones excedería la capacidad de uno de los dos.
+Si bien este escenario parece exagerado, es un escenario común (Probabilidad 1\%) para ciertos datasets particulares, o simplemente cuando el presupuesto de iteraciones para annealing es elevado.
+
+\begin{figure}[H]
+\includegraphics[scale=0.4]{annealing/rebote-convergencia}
+\centering
+\caption{Debido a baja temperatura y mala suerte, el algoritmo puede tardar en converger}
+
+\end{figure}
+
+
