@@ -7,7 +7,7 @@ namespace sweep {
 		TransformPointsFromCartesianToPolar(warehouse, points);
 		sort(points.begin(), points.end(), AngleComparator());
 
-		if(params.opt1){ // adaptative sweeping
+		if(params.opt1_as_bool()){ // adaptative sweeping
 			float sweep_starting_angle = FindSweepStartingAngle(points);
 			sort(points.begin(), points.end(), AngleComparator(sweep_starting_angle));
 		}

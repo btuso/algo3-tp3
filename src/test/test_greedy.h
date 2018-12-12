@@ -1,6 +1,8 @@
 #ifndef TEST_GREEDY_H_
 #define TEST_GREEDY_H_
 
+#define K 4
+
 #include <utility>
 #include "test_utils.h"
 #include "../greedy.h"

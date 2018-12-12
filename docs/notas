@@ -4,6 +4,9 @@
 [√] 3. Elijo el bucket de más capacidad compatible con el stock de mi camión
 [√] 4. Tomo los primeros k vértices de este bucket y me quedo con el más cercano al vértice donde estoy parado actualmente
 
+	Informe:
+	[ ] Complejidad espacial
+
 3) c) Heurística constructiva de cluster-first, route-second. Clusterizando mediante sweep algorithm y luego resolviendo los TSPs restantes de manera heurística.
 [√] 1. Polarizo las coordenadas cartesianas
 [√] 2. Ordeno el vector de puntos por el atributo polar "ángulo"
@@ -21,6 +24,7 @@
 	[√] Mencionar pétalos
 	[ ] Actualizar los códigos pertinentes (por ejemplo polarización si es necesario)
 	[ ] Arreglar complejidad de BuildClusters
+	[ ] Complejidad espacial
 
 	Casos negativos:
 	[ ] No emprende la vuelta anticipadamente

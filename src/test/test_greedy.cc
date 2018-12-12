@@ -167,7 +167,7 @@ void TestPopNextVertex1(){
 		trucks.push_back(truck);
 
 	when("PopNextVertex is called")
-		Point next_vertex = greedy::PopNextVertex(&bucket, trucks);
+		Point next_vertex = greedy::PopNextVertex(&bucket, trucks, K);
 
 	then("I should expect to get the vertex (6, 1) that is the closest to my current vertex (6, 2)")
 		assert(expected_next_vertex == next_vertex);

@@ -1,7 +1,9 @@
 #include "greedy.h"
 
 namespace greedy {
-	vector<Truck> solveCvrp(Point& warehouse, vector<Point> &points, int capacity, Params&){
+	vector<Truck> solveCvrp(Point& warehouse, vector<Point> &points, int capacity, Params& params){
+		int k = params.opt1_as_int();
+
 		pair<int, int> demands_ranges = GetDemandsRange(points);
 		int max_demand_value = demands_ranges.second;
 		Buckets buckets = BucketSort(points, max_demand_value);
@@ -14,7 +16,7 @@ namespace greedy {
 
 		while(vertex_covered < points.size()){
 			Bucket* biggest_fitting_bucket = FindFittestBucket(buckets, trucks, warehouse, capacity);
-			Point next_vertex = PopNextVertex(biggest_fitting_bucket, trucks);
+			Point next_vertex = PopNextVertex(biggest_fitting_bucket, trucks, k);
 			trucks.back().visit(next_vertex);
 
 			vertex_covered ++;
@@ -82,8 +84,8 @@ namespace greedy {
 		return &(buckets[i]);
 	}
 
-	Point PopNextVertex(Bucket* bucket, vector<Truck> &trucks){
-		int middle_index = bucket->size() - K - 1;
+	Point PopNextVertex(Bucket* bucket, vector<Truck> &trucks, int k){
+		int middle_index = bucket->size() - k - 1;
 		int starting_index = aux::max(middle_index, 0);
 
 		Point last_vertex = trucks.back().routes.back();

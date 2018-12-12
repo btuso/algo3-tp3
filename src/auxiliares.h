@@ -9,7 +9,11 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include "string"
+#include <sstream>
+#include <string>
+#include <iomanip>
+#include <algorithm>
+#include <cctype>
 
 #include "edge.h"
 #include "point.h"
@@ -50,6 +54,8 @@ namespace aux {
 	void PrintTrucks(vector<Point> &points, Point &warehouse, vector<Truck> &trucks);
 
 	void removeDeposits(vector<Truck> &trucks);
+
+	bool to_bool(std::string str);
 }
 
 #endif

@@ -1,8 +1,6 @@
 #ifndef GREEDY_H_
 #define GREEDY_H_
 
-#define K 4
-
 #include "vector"
 #include "point.h"
 #include "truck.h"
@@ -20,7 +18,7 @@ typedef vector<Bucket> Buckets;
 
 namespace greedy {
 
-	vector<Truck> solveCvrp(Point& warehouse, vector<Point> &points, int capacity, Params& params UNUSED);
+	vector<Truck> solveCvrp(Point& warehouse, vector<Point> &points, int capacity, Params& params);
 
 	pair<int, int> GetDemandsRange(vector<Point> &points);
 
@@ -30,8 +28,7 @@ namespace greedy {
 
 	Bucket* FindFittestBucket(Buckets &buckets, vector<Truck> &trucks, Point warehouse, int capacity);
 
-	Point PopNextVertex(Bucket* bucket, vector<Truck> &trucks);
-
+	Point PopNextVertex(Bucket* bucket, vector<Truck> &trucks, int k);
 }
 
 #endif
