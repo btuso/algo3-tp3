@@ -56,6 +56,8 @@ namespace aux {
 	void removeDeposits(vector<Truck> &trucks);
 
 	bool to_bool(std::string str);
+
+	std::vector<Truck> parseTrucks(int capacity, std::vector<std::vector<int>> truck_list, std::vector<Point> &points);
 }
 
 #endif

@@ -182,6 +182,71 @@ Dadas dos rutas Rp y Rq, definimos:
 Esto nos permite generar un vecindario iterable de soluciones, el cual utilizamos para minimizar la energía.
 
 
+\begin{figure}[H]
+	\centering
+	\begin{minipage}[t]{.3\textwidth}
+		\centering
+		\includegraphics[scale=0.4]{annealing/exploracion-0}
+	\end{minipage}\qquad
+	\begin{minipage}[t]{.3\textwidth}
+		\centering
+		\includegraphics[scale=0.4]{annealing/exploracion-7}
+	\end{minipage}\qquad
+		\begin{minipage}[t]{.3\textwidth}
+		\centering
+		\includegraphics[scale=0.4]{annealing/exploracion-15}
+	\end{minipage}\qquad
+		\begin{minipage}[t]{.3\textwidth}
+		\centering
+		\includegraphics[scale=0.4]{annealing/exploracion-23}
+	\end{minipage}\qquad
+	\begin{minipage}[t]{.3\textwidth}
+		\centering
+		\includegraphics[scale=0.4]{annealing/exploracion-31}
+	\end{minipage}\qquad
+		\begin{minipage}[t]{.3\textwidth}
+		\centering
+		\includegraphics[scale=0.4]{annealing/exploracion-39}
+	\end{minipage}\qquad
+	
+De solución inicial a final, en intervalos de a 8 exploraciones
+\end{figure}
+
+
+\subsubsection{Annealing en Accion}
+
+A continuación podemos ver como tomando una solución de nuestra heurística golosa, Annealing trabaja para minimizar realizando varios ciclos de temperatura, escapando a mínimos locales y devolviendo una solución mucho más eficiente.
+
+\begin{figure}[H]
+	\centering
+	\begin{minipage}[t]{.45\textwidth}
+		\centering
+		\includegraphics[scale=0.55]{annealing/greedy-inicio}
+		\caption{Solucion inicial en base a Greedy}
+	\end{minipage}\qquad
+	\begin{minipage}[t]{.45\textwidth}
+		\centering
+		\includegraphics[scale=0.55]{annealing/greedy-final}
+		\caption{Solucion final de Annealing}
+	\end{minipage}
+	
+		\centering
+	\begin{minipage}[t]{.45\textwidth}
+		\centering
+		\includegraphics[scale=0.55]{annealing/greedy-energia}
+		\caption{Energia de cada solucion}
+	\end{minipage}\qquad
+	\begin{minipage}[t]{.45\textwidth}
+		\centering
+		\includegraphics[scale=0.55]{annealing/greedy-temperatura}
+		\caption{Temperatura en la iteracion}
+	\end{minipage}
+\end{figure}	
+
+Podemos ver como para los primeros picos de temperatura (es decir, resets) el algorimo logra obtener una solucion mejor que la anterior, demostrando la utilidad de aceptar soluciones malas para escapar de optimos locales.
+
+
+
 \subsubsection{Peores Casos}
 
 La metaheurística de annealing se ve afectada por 3 factores que determinan qué tan probable es encontrar una solución óptima. Estos son la solución inicial, la forma del plano de la distancia total de las soluciones y el azar.
@@ -205,4 +270,4 @@ Si bien este escenario parece exagerado, es un escenario común (Probabilidad 1\
 
 \end{figure}
 
-
+\input{sections/annealing/experimentacion}
