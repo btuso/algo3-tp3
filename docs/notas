@@ -5,7 +5,12 @@
 [√] 4. Tomo los primeros k vértices de este bucket y me quedo con el más cercano al vértice donde estoy parado actualmente
 
 	Informe:
-	[ ] Complejidad espacial
+	[√] Complejidad espacial
+
+	Experimentación:
+	[√] Camiones que van y vienen
+	[√] Demandas equivalentes
+	[√] Demandas incongruentes
 
 3) c) Heurística constructiva de cluster-first, route-second. Clusterizando mediante sweep algorithm y luego resolviendo los TSPs restantes de manera heurística.
 [√] 1. Polarizo las coordenadas cartesianas
@@ -23,16 +28,19 @@
 	Informe:
 	[√] Mencionar pétalos
 	[ ] Actualizar los códigos pertinentes (por ejemplo polarización si es necesario)
-	[ ] Arreglar complejidad de BuildClusters
-	[ ] Complejidad espacial
+	[√] Arreglar complejidad de BuildClusters
+	[√] Complejidad espacial
 
-	Casos negativos:
+	Experimentación:
 	[ ] No emprende la vuelta anticipadamente
 		[√] Descripción
 		[√] Mencionar tabú search o annealing
 		[ ] Gráfico: peor caso
 		[ ] Gráfico: mejor caso (coincidencia)
-	[ ] Vueltas alejadas por no hacer tabú search
+	[√] Vueltas alejadas por no hacer tabú search
 		[√] Descripción
 		[√] Mencionar lamda exchange (heurística de swapping entre clusters vecinos)
 		[√] Gráfico: peor caso
+	[ ] El barrido angular puede conectar vértices muy alejados entre sí
+		[ ] Descripción
+		[ ] Gráfico

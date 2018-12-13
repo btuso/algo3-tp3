@@ -10,7 +10,7 @@ Esta falencia puede ser mitigada con metaheurísticas como \textbf{Tabú Search}
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=1\textwidth]{A-n69-k9-emprender-vuelta}
+	\includegraphics[width=1\textwidth]{sweep/A-n69-k9-emprender-vuelta}
 	\caption{\footnotesize Error de optimización en la generación del camino (dataset A-n69-k9)}
 	\label{fig:sweep-emprender-vuelta}
 \end{figure}
@@ -23,7 +23,7 @@ Debido a que el orden de los clientes en los clusters es resuelto a través de l
 % \newpage
 \parindent0em
 \begin{multicols}{2}[\columnsep2em]
-		\includegraphics[width=0.48\textwidth]{sweep-A-n32-k5}
+		\includegraphics[width=0.48\textwidth]{sweep/sweep-A-n32-k5}
 \columnbreak
 	\begin{figure}[H]
 		\caption{Circuito no óptimo en camino verde} \label{fig:sweep-A-n32-k5}
@@ -38,17 +38,37 @@ En la figura \ref{fig:sweep-with-adaptative} se puede observar una clusterizaci�
 	\centering
 	\begin{minipage}{0.48\textwidth}
 		\centering
-		\includegraphics[width=1\textwidth]{sweep-without-adaptative}
+		\includegraphics[width=1\textwidth]{sweep/sweep-without-adaptative}
 		\caption{\footnotesize Sweeping no adaptativo}
 		\label{fig:sweep-without-adaptative}
 	\end{minipage}%
 	\hspace{0.03\textwidth}
 	\begin{minipage}{0.48\textwidth}
 		\centering
-		\includegraphics[width=1\textwidth]{sweep-with-adaptative}
+		\includegraphics[width=1\textwidth]{sweep/sweep-with-adaptative}
 		\caption{\footnotesize Sweeping adaptativo}
 		\label{fig:sweep-with-adaptative}
 	\end{minipage}%
 \end{figure}
 
-\subsubsubsection{Análisis de casos generales}
+\subsubsubsection{El barrido angular puede clusterizar vértices muy lejanos entre sí}
+Dada la clusterizaciónn de vértices $V=\{v_{1}, \dots, v_{n}\}$ realizada por la heurística de Sweeping donde, si bien está asegurado que la distancia angular desde el depósito entre todo $v_{i}$ y $v_{i+1}$ con $1 \leq i < n$ es mínima en todo el grafo, no está asegurado que la distancia euclidiana entre $v_{i}$ y $v_{i+1}$ sea mínima también. De hecho, la distancia entre $v_{i}$ y $v_{i+1}$ puede ser arbitraria. Sin embargo, al clusterizar ambos vértices juntos, estamos firmando un contrato donde un solo camión deberá proveer a ambos y esto puede ser extremadamente costoso por más que los recorridos sean realizados a fin de cuentas con una heurística de TSP. Veamos un ejemplo:
+
+\begin{figure}[H]
+	\centering
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=1\textwidth]{sweep/sw-custom-n9-sweep-close-angular-far-euclidean}
+		\caption{\footnotesize Sweeping + Nearest Neighbours. Capacidad 100.}
+		\label{fig:sw-custom-n9-sweep-close-angular-far-euclidean}
+	\end{minipage}%
+	\hspace{0.03\textwidth}
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=1\textwidth]{sweep/km-custom-n9-sweep-close-angular-far-euclidean}
+		\caption{\footnotesize K-Means + Nearest Neighbours. Capacidad 100.}
+		\label{fig:km-custom-n9-sweep-close-angular-far-euclidean}
+	\end{minipage}%
+\end{figure}
+
+En este caso se puede observar claramente lo mencionado. La solución con \textit{sweeping} encuentra primero el vértice $(5, 1)$ e inmediatamente después el $(15, 6)$, seguido del $(17, 8)$ y cierra el cluster con $(15, 8)$. Luego ya se disponen de 4 vértices cuya demanda suma $100$, la capacidad máxima de un camión. Esto forma un cluster de cuatro vértices donde uno de ellos está muy lejos de los otros tres pues estos cuatro son consecutivos angularmente pero \textbf{no} euclideanamente. Lo mismo sucede con los otros cuatro vértices sobrantes del grafo. En consecuencia, se consume mucha distancia yendo y viniendo de aquellos vértices lejanos del resto. En cambio, en la figura \ref{fig:km-custom-n9-sweep-close-angular-far-euclidean} se puede observar una distribución más natural de las rutas y, en consecuencia, un decremento en la distancia total recorrida por ellas. Esto se debe a que se utilizó la heurística de clusterización \textbf{K-Means} que resulta \textbf{más apropiada para la instancia del problema} pues – como será explicado más adelante – construye los clusters a partir de la distancia euclideana entre sus vértices y no sus distancias angulares al depósito.
