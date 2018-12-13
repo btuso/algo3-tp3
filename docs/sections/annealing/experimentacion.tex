@@ -1,1 +1,20 @@
+<<<<<<< Updated upstream
 \subsection{Annealing}
+=======
+\subsection{Experimentacion sobre Simmulated Annealing}
+
+Al momento de experimentar sobre Annealing, debemos tener en cuenta que cosas contribuyen a la calidad de la solución final. Es sobre los siguientes puntos que hacemos foco a la hora de experimentar:
+
+\begin{description}
+\item[El “plano” de soluciones:] Dado que nos encontramos frente a una función con dominio multidimensional, se vuelve inviable representar gráficamente la función. Sin embargo basta con tomar un caso simplificado como el de la figura \ref{fig:minimo-local} para poder ver que la forma del plano puede no prestarse a una exploración exitosa desde algunos puntos. Este caso es bastante difícil de recrear manualmente dado que estamos lidiando con una función multidimensional con un dominio no ordenado, por este motivo va a ser obviado en nuestra experimentación práctica.
+
+\item[La solución inicial:] Esta misma tiene un gran impacto sobre el desempeño del algoritmo por diversos motivos, ya que la temperatura inicial y final son calculadas a partir de la misma, así como también el punto de partida a la hora de explorar el vecindario. 
+
+\item[La cantidad de resets:] Los resets o ciclos de temperatura existen como un método de backtracking a la hora de llegar a un camino sin salida, es decir, explorar todo un vecindario sin encontrar una solución mejor a la actual.
+
+\item[El azar:] Como se mencionó antes, la probabilidad de aceptar una solución termina siendo definida por un número uniformemente aleatorio, por lo que al correr repetidas veces el programa podemos llegar a resultados muy distintos.
+
+\item[La cantidad de exploraciones:] El factor $\alpha$ dentro de la ecuación de enfriamiento depende de la cantidad de iteraciones aproximadas que podemos dejar que el algoritmo tome. Si bien este número no es más que una guía (puesto que el algoritmo puede seguir buscando soluciones a medida que encuentre mejores) afecta la curva de temperatura. 
+
+\end{description}
+>>>>>>> Stashed changes

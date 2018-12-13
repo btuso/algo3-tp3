@@ -109,11 +109,25 @@ namespace aux {
 	}
 
 	bool to_bool(std::string str){
-    std::transform(str.begin(), str.end(), str.begin(), ::tolower);
-    std::istringstream is(str);
-    bool b;
-    is >> std::boolalpha >> b;
+		std::transform(str.begin(), str.end(), str.begin(), ::tolower);
+		std::istringstream is(str);
+		bool b;
+		is >> std::boolalpha >> b;
 
-    return b;
+		return b;
+	}
+
+	std::vector<Truck> parseTrucks(int capacity, std::vector<std::vector<int>> truck_list, std::vector<Point> &points){
+		std::vector<Truck> trucks;
+		for( auto &truck_points : truck_list) {
+			Truck truck(capacity);
+			for( int p_id : truck_points) {
+				Point point = points[p_id - 1];
+				truck.visit(point);
+			}	
+			trucks.push_back(truck);
+		}
+		return trucks;
+		
 	}
 }
