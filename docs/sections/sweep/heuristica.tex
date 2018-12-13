@@ -32,6 +32,8 @@ Hay un detalle extra en la lógica de nuestro algoritmo llamado el \textbf{ángu
 \end{displaymath}
 \end{center}
 
+Por otro lado, podemos acotar la complejidad espacial del algoritmo por $\bigO(n)$ porque siempre se trabaja con el conjunto de $n$ vértices y no más.
+
 \subsubsection{Pseudo-código}
 A continuación presentamos nuestras implementaciones con sus respectivas complejidades:
 
@@ -45,7 +47,7 @@ Ahora que sabemos qué vértice viene después de cuál en el barrido, averiguam
 Aquí es donde se realiza el barrido cuyo costo asintótico temporal es exactamente $\Theta(n)$ porque – devuelta – se recorren todos los nodos. Aquí es donde sucede la distribución de vértices a clusters tal que todos los vértices en un cluster son: \textbf{(a)} angularmente consecutivos y \textbf{(b)} satisfacibles por un sólo camión, como ya fue explicado en la introducción al algoritmo.
 
 \input{sections/sweep/heuristica-cod-buildroutes}
-La complejidad de este algoritmo es $\bigO(n^2*log(n))$ se iteran todos los vértices contenidos en todos los clusters que da una suma total de $n$ nodos pues no hay vértices que no esten en el grafo y la totalidad de los nodos está distribuida en los clusters. Luego, como \textbf{ExtraerVérticeMásCercanoA} tiene complejidad $\bigO(n*log(n))$ y se ejecuta $n$ veces, la complejidad final es la propuesta.
+El bucle \textit{for} se ejecuta $\bigO(|clusters|)$ veces, mientras que el \textit{while} se ejecuta $\bigO(|clusters| * |cluster|)$ veces. En síntesis, esta complejidad equivale a $\bigO(n)$ pues la suma de todas las dimensiones de todos los $cluster \in clusters$ da $n$. Pero hay un detalle: la función \textbf{ExtraerVérticeMásCercanoA} posee una complejidad cuasilineal en función de la entrada. Si bien la complejidad de esta invocación sería $\bigO(|cluster| * log(|cluster|))$, relajaremos la cota por $\bigO(n*log(n))$ por una cuestión de comodidad. Por lo tanto, la complejidad final de este subalgoritmo queda definida por $\bigO(n^2*log(n))$.
 
 \input{sections/sweep/heuristica-cod-popclosestvertex}
 Finalmente, la función \textbf{ExtraerVérticeMásCercanoA} toma un cluster y un punto, ordena decrecientemente el cluster por distancia euclideana a $punto$, toma el último elemento de la lista (es decir, el más cercano a $punto$) y lo retorna sin no antes eliminarlo de la lista en $\bigO(1)$ porque es el último elemento de la lista. La complejidad de esta función queda definida por el ordenamiento $\bigO(n*log(n))$ de la lista en la línea $2$.

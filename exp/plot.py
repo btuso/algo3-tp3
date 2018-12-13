@@ -13,11 +13,11 @@ class dotdict(dict):
     __setattr__ = dict.__setitem__
     __delattr__ = dict.__delitem__
 
-def main(solution, dataset_path, should_save_to_png, should_display_each_distance, should_display_total_distances, should_be_big_graph):
+def main(solution, dataset_path, should_save_to_png, should_display_each_distance, should_display_total_distances, should_be_big_graph, should_display_demands):
     routes = load_routes(solution)
     dataset = load_dataset(dataset_path)
 
-    do_plot(dataset.points, dataset.warehouse, routes, should_display_each_distance, should_be_big_graph)
+    do_plot(dataset.points, dataset.warehouse, routes, should_display_each_distance, should_be_big_graph, should_display_demands)
     total_distance = get_total_distance(dataset.warehouse, dataset.points, routes)
 
     if(should_display_each_distance or should_display_total_distances):
@@ -105,9 +105,9 @@ def load_routes(file):
     f.close();
     return routes
 
-def do_plot(points, warehouse, routes, should_display_each_distance, should_be_big_graph):
+def do_plot(points, warehouse, routes, should_display_each_distance, should_be_big_graph, should_display_demands):
     setup(warehouse, should_be_big_graph)
-    plot_routes(warehouse, points, routes, should_display_each_distance)
+    plot_routes(warehouse, points, routes, should_display_each_distance, should_display_demands)
 
 def setup(warehouse, should_be_big_graph):
     plt.style.use('default')
@@ -126,7 +126,7 @@ def setup(warehouse, should_be_big_graph):
     plt.grid(b=True, which='minor', color='black', linestyle='dotted', alpha=0.05)
     plt.minorticks_on()
 
-def plot_routes(warehouse, points, routes, should_display_each_distance):
+def plot_routes(warehouse, points, routes, should_display_each_distance, should_display_demands):
     colour_codes = get_cycler()
 
     for route in routes:
@@ -142,7 +142,7 @@ def plot_routes(warehouse, points, routes, should_display_each_distance):
             else:
                 p_x.append(points[point - 1].x)
                 p_y.append(points[point - 1].y)
-                p_d.append(points[point - 1].demand * 7)
+                p_d.append(int(points[point - 1].demand))
 
         route_distance = get_route_distance(warehouse, points, route)
         route_label = r'Distancia$\approx%.1f$' % route_distance
@@ -151,8 +151,20 @@ def plot_routes(warehouse, points, routes, should_display_each_distance):
         if(not should_display_each_distance):
             route_label = None
 
+        p_d_multiplied = [i * distances_marker_multiplier for i in p_d]
         plt.plot(p_x, p_y, label=route_label, linewidth=1.0, linestyle='-', color=route_color)
-        plt.scatter(p_x, p_y, marker='o', s=p_d, color=route_color, zorder=10)
+        plt.scatter(p_x, p_y, marker='o', s=p_d_multiplied, color=route_color, zorder=10)
+
+        if should_display_demands:
+            p_d_str = parse_demands_to_str(p_d)
+            for i in range (1, len(p_x) - 1):
+                plt.text(p_x[i], p_y[i], text=p_d_str[i], s=0, color='white', fontsize=8, zorder=100, horizontalalignment='center', multialignment='center', verticalalignment='center')
+
+def parse_demands_to_str(p_d):
+    p_d_str = list(map(str, p_d))
+    # del p_d_str[0]
+    # del p_d_str[-1]
+    return p_d_str
 
 def get_total_distance(warehouse, points, routes):
     total_distance = 0
@@ -200,6 +212,8 @@ if(len(argv) >= 3):
     should_display_each_distance = False
     should_display_total_distances = False
     should_be_big_graph = False
+    should_display_demands = False
+    distances_marker_multiplier = 7
 
     if(len(argv) >= 4):
         should_save_to_png = argv[3].lower() == 'true'
@@ -213,6 +227,12 @@ if(len(argv) >= 3):
     if(len(argv) >= 7):
         should_be_big_graph = argv[6].lower() == 'true'
 
-    main(solution, dataset, should_save_to_png, should_display_each_distance, should_display_total_distances, should_be_big_graph)
+    if(len(argv) >= 8):
+        should_display_demands = argv[7].lower() == 'true'
+
+    if(len(argv) >= 9):
+        distances_marker_multiplier = int(argv[8])
+
+    main(solution, dataset, should_save_to_png, should_display_each_distance, should_display_total_distances, should_be_big_graph, should_display_demands)
 else:
-    print("python3 plot.py {.sol} {.vrp} {should_save_to_png?} {display_each_distance?} {display_total_distances?} {big_graph?}")
+    print("python3 plot.py {.sol} {.vrp} {should_save_to_png?} {display_each_distance?} {display_total_distances?} {big_graph?} {should_display_demands?} {int: distances_marker_multiplier}")
