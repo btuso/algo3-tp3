@@ -19,11 +19,14 @@ namespace greedy {
 
 		while(vertex_covered < points.size()){
 			Bucket* biggest_fitting_bucket = FindFittestBucket(buckets, trucks, warehouse, capacity);
+
 			Point next_vertex = PopNextVertex(biggest_fitting_bucket, trucks, k);
 			trucks.back().visit(next_vertex);
 
 			vertex_covered ++;
 		}
+
+		trucks.back().visit(warehouse);
 
 		aux::removeDeposits(trucks); // es extra-algoritmico (no lo contamos en la complejidad)
 		return trucks;
