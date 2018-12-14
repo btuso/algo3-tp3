@@ -9,8 +9,6 @@ Al momento de experimentar sobre Annealing, debemos tener en cuenta que cosas co
 
 \item[La cantidad de resets:] Los resets o ciclos de temperatura existen como un método de backtracking a la hora de llegar a un camino sin salida, es decir, explorar todo un vecindario sin encontrar una solución mejor a la actual.
 
-\item[El azar:] Como se mencionó antes, la probabilidad de aceptar una solución termina siendo definida por un número uniformemente aleatorio, por lo que al correr repetidas veces el programa podemos llegar a resultados muy distintos.
-
 \item[La cantidad de exploraciones:] El factor $\alpha$ dentro de la ecuación de enfriamiento depende de la cantidad de iteraciones aproximadas para que la temperatura actual sea la misma que la final. Si bien este número no es más que una guía (puesto que el algoritmo puede seguir buscando soluciones a medida que encuentre mejores) afecta la curva de temperatura directamente. 
 
 \end{description}
@@ -21,11 +19,11 @@ Hacemos 10 corridas de Simulated Annealing sobre el mismo dataset y solución in
 
 \subsubsection{Cantidad de exploraciones}
 Si bien es difícil cuantificar el impacto de un cambio de parámetro sobre Annealing (dado que la duración del algoritmo puede variar al azar y según el plano de soluciones), proponemos que se puede observar la saturación de cantidad de iteraciones esperadas para el enfriamiento. Es decir, variando el parámetro $\alpha$ -la cantidad de iteraciones esperadas para que la temperatura actual iguale a la final- podemos sugestionar a la función de enfriamiento, para que incrementa en mayor o menor medida la temperatura.
+\vskip 1em
 
 Esto termina provocando que el algoritmo ejecute más o menos iteraciones sobre la solución.
 Proponemos que incrementar desmedidamente este valor para lograr mayor exploraciones, no necesariamente recompensa el costo de tiempo asociado con la mejor solución potencial. 
 
-Para realizar
 \begin{figure}[H]
 	\centering
 	\begin{minipage}[t]{.30\textwidth}
@@ -73,3 +71,55 @@ Para el parámetro saturado, es decir ($\alpha$ = 100.000) podemos ver cómo se 
 
 Visto esto, concluimos que efectivamente se puede llegar a un punto de saturación a la hora de elegir el alpha, lo cual incurre en un costo de tiempo de cálculo. En vistas de esto a la hora de tratar de obtener la mejor solución posible, antes que tratar de maximizar la cantidad de soluciones exploradas por una corrida del algoritmo, es recomendable correr múltiples veces el mismo con un $\alpha$ menor. Dado que al depender de un valor al azar para aceptar una solución, podemos llegar a obtener mejores caminos de esta forma.
 
+\subsubsection{Cantidad de resets}
+
+La utilidad de annealing proviene de escapar de óptimos locales, es gracias a esto que puede sacar ventaja de un algoritmo como Hill Climbing o Gradient Descent. Sin embargo, aun aceptando soluciones malas, se puede quedar atrapado en óptimos locales poco útiles (difícilmente se llegue al óptimo global, pero es evidente que no todos los óptimos locales son igual de útiles). Para esto se introduce el mecanismo de resets, lo cual le da una chance extra de explorar al algoritmo, haciendo backtracking a una temperatura anterior.
+\vskip 1em
+En este experimento, proponemos que una cantidad prudente de resets puede ser beneficiosa para el algoritmo de Annealing, asi como tambien se puede lograr que el algoritmo pierda tiempo si esta cantidad se eleva demasiado.
+Para esto vamos a comparar los siguientes casos: Annealing sin resets, Annealing con 3 resets y Annealing con 9 resets.
+
+\begin{figure}[H]
+	\centering
+	\begin{minipage}[t]{.30\textwidth}
+		\centering
+		\includegraphics[scale=0.4]{annealing/resets-0-energia}
+		\caption{Sin resets}
+	\end{minipage}\qquad
+	\centering
+	\begin{minipage}[t]{.30\textwidth}
+		\centering
+		\includegraphics[scale=0.4]{annealing/resets-3-energia}
+		\caption{3 resets}
+	\end{minipage}\qquad
+	\centering
+	\begin{minipage}[t]{.30\textwidth}
+		\centering
+		\includegraphics[scale=0.4]{annealing/resets-9-energia}
+		\caption{9 resets}
+	\end{minipage}\qquad
+	\centering
+	\begin{minipage}[t]{.30\textwidth}
+		\centering
+		\includegraphics[scale=0.4]{annealing/resets-0-grafo}
+	\end{minipage}\qquad
+	\centering
+	\begin{minipage}[t]{.30\textwidth}
+		\centering
+		\includegraphics[scale=0.4]{annealing/resets-3-grafo}
+	\end{minipage}\qquad
+	\centering
+	\begin{minipage}[t]{.30\textwidth}
+		\centering
+		\includegraphics[scale=0.4]{annealing/resets-9-grafo}
+	\end{minipage}\qquad
+\end{figure}	
+
+Como podemos observar en el primer gráfico, Annealing simple o sin resets equivale a un algoritmo de Hill Climbing que acepta soluciones malas. Podemos ver que rápidamente converge en un óptimo local con una distancia total de 925.
+\vskip 1em
+Al permitir que el algoritmo ejecute resets de temperatura como propone \textit{Ibrahim Osman} en su paper, vemos como la heurística logra salir de esos óptimos y seguir buscando una solución mejor, llegando así a una de distancia total 889, un 4\% mejor. 
+Observando el gráfico de energía, podemos ver como en general el algoritmo logra decrementar la energía general gracias a cada reset.
+\vskip 1em
+En la ejecución con 9 resets, se hace evidente rápidamente como el algoritmo se mantiene en valles de energía. Debido a que cada reset eleva la temperatura a una temperatura menor al reset anterior, podemos ver cómo a medida que se generan mas y mas resets, pierden su efectividad, dado que no llegan a elevar suficiente la temperatura como para escapar de los óptimos locales. A su vez, vemos que al depender la terminación del algoritmo de la cantidad de resets, forzamos a este a seguir explorando aun cuando ya no es útil un camino.
+La corrida con 9 resets solo genero una solución un 1.4\% mejor que la anterior. Un número fácilmente obtenible ejecutando el algoritmo más veces con menos cantidad de resets, gracias a su factor aleatorio.
+\vskip 1em
+En conclusión, el uso de resets es util a la hora de escapar de caminos sin salida, y relativamente sencillo de implementar, dándole una gran ventaja sobre la versión simple de Annealing.
