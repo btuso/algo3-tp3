@@ -72,3 +72,118 @@ Dada la clusterizaciónn de vértices $V=\{v_{1}, \dots, v_{n}\}$ realizada por 
 \end{figure}
 
 En este caso se puede observar claramente lo mencionado. La solución con \textit{sweeping} encuentra primero el vértice $(5, 1)$ e inmediatamente después el $(15, 6)$, seguido del $(17, 8)$ y cierra el cluster con $(15, 8)$. Luego ya se disponen de 4 vértices cuya demanda suma $100$, la capacidad máxima de un camión. Esto forma un cluster de cuatro vértices donde uno de ellos está muy lejos de los otros tres pues estos cuatro son consecutivos angularmente pero \textbf{no} euclideanamente. Lo mismo sucede con los otros cuatro vértices sobrantes del grafo. En consecuencia, se consume mucha distancia yendo y viniendo de aquellos vértices lejanos del resto. En cambio, en la figura \ref{fig:km-custom-n9-sweep-close-angular-far-euclidean} se puede observar una distribución más natural de las rutas y, en consecuencia, un decremento en la distancia total recorrida por ellas. Esto se debe a que se utilizó la heurística de clusterización \textbf{K-Means} que resulta \textbf{más apropiada para la instancia del problema} pues – como será explicado más adelante – construye los clusters a partir de la distancia euclideana entre sus vértices y no sus distancias angulares al depósito.
+
+\subsubsubsection{Análisis de instancias generales}
+A continuación pondremos a prueba esta heurística con algunas instancias de los datasets \textbf{A} y \textbf{B} provistos por la cátedra. A la izquierda, la solución del algoritmo \textbf{Clusterize First (Sweep), Route Second (Nearest Neighbours)}. A la derecha, la solución óptima conocida.
+
+\begin{figure}[H]
+	\begin{minipage}{0.15\textwidth}
+		\centering
+		\textbf{Instancia}
+	\end{minipage}%
+	\begin{minipage}{0.40\textwidth}
+		\centering
+		\textbf{Soluciones golosas}
+	\end{minipage}%
+	\hspace{0.03\textwidth}
+	\begin{minipage}{0.40\textwidth}
+		\centering
+		\textbf{Soluciones golosas}
+	\end{minipage}%
+\end{figure}
+
+\begin{figure}[H]
+	\begin{minipage}{0.15\textwidth}
+		\centering
+		\texttt{A-n32-k5}
+	\end{minipage}%
+	\begin{minipage}{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{sweep/sw-A-n32-k5}\par
+	\end{minipage}%
+	\hspace{0.03\textwidth}
+	\begin{minipage}{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{A-n32-k5-optima}\par
+	\end{minipage}%
+\end{figure}
+
+\begin{figure}[H]
+	\begin{minipage}{0.15\textwidth}
+		\centering
+		\texttt{A-n38-k5}
+	\end{minipage}%
+	\begin{minipage}{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{sweep/sw-A-n38-k5}\par
+	\end{minipage}%
+	\hspace{0.03\textwidth}
+	\begin{minipage}{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{A-n38-k5-optima}\par
+	\end{minipage}%
+\end{figure}
+
+\begin{figure}[H]
+	\begin{minipage}{0.15\textwidth}
+		\centering
+		\texttt{A-n55-k9}
+	\end{minipage}%
+	\begin{minipage}{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{sweep/sw-A-n55-k9}\par
+	\end{minipage}%
+	\hspace{0.03\textwidth}
+	\begin{minipage}{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{A-n55-k9-optima}\par
+	\end{minipage}%
+\end{figure}
+
+\begin{figure}[H]
+	\begin{minipage}{0.15\textwidth}
+		\centering
+		\texttt{B-n41-k6}
+	\end{minipage}%
+	\begin{minipage}{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{sweep/sw-B-n41-k6}\par
+	\end{minipage}%
+	\hspace{0.03\textwidth}
+	\begin{minipage}{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{B-n41-k6-optima}\par
+	\end{minipage}%
+\end{figure}
+
+\begin{figure}[H]
+	\begin{minipage}{0.15\textwidth}
+		\centering
+		\texttt{B-n64-k9}
+	\end{minipage}%
+	\begin{minipage}{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{sweep/sw-B-n64-k9}\par
+	\end{minipage}%
+	\hspace{0.03\textwidth}
+	\begin{minipage}{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{B-n64-k9-optima}\par
+	\end{minipage}%
+\end{figure}
+
+\begin{figure}[H]
+	\begin{minipage}{0.15\textwidth}
+		\centering
+		\texttt{B-n78-k10}
+	\end{minipage}%
+	\begin{minipage}{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{sweep/sw-B-n78-k10}\par
+	\end{minipage}%
+	\hspace{0.03\textwidth}
+	\begin{minipage}{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{B-n78-k10-optima}\par
+	\end{minipage}%
+\end{figure}

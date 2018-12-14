@@ -110,5 +110,117 @@ Como fue explicado anteriormente, el parámetro $K$ indica la cantidad de vérti
 
 Aquí es posible observar lo efectiva que resulta la heurística a medida que el parámetro $K$ excede el valor de $5$. Además, se puede notar una convergencia a partir de $K=14$ que se mantiene para $K \rightarrow \infty$. Decidimos acotar el rango $X$ por una cuestión estética. Podemos suponer, entonces, que el valor $K=14$ es un valor óptimo para instancias naturalmente clusterizadas como lo es \textbf{M-n101-k10}.
 
-\subsubsubsection{Análisis de instancias clusterizadas con $K=14$}
-En el análisis anterior, concluímos que $K=14$ es el valor de $K$ óptimo para \textbf{(a)} maximizar la calidad de la solución y \textbf{(b)} afectar lo menor posible los tiempos computacionales del algoritmo.
+\subsubsubsection{Análisis de instancias generales con $K=14$}
+En el análisis anterior, concluímos que $K=14$ es el valor de $K$ óptimo para \textbf{(a)} maximizar la calidad de la solución y \textbf{(b)} afectar lo menor posible los tiempos computacionales del algoritmo. A continuación analizaremos soluciones con el algoritmo \textbf{goloso} sobre instancias de los datasets \textbf{A} y \textbf{B} provistos por la cátedra.
+
+\begin{figure}[H]
+	\begin{minipage}{0.15\textwidth}
+		\centering
+		\textbf{Instancia}
+	\end{minipage}%
+	\begin{minipage}{0.40\textwidth}
+		\centering
+		\textbf{Soluciones golosas}
+	\end{minipage}%
+	\hspace{0.03\textwidth}
+	\begin{minipage}{0.40\textwidth}
+		\centering
+		\textbf{Soluciones golosas}
+	\end{minipage}%
+\end{figure}
+
+\begin{figure}[H]
+	\begin{minipage}{0.15\textwidth}
+		\centering
+		\texttt{A-n32-k5}
+	\end{minipage}%
+	\begin{minipage}{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{greedy/gr-A-n32-k5-K14}\par
+	\end{minipage}%
+	\hspace{0.03\textwidth}
+	\begin{minipage}{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{A-n32-k5-optima}\par
+	\end{minipage}%
+\end{figure}
+
+\begin{figure}[H]
+	\begin{minipage}{0.15\textwidth}
+		\centering
+		\texttt{A-n38-k5}
+	\end{minipage}%
+	\begin{minipage}{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{greedy/gr-A-n38-k5-K14}\par
+	\end{minipage}%
+	\hspace{0.03\textwidth}
+	\begin{minipage}{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{A-n38-k5-optima}\par
+	\end{minipage}%
+\end{figure}
+
+\begin{figure}[H]
+	\begin{minipage}{0.15\textwidth}
+		\centering
+		\texttt{A-n55-k9}
+	\end{minipage}%
+	\begin{minipage}{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{greedy/gr-A-n55-k9-K14}\par
+	\end{minipage}%
+	\hspace{0.03\textwidth}
+	\begin{minipage}{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{A-n55-k9-optima}\par
+	\end{minipage}%
+\end{figure}
+
+\begin{figure}[H]
+	\begin{minipage}{0.15\textwidth}
+		\centering
+		\texttt{B-n41-k6}
+	\end{minipage}%
+	\begin{minipage}{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{greedy/gr-B-n41-k6-K14}\par
+	\end{minipage}%
+	\hspace{0.03\textwidth}
+	\begin{minipage}{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{B-n41-k6-optima}\par
+	\end{minipage}%
+\end{figure}
+
+\begin{figure}[H]
+	\begin{minipage}{0.15\textwidth}
+		\centering
+		\texttt{B-n64-k9}
+	\end{minipage}%
+	\begin{minipage}{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{greedy/gr-B-n64-k9-K14}\par
+	\end{minipage}%
+	\hspace{0.03\textwidth}
+	\begin{minipage}{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{B-n64-k9-optima}\par
+	\end{minipage}%
+\end{figure}
+
+\begin{figure}[H]
+	\begin{minipage}{0.15\textwidth}
+		\centering
+		\texttt{B-n78-k10}
+	\end{minipage}%
+	\begin{minipage}{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{greedy/gr-B-n78-k10-K14}\par
+	\end{minipage}%
+	\hspace{0.03\textwidth}
+	\begin{minipage}{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{B-n78-k10-optima}\par
+	\end{minipage}%
+\end{figure}
