@@ -59,27 +59,28 @@ En general, las componentes comunes a las diferentes implementaciones de anneali
 \begin{algorithm}[H]
 \caption{Simple Simmulated Annealing}
 \begin{algorithmic}[1]
-\Function{Anneal}{Solucion $S_0$, Entero $T_{max}$, Entero $T_{min}$} \Comment $\Theta()$
-\State $S \gets S_0$ \Comment $\Theta(1)$
-\State $S_b \gets S_0$ \Comment $\Theta(1)$
-\State $T \gets T_{max}$ \Comment $\Theta(1)$
+\Function{Anneal}{Solucion $S_0$, Entero $T_{max}$, Entero $T_{min}$} 
+\State $S \gets S_0$ 
+\State $S_b \gets S_0$
+\State $T \gets T_{max}$ 
 \State
-\While{$T > T_{min}$} \Comment $\Theta()$
-	\State $S' \gets \textit{Vecino(S)}$ \Comment $\Theta()$
-	\If{$\textit{ProbabilidadDeAceptar(S, S', T)} \geq \textit{Random(0, 1)} $} \Comment $\Theta()$
-		\State $S \gets S'$ \Comment $\Theta(1)$
+\While{$T > T_{min}$} 
+	\State $S' \gets \textit{Vecino(S)}$
+	\If{$\textit{ProbabilidadDeAceptar(S, S', T)} \geq \textit{Random(0, 1)} $}
+		\State $S \gets S'$ 
 	\EndIf	
 	\State
-	\If{$\textit{Energia(S)} < \textit{Energia}(S_b)$} \Comment $\Theta()$
-		\State $S_b \gets S$ \Comment $\Theta(1)$
+	\If{$\textit{Energia(S)} < \textit{Energia}(S_b)$} 
+		\State $S_b \gets S$ 
 	\EndIf	
-	\State \textit{Enfriar(T)} \Comment $\Theta()$
+	\State \textit{Enfriar(T)} 
 \EndWhile
 \State
-\State \Return $S_b$ \Comment $\Theta(1)$
+\State \Return $S_b$ 
 \EndFunction
 \end{algorithmic}
 \end{algorithm}
+\label{code:simple-annealing}
 
 Como podemos ver, en esta versión de Annealing, establecemos un rango de temperaturas dentro del cual operar, explorando soluciones lindantes a la actual y aceptandolas de acuerdo a una probabilidad en función de la temperatura actual y la calidad de dicha solución.
 
@@ -107,37 +108,37 @@ Para combatir esto, decidimos seguir casi al pie de la letra la versión de Anne
 \begin{algorithm}[H]
 \caption{Simmulated Annealing with Temperature Cycles}
 \begin{algorithmic}[1]
-\Function{Anneal}{Solucion $S_0$, Entero $R$} \Comment $\Theta()$
-\State $S \gets S_0$ \Comment $\Theta(1)$
-\State $S_b \gets S_0$ \Comment $\Theta(1)$
-\State $T_s, T_f  \gets \textit{CalcularRangoDeTemperatura(S)}$ \Comment $\Theta(1)$
-\State $T_k \gets T_{s}$ \Comment $\Theta(1)$
-\State $resets \gets 0$ \Comment $\Theta(1)$
-\State $k \gets 0$ \Comment $\Theta(1)$
+\Function{Anneal}{Solucion $S_0$, Entero $R$} 
+\State $S \gets S_0$ 
+\State $S_b \gets S_0$ 
+\State $T_s, T_f  \gets \textit{CalcularRangoDeTemperatura(S)}$
+\State $T_k \gets T_{s}$ 
+\State $resets \gets 0$ 
+\State $k \gets 0$
 \State
-\While{$resets < R$} \Comment $\Theta()$
-	\State $k \gets k + 1$ \Comment $\Theta(1)$
+\While{$resets < R$} 
+	\State $k \gets k + 1$ 
 	\State
-	\If{$\textit{HayVecinos(S)}$} \Comment $\Theta()$
-		\State $\Delta_{energia} \gets \textit{ProximoVecino(S)}$ \Comment $\Theta()$
-		\If{$\textit{ProbabilidadDeAceptar}(\Delta_{energia} , T_k) \geq \textit{Random(0, 1)} $} \Comment $\Theta()$
-			\State $S \gets \textit{AceptarVecino(S)}$ \Comment $\Theta()$
+	\If{$\textit{HayVecinos(S)}$} 
+		\State $\Delta_{energia} \gets \textit{ProximoVecino(S)}$ 
+		\If{$\textit{ProbabilidadDeAceptar}(\Delta_{energia} , T_k) \geq \textit{Random(0, 1)} $} 
+			\State $S \gets \textit{AceptarVecino(S)}$ 
 		\EndIf
-		\If{$\textit{Energia(S)} < \textit{Energia}(S_b)$} \Comment $\Theta()$
-			\State $S_b \gets S$ \Comment $\Theta(1)$
-			\State $resets \gets 0$ \Comment $\Theta(1)$
+		\If{$\textit{Energia(S)} < \textit{Energia}(S_b)$}
+			\State $S_b \gets S$ 
+			\State $resets \gets 0$ 
 		\EndIf	
-		\State \textit{Enfriar($T_k$, $t_s$, $t_f$, $k$)} \Comment $\Theta()$		
+		\State \textit{Enfriar($T_k$, $t_s$, $t_f$, $k$)}	
 		\State
 	\Else
-		\State \textit{Calentar($T_k$, $t_s$, $t_f$, $k$)} \Comment $\Theta()$			
-		\State $resets \gets resets + 1$ \Comment $\Theta(1)$
-		\State \textit{GenerarNuevosVecinos(S)} \Comment $\Theta(1)$
+		\State \textit{Calentar($T_k$, $t_s$, $t_f$, $k$)} 		
+		\State $resets \gets resets + 1$ 
+		\State \textit{GenerarNuevosVecinos(S)} 
 	\EndIf
 
 \EndWhile
 \State
-\State \Return $S_b$ \Comment $\Theta(1)$
+\State \Return $S_b$ 
 \EndFunction
 \end{algorithmic}
 \end{algorithm}
@@ -269,5 +270,86 @@ Si bien este escenario parece exagerado, es un escenario común (Probabilidad 1\
 \caption{Debido a baja temperatura y mala suerte, el algoritmo puede tardar en converger}
 
 \end{figure}
+
+\subsubsection{Complejidad}
+
+
+Hablar sobre la complejidad de Simulated Annealing se torna difícil rápidamente, esto es porque a diferencia de algoritmos comunes, la continuación de la ejecución del mismo depende del camino actual tomado, la forma del plano de soluciones y lo más importante, el azar.
+
+\vskip 1em
+
+Si bien annealing utiliza una noción de temperatura inicial y final, no encontramos que en la versión propuesta por Ibrahim Osman en su paper \textit{Metastrategy simulated annealing and tabu search algorithms for the vehicle routing problem} que la temperatura actual alcance la final no es garantia de corte por varios motivos:
+\begin{itemize}
+\item Mientras se encuentren soluciones mejores que la actual, el algoritmo va a seguir explorando
+\item No hay corte explícito por temperatura, solo por resets
+\item Aun con una probabilidad muy baja de que una solución sea aceptada, igual puede pasar, lo cual prolonga la exploración.
+\item Una vez que se llegó a un camino sin salida y se ejecuta un reset de temperatura, volvemos a tener la incertidumbre de cuando este va a converger.
+\end{itemize}
+
+Dado que evaluar el peor caso para el algoritmo no nos aporta ninguna información relevante, dado que nos encontraríamos con una cota masiva, decidimos evaluar la complejidad de la versión simple de Annealing (provista en \ref{code:simple-annealing}), es decir sin resets y con corte por temperatura, lo cual nos da una intuición de cómo se comporta la versión más compleja de Annealing.
+\vskip 1em
+En particular podemos ver que las complejidades que nos interesan averiguar son las de las funciones:
+\begin{itemize}
+\item Vecino
+\item ProbabilidadDeAceptar
+\item Energía
+\item Enfriar
+\end{itemize}
+
+\begin{description}
+
+\item[Vecino:] Como se explicó antes, para obtener el vecino de una solución, utilizamos el método de $\lambda$-interchange, el cual consiste en reemplazar, agregar o borrar puntos de una ruta.
+Para realizar esto, es necesario recrear la ruta, dado que borrar un punto de un vector es una operación lineal (dado que se deben acomodar los elementos restantes). Luego, es necesario copiar esa solución para devolverla. Esto resulta en una función con complejidad lineal en base a la cantidad de puntos en el grafo. \textbf{Complejidad:} $\Theta(n)$ con n = cantidad de puntos
+
+\item[Energía:] Se calcula la distancia total de una solución, para esto debemos recorrer la ruta propuesta en la solución, y hacer la suma de la distancia euclidiana entre los puntos. Dado que una solución pasa por todos los puntos (y no más de una vez),  tenemos a lo sumo $2*n$ operaciones. Donde $n$ es la cantidad total de puntos, y es multiplicada por 2 al tener en cuenta que el depósito está en cada ruta. \textbf{Complejidad}: $\Theta(n)$ con n = cantidad de puntos
+
+\item[ProbabilidadDeAceptar:] Esta función tiene un costo constante, dado que se trata simplemente de una operación matemática (la cual fue explicada en la introducción a Annealing). Difiriendo con el pseudocódigo, elegimos pasar la energía de las soluciones en vez de las mismas, utilizandolas para la siguiente comparación. \textbf{Complejidad}: $\Theta(1)$
+
+\item[Enfriar:] Esta función tiene un costo constante, dado que se trata simplemente de una operación matemática (la cual fue explicada en la introducción a Annealing). \textbf{Complejidad}: $\Theta(1)$
+
+\end{description}
+
+Respecto al pseudocódigo de Annealing con resets, se agregan las siguientes funciones:
+
+\begin{description}
+
+\item[HayVecinos:] Se utilizan iteradores para saber si hay mas rutas para comparar. \textbf{Complejidad}: $\Theta(1)$
+
+\item[ProximoVecino:] Igual que Vecino, pero devuelve el cálculo de energía.  \textbf{Complejidad}: $\Theta(n)$ con n = cantidad de puntos
+
+\item[AceptarVecino:] Simplemente devuelve por referencia la solución anteriormente generada y guardada en una variable.  \textbf{Complejidad}: $\Theta(1)$
+
+\item[GenerarNuevosVecinos:] Se vuelven a inicializar los iteradores que apuntan a las rutas a comparar. \textbf{Complejidad}: $\Theta(1)$
+
+\item[Calentar:] Esta función tiene un costo constante, dado que se trata simplemente de una operación matemática (la cual fue explicada en la introducción a Annealing). \textbf{Complejidad}: $\Theta(1)$
+
+\end{description}
+
+Respecto a la cuenta de enfriamiento temperatura, vamos a utilizar la que describimos anteriormente en la introducción, es decir 
+$$ T = \frac{T_k}{1+ \beta_k T_k},  \beta_k = \frac{T_s - T_f}{(\alpha + \gamma \sqrt{k} )T_s T_k} $$
+
+\vskip 1em
+Donde 
+\begin{description}
+\item[$\alpha$ = ] cantidad de puntos * constante
+\item[$\sigma$ = ] cantidad de puntos
+\item[K = ] iteracion actual
+\end{description}
+
+
+\begin{figure}[H]
+\includegraphics[scale=0.4]{annealing/complejidad}
+\centering
+\caption{La temperatura en base a las iteraciones}
+
+\end{figure}
+
+Al graficar la función, podemos ver como converge rápidamente, tomando unas 10000 iteraciones para llevar la temperatura actual a la final (con $t_s = 1000$, $t_f = 10$, $n = 32$, $\alpha = n * 1000$). Luego podemos deducir que existe un valor $iteraciones_{temp}$ en base a $n$ para la cual cualquier configuracion de parametros va a converger.
+\vskip 1em
+Luego podemos definir la complejidad como $\Theta(n * iteraciones_{temp})$
+
+
+
+
 
 \input{sections/annealing/experimentacion}
