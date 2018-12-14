@@ -25,6 +25,11 @@ Además de la experimentación mencionada, también chequeamos que la complejida
 		\label{fig:kmeans-sort-distancia}
 	\end{minipage}%
 \end{figure}
+\paragraph{}
+Finalmente, decidimos tener tres implementaciones de kmeans: donde recorra los puntos como vienen, donde ordene por demanda de forma decreciente y donde ordene de forma creciente. Como ordenar es $\mathcal{O}(n*log(n))$ hacer esto no altera la complejidad de la heurística. En la figura \ref{fig:kmeans-sort-tiempo} comparamos las performances de tiempo de los tres algoritmos. Se observa que al recorrer los puntos de forma decreciente el algoritmo toma menos tiempo: esto puede entenderse como que no se crean clusters nuevos ya que es más probable que al dar prioridad a los clientes con alta demanda, los de baja demanda puedan encajar en los espacios no tan grandes que quedan en los camiones al ir siendo ocupados. En general parece que efectivamente recorrerlos de forma creciente incrementa la cantidad de iteraciones y por eso toma más tiempo: más clusters, más cambios de pertenencia, etc.
+\paragraph{}
+Por otro lado, en \ref{fig:kmeans-sort-distancia} se compara que tan buenas son las soluciones entre sí. En esta experimentación, no se puede concluir que en cuanto a distancia mínima una implementación sea mejor o peor que otra: dependerá de como este formada la instancia que algoritmo conviene elegir. 
+\subsubsection{Tiempos}
 
 \begin{figure}[H]
 	\centering
@@ -35,11 +40,16 @@ Además de la experimentación mencionada, también chequeamos que la complejida
 		\label{fig:kmeans-tiempos}
 	\end{minipage}%
 	\hspace{0.03\textwidth}
-	\begin{minipage}{0.44\textwidth}
+	\begin{minipage}{0.45\textwidth}
 		\centering
 		\includegraphics[width=1\textwidth]{images/kmeans/kmeanscte}
 		\caption{\footnotesize Tiempo/complejidad de acuerdo al tamaño de la entrada}
 		\label{fig:kmeans-cte}
 	\end{minipage}%
 \end{figure}
+
+\paragraph{} 
+En la figura \ref{fig:kmeans-tiempos} podemos ver como se comporta kmeans a medida que aumenta la cantidad de clientes. Como era de esperarse, se observa que no depende sólamente de $n$, hay una gran varianza entre los puntos más allá del tamaño de la entrada. Como dijimos, depende de la disposición de los puntos, de como esten distribuidas las demandas y de como se recorran los clientes. Por último en \ref{fig:kmeans-cte} se observa la relación entre la complejidad del algoritmo que habíamos calculado y el tiempo efectivo de las soluciones. Como es una recta que se mantiene constante, la complejidad puede ser acertada.
+
+
 
