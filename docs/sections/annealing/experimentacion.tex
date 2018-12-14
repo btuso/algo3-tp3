@@ -5,11 +5,11 @@ Al momento de experimentar sobre Annealing, debemos tener en cuenta que cosas co
 \begin{description}
 \item[El “plano” de soluciones:] Dado que nos encontramos frente a una función con dominio multidimensional, se vuelve inviable representar gráficamente la función. Sin embargo basta con tomar un caso simplificado como el de la figura \ref{fig:minimo-local} para poder ver que la forma del plano puede no prestarse a una exploración exitosa desde algunos puntos. Este caso es bastante difícil de recrear manualmente dado que estamos lidiando con una función multidimensional con un dominio no ordenado, por este motivo va a ser obviado en nuestra experimentación práctica.
 
-\item[La solución inicial:] Esta misma tiene un gran impacto sobre el desempeño del algoritmo por diversos motivos, ya que la temperatura inicial y final son calculadas a partir de la misma, así como también el punto de partida a la hora de explorar el vecindario. 
+\item[La solución inicial:] Esta misma tiene un gran impacto sobre el desempeño del algoritmo por diversos motivos, ya que la temperatura inicial y final son calculadas a partir de la misma, así como también el punto de partida a la hora de explorar el vecindario.
 
 \item[La cantidad de resets:] Los resets o ciclos de temperatura existen como un método de backtracking a la hora de llegar a un camino sin salida, es decir, explorar todo un vecindario sin encontrar una solución mejor a la actual.
 
-\item[La cantidad de exploraciones:] El factor $\alpha$ dentro de la ecuación de enfriamiento depende de la cantidad de iteraciones aproximadas para que la temperatura actual sea la misma que la final. Si bien este número no es más que una guía (puesto que el algoritmo puede seguir buscando soluciones a medida que encuentre mejores) afecta la curva de temperatura directamente. 
+\item[La cantidad de exploraciones:] El factor $\alpha$ dentro de la ecuación de enfriamiento depende de la cantidad de iteraciones aproximadas para que la temperatura actual sea la misma que la final. Si bien este número no es más que una guía (puesto que el algoritmo puede seguir buscando soluciones a medida que encuentre mejores) afecta la curva de temperatura directamente.
 
 \end{description}
 
@@ -22,7 +22,7 @@ Si bien es difícil cuantificar el impacto de un cambio de parámetro sobre Anne
 \vskip 1em
 
 Esto termina provocando que el algoritmo ejecute más o menos iteraciones sobre la solución.
-Proponemos que incrementar desmedidamente este valor para lograr mayor exploraciones, no necesariamente recompensa el costo de tiempo asociado con la mejor solución potencial. 
+Proponemos que incrementar desmedidamente este valor para lograr mayor exploraciones, no necesariamente recompensa el costo de tiempo asociado con la mejor solución potencial.
 
 \begin{figure}[H]
 	\centering
@@ -58,7 +58,7 @@ Proponemos que incrementar desmedidamente este valor para lograr mayor exploraci
 		\centering
 		\includegraphics[scale=0.4]{annealing/100000-it-grafo}
 	\end{minipage}\qquad
-\end{figure}	
+\end{figure}
 
 Como podemos ver, usando un parámetro chico como $\alpha$ = 1.000, obtenemos una distancia total (en promedio) de 912. Como podemos ver, esto decrementa rápidamente la temperatura, lo cual no nos permite aprovechar al máximo la capacidad de annealing de aceptar soluciones malas, haciendo que el algoritmo caiga fácilmente en óptimos locales.
 \vskip 1em
@@ -112,14 +112,127 @@ Para esto vamos a comparar los siguientes casos: Annealing sin resets, Annealing
 		\centering
 		\includegraphics[scale=0.4]{annealing/resets-9-grafo}
 	\end{minipage}\qquad
-\end{figure}	
+\end{figure}
 
 Como podemos observar en el primer gráfico, Annealing simple o sin resets equivale a un algoritmo de Hill Climbing que acepta soluciones malas. Podemos ver que rápidamente converge en un óptimo local con una distancia total de 925.
 \vskip 1em
-Al permitir que el algoritmo ejecute resets de temperatura como propone \textit{Ibrahim Osman} en su paper, vemos como la heurística logra salir de esos óptimos y seguir buscando una solución mejor, llegando así a una de distancia total 889, un 4\% mejor. 
+Al permitir que el algoritmo ejecute resets de temperatura como propone \textit{Ibrahim Osman} en su paper, vemos como la heurística logra salir de esos óptimos y seguir buscando una solución mejor, llegando así a una de distancia total 889, un 4\% mejor.
 Observando el gráfico de energía, podemos ver como en general el algoritmo logra decrementar la energía general gracias a cada reset.
 \vskip 1em
 En la ejecución con 9 resets, se hace evidente rápidamente como el algoritmo se mantiene en valles de energía. Debido a que cada reset eleva la temperatura a una temperatura menor al reset anterior, podemos ver cómo a medida que se generan mas y mas resets, pierden su efectividad, dado que no llegan a elevar suficiente la temperatura como para escapar de los óptimos locales. A su vez, vemos que al depender la terminación del algoritmo de la cantidad de resets, forzamos a este a seguir explorando aun cuando ya no es útil un camino.
 La corrida con 9 resets solo genero una solución un 1.4\% mejor que la anterior. Un número fácilmente obtenible ejecutando el algoritmo más veces con menos cantidad de resets, gracias a su factor aleatorio.
 \vskip 1em
 En conclusión, el uso de resets es util a la hora de escapar de caminos sin salida, y relativamente sencillo de implementar, dándole una gran ventaja sobre la versión simple de Annealing.
+
+\subsubsection{Análisis de instancias generales}
+A continuación pondremos a prueba esta heurística con algunas instancias de los datasets \textbf{A} y \textbf{B} provistos por la cátedra. A la izquierda, la solución del algoritmo \textbf{Annealing}. A la derecha, la solución óptima conocida.
+
+\begin{figure}[H]
+	\begin{minipage}{0.15\textwidth}
+		\centering
+		\textbf{Instancia}
+	\end{minipage}%
+	\begin{minipage}{0.40\textwidth}
+		\centering
+		\textbf{Soluciones Annealing}
+	\end{minipage}%
+	\hspace{0.03\textwidth}
+	\begin{minipage}{0.40\textwidth}
+		\centering
+		\textbf{Soluciones óptimas}
+	\end{minipage}%
+
+	\begin{minipage}{0.15\textwidth}
+		\centering
+		\texttt{A-n32-k5}
+	\end{minipage}%
+	\begin{minipage}{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{annealing/an-A-n32-k5}\par
+	\end{minipage}%
+	\hspace{0.03\textwidth}
+	\begin{minipage}{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{A-n32-k5-optima}\par
+	\end{minipage}%
+\end{figure}
+
+\begin{figure}[H]
+	\begin{minipage}{0.15\textwidth}
+		\centering
+		\texttt{A-n38-k5}
+	\end{minipage}%
+	\begin{minipage}{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{annealing/an-A-n38-k5}\par
+	\end{minipage}%
+	\hspace{0.03\textwidth}
+	\begin{minipage}{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{A-n38-k5-optima}\par
+	\end{minipage}%
+\end{figure}
+
+\begin{figure}[H]
+	\begin{minipage}{0.15\textwidth}
+		\centering
+		\texttt{A-n55-k9}
+	\end{minipage}%
+	\begin{minipage}{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{annealing/an-A-n55-k9}\par
+	\end{minipage}%
+	\hspace{0.03\textwidth}
+	\begin{minipage}{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{A-n55-k9-optima}\par
+	\end{minipage}%
+\end{figure}
+
+\begin{figure}[H]
+	\begin{minipage}{0.15\textwidth}
+		\centering
+		\texttt{B-n41-k6}
+	\end{minipage}%
+	\begin{minipage}{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{annealing/an-B-n41-k6}\par
+	\end{minipage}%
+	\hspace{0.03\textwidth}
+	\begin{minipage}{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{B-n41-k6-optima}\par
+	\end{minipage}%
+\end{figure}
+
+\begin{figure}[H]
+	\begin{minipage}{0.15\textwidth}
+		\centering
+		\texttt{B-n64-k9}
+	\end{minipage}%
+	\begin{minipage}{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{annealing/an-B-n64-k9}\par
+	\end{minipage}%
+	\hspace{0.03\textwidth}
+	\begin{minipage}{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{B-n64-k9-optima}\par
+	\end{minipage}%
+\end{figure}
+
+\begin{figure}[H]
+	\begin{minipage}{0.15\textwidth}
+		\centering
+		\texttt{B-n78-k10}
+	\end{minipage}%
+	\begin{minipage}{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{annealing/an-B-n78-k10}\par
+	\end{minipage}%
+	\hspace{0.03\textwidth}
+	\begin{minipage}{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{B-n78-k10-optima}\par
+	\end{minipage}%
+\end{figure}
