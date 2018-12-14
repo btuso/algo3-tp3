@@ -20,17 +20,19 @@ En la figura \ref{fig:sweep-emprender-vuelta} se puede observar que en el camino
 \subsubsubsection{La heurística de \textit{TSP} puede ser muy golosa con las distancias}
 Debido a que el orden de los clientes en los clusters es resuelto a través de la heurística \textit{Nearest Neighbours} que consiste en visitar el nodo inmediatamente más cercano sobre el cual se está parado, se puede perder el panorama general y cometer decisiones costosas para la calidad de la solución final. El ejemplo más recurrente se ve en la presencia de rutas con bucles o \textit{firuletes}, pues se produce una ``ida y vuelta'' innecesaria con total de visitar el nodo más cercano posible. Esto podría ser evitado utilizado alguna metaheurística como Annealing o Tabú Search para decidir a qué vértice saltar o utilizar una técnica como Lambda Exchange para optimizar e intentar eliminar estas manifestaciones del problema descripto. Analizaremos este fenómeno gráficamente:
 
-% \newpage
-\parindent0em
-\begin{multicols}{2}[\columnsep2em]
-		\includegraphics[width=0.48\textwidth]{sweep/sweep-A-n32-k5}
-\columnbreak
-	\begin{figure}[H]
-		\caption{Circuito no óptimo en camino verde} \label{fig:sweep-A-n32-k5}
-		\vskip 4pt
+\begin{figure}[H]
+	\centering
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=1\textwidth]{sweep/sweep-A-n32-k5}
+	\end{minipage}%
+	\hspace{0.03\textwidth}
+	\begin{minipage}{0.48\textwidth}
+    \caption{\footnotesize Sweeping no adaptativo}
+		\label{fig:sweep-without-adaptative}
 		En este ejemplo se puede ver claramente la aparición de un circuito en la ruta verde. Como ya fue explicado, este se debe a que el algoritmo de resolución del TSP busca los nodos inmediatamente más cercanos sin considerar otras alternativas (a priori más ineficientes) pero que a la larga resultan más óptimas. Al seguir a rajatabla la heurística de \textit{Nearest Neighbours}, se comete un error de \textit{tunnel view} y se ignoran alternativas más eficientes a la larga.
-	\end{figure}
-\end{multicols}
+	\end{minipage}%
+\end{figure}
 
 \subsubsubsection{Clusterización con sweeping adaptativo vs sin sweeping adaptativo}
 En la figura \ref{fig:sweep-with-adaptative} se puede observar una clusterización correcta de los vértices. Los nodos recorridos por el camión verde son cercanos entre sí y lo mismo sucede con los del camión rojo. En cambio, en la figura \ref{fig:sweep-without-adaptative}, se puede observar cómo los clusters se interponen entre sí debido a que se comenzó a barrer angularmente sobre ángulo $0$, interrumpiendo a la mitad la concepción de un cluster óptimo.
