@@ -97,3 +97,18 @@ A pesar de las debilidades del algoritmo, también existen casos favorables para
 \end{figure}
 
 Si bien el algoritmo goloso no encuentra la solución más óptima, devuelve un resultado bastante aproximado. No sería dificil fabricar una instancia \textit{ad-hoc} que favorezca a la perfección al algoritmo en cuestión. De este ejemplo podemos concluir que, si bien la heurística constructiva golosa puede ser muy grosera, podrían existir alternativas donde – modificándola adecuadamente – se pueda utilizar para detectar grandes clusterizaciones de demandas (que podrían representar, por ejemplo, una ciudad con muchos clientes muy demandantes) para tomar una decisión inteligente al respecto, como con cuántos camiones intentar proveer ese foco de vértices, etcétera. Esta propuesta excede el alcance de este documento y es mencionada como una posible alternativa \textbf{factible} en donde esta heurística podría convivir a la par de otras más efectivas como Savings y Annealing.
+
+\subsubsubsection{Análisis del parámetro $K$}
+Como fue explicado anteriormente, el parámetro $K$ indica la cantidad de vértices a ser tenidos en cuenta a la hora de buscar el nodo más cercano a uno donde se está parado luego de haber seleccionado un \textit{bucket} de clientes a los cuales se puede satisfacer. A continuación, analizaremos una instancia del problema \textbf{CVRP} de numerosos elementos, fluctuaremos el parámetro $K$ y analizaremos las distancias totales recorridas:
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\textwidth]{greedy/gr-M-n101-k10-K-1-to-30}
+	\caption{\footnotesize Instancia \textbf{M-n101-k10} naturalmente clusterizada, $n=101$, capacidad 200}
+	\label{fig:gr-M-n101-k10-K-1-to-30}
+\end{figure}
+
+Aquí es posible observar lo efectiva que resulta la heurística a medida que el parámetro $K$ excede el valor de $5$. Además, se puede notar una convergencia a partir de $K=14$ que se mantiene para $K \rightarrow \infty$. Decidimos acotar el rango $X$ por una cuestión estética. Podemos suponer, entonces, que el valor $K=14$ es un valor óptimo para instancias naturalmente clusterizadas como lo es \textbf{M-n101-k10}.
+
+\subsubsubsection{Análisis de instancias clusterizadas con $K=14$}
+En el análisis anterior, concluímos que $K=14$ es el valor de $K$ óptimo para \textbf{(a)} maximizar la calidad de la solución y \textbf{(b)} afectar lo menor posible los tiempos computacionales del algoritmo.

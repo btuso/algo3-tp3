@@ -9,3 +9,42 @@
 \input{sections/kmeans/experimentacion-performance}
 \input{sections/annealing/experimentacion-performance}
 
+\subsubsection{Conclusiones}
+ A la hora de resolver el problema de Enrutamiento de Vehículos con Capacidad disponemos de innumerables heurísticas y algoritmos para aproximarnos a la solución más óptima en el tiempo disponible. Algunas de estas son rápidas y otras no tanto. En este documento, las más veloces aún tienen chances de competir con las más robustas en algunos casos puntuales. Esto motivó a evaluar en qué casos podríamos aprovechar la simplicidad y reducido costo temporal de estas heurísticas versus aquellas más demandantes sin perder calidad en nuestras soluciones, pero todavía no nos hemos respondido una pregunta fundamental: ¿Cuál es la mejor heurística? Esta pregunta – así formulada – no tiene respuesta, pues depende de cuántos vértices componen nuestra instancia del problema, cómo es su distribución, cuáles son sus demandas, etcétera. Tal vez, reformulando la pregunta, podemos llegar a una respuesta: en los datasets disponibles para este trabajo, ¿cuál es el algoritmo que, en promedio, minimiza mejor las distancias recorridas? Averiguemoslo:
+
+ \begin{figure}[H]
+ 	\centering
+	\includegraphics[width=1\textwidth]{algorithms-distances-for-A}
+	\caption{\footnotesize Promedio de distancias totales para cada algoritmo resolviendo todas las instancias del dataset \textbf{A}, generadas con vértices al azar, capacidad $=100$, demanda promedio $=15$.}
+	\label{fig:algorithms-distances-for-A}
+ \end{figure}
+
+Las tendencias son visibles. Podemos concluir que la heurística golosa constructiva no tiene un buen desempeño en casos estocásticos, donde los puntos están distribuidos de manera aleatoria al rededor del depósito. Esta heurística puede otorgar soluciones hasta dos veces peores que cualquier otra heurística y a menos que estemos hablando de casos particulares, no creemos que valga la pena considerar esta técnica para resolver instancias de CVRP de estas características. Con respecto al resto de los algoritmos, las soluciones de \textbf{Savings} se imponen por sobre el resto en todos los casos. De cerca le sigue \textbf{Annealing} y alternándose entre uno y otro compiten \textbf{K-Means} y \textbf{Sweep}. Observemos el desempeño de los algoritmos para otro dataset:
+
+\begin{figure}[H]
+ \centering
+ \includegraphics[width=1\textwidth]{algorithms-distances-for-B}
+ \caption{\footnotesize Promedio de distancias totales para cada algoritmo resolviendo todas las instancias del dataset \textbf{B} donde los clientes pertenecen a clusters bien definidos.}
+ \label{fig:algorithms-distances-for-B}
+\end{figure}
+
+Aquí, la tendencia con respecto al algoritmo goloso remanece, quien sigue siendo la peor opción. Por otro lado, el resto de los algoritmos parece coincidir aproximadamente en la calidad de las soluciones. Hay que resaltar que este dataset distribuye los vértices en clusters naturales, por lo cual heurísticas como \textbf{K-Means} y \textbf{Sweep} tienen un mejor desempeño – y en consecuencia están más cerca a las soluciones de \textbf{Annealing} y \textbf{Savings} – que en el dataset anterior, donde la aleatoreidad de la posición de los clientes dificulta el proceso de clusterización. Observemos este comportamiento en más detalle removiendo a \textbf{Greedy} del panorama:
+
+\begin{figure}[H]
+	\centering
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=1\textwidth]{algorithms-distances-for-A-nogr}
+		\caption{\footnotesize Solución golosa constructiva quasi-óptima.}
+		\label{fig:algorithms-distances-for-A-nogr}
+	\end{minipage}%
+	\hspace{0.03\textwidth}
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=1\textwidth]{algorithms-distances-for-B-nogr}
+		\caption{\footnotesize Solución óptima con \textbf{savings}.}
+		\label{fig:algorithms-distances-for-B-nogr}
+	\end{minipage}%
+\end{figure}
+
+Podemos observar que, si bien cada gráfico representa soluciones a instancias distintas, uno muestra a \textbf{Sweep} y \textbf{K-Means} mucho más cerca a \textbf{Annealing} y \textbf{Savings} que el otro, como fue explicado anteriormente. Sin embargo, en todos estos análisis \textbf{Savings} sigue siendo la opción superadora para cualquier instancia del problema del cual, a priori, no se sabe nada.
